@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>Ecommerce_Backend</RootNamespace>
+    <RootNamespace>GroceryStore_Backend</RootNamespace>
   </PropertyGroup>
 
 
