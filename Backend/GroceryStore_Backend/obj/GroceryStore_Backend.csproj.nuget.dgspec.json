@@ -1,26 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Projects\\GroceryStore\\Backend\\GroceryStore_Backend\\GroceryStore_Backend.csproj": {}
+    "D:\\HandsOn\\Ecommerce\\Ecommerce\\Backend\\GroceryStore_Backend\\GroceryStore_Backend.csproj": {}
   },
   "projects": {
-    "D:\\Projects\\GroceryStore\\Backend\\GroceryStore_Backend\\GroceryStore_Backend.csproj": {
+    "D:\\HandsOn\\Ecommerce\\Ecommerce\\Backend\\GroceryStore_Backend\\GroceryStore_Backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Projects\\GroceryStore\\Backend\\GroceryStore_Backend\\GroceryStore_Backend.csproj",
+        "projectUniqueName": "D:\\HandsOn\\Ecommerce\\Ecommerce\\Backend\\GroceryStore_Backend\\GroceryStore_Backend.csproj",
         "projectName": "GroceryStore_Backend",
-        "projectPath": "D:\\Projects\\GroceryStore\\Backend\\GroceryStore_Backend\\GroceryStore_Backend.csproj",
-        "packagesPath": "C:\\Users\\z003v58z\\.nuget\\packages\\",
-        "outputPath": "D:\\Projects\\GroceryStore\\Backend\\GroceryStore_Backend\\obj\\",
+        "projectPath": "D:\\HandsOn\\Ecommerce\\Ecommerce\\Backend\\GroceryStore_Backend\\GroceryStore_Backend.csproj",
+        "packagesPath": "C:\\Users\\Z0040VNA\\.nuget\\packages\\",
+        "outputPath": "D:\\HandsOn\\Ecommerce\\Ecommerce\\Backend\\GroceryStore_Backend\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Microsoft\\Xamarin\\NuGet\\",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\z003v58z\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\Z0040VNA\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -42,6 +40,24 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[3.1.6, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[3.1.3, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[5.5.1, )"
+            },
+            "Swashbuckle.Core": {
+              "target": "Package",
+              "version": "[5.6.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -60,7 +76,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.105\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
         }
       }
     }
