@@ -9,5 +9,7 @@ namespace GroceryStore_Backend.Repository
     public interface IGroceryStoreRepository
     {
         Task<List<Product>> GetProductsAsync();
+
+        Task<List<Department>> GetDepartments();
     }
 }

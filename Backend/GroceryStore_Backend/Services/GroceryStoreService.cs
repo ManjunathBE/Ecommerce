@@ -15,9 +15,17 @@ namespace GroceryStore_Backend.Services
         {
             _groceryStoreRepository = groceryStoreRepository;
         }
+
+        public Task<List<Department>> GetDepartments()
+        {
+            return _groceryStoreRepository.GetDepartments();
+        }
+
         public Task<List<Product>> GetProductsAsync()
         {
             return _groceryStoreRepository.GetProductsAsync();
         }
+
+        
     }
 }

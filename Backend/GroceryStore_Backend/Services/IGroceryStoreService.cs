@@ -9,6 +9,6 @@ namespace GroceryStore_Backend.Services
     public interface IGroceryStoreService
     {
         Task<List<Product>> GetProductsAsync();
-
+        Task<List<Department>> GetDepartments();
     }
 }
