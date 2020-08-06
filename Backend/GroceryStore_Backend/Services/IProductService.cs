@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GroceryStore_Backend.Services
 {
-    public interface IGroceryStoreService
+    public interface IProductService
     {
         Task<List<Product>> GetProductsAsync();
         Task<List<Department>> GetDepartments();

@@ -11,9 +11,9 @@ namespace GroceryStore_Backend.Controllers
     [Route("[controller]")]
     public class ProductController : Controller
     {
-        private readonly IGroceryStoreService _groceryStoreService;
+        private readonly IProductService _groceryStoreService;
 
-        public ProductController(IGroceryStoreService groceryStoreService)
+        public ProductController(IProductService groceryStoreService)
         {
             _groceryStoreService = groceryStoreService;
         }

@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace GroceryStore_Backend.Services
 {
-    public class GroceryStoreService : IGroceryStoreService
+    public class ProductService : IProductService
     {
         private readonly IGroceryStoreRepository _groceryStoreRepository;
 
-        public GroceryStoreService(IGroceryStoreRepository groceryStoreRepository)
+        public ProductService(IGroceryStoreRepository groceryStoreRepository)
         {
             _groceryStoreRepository = groceryStoreRepository;
         }
