@@ -11,17 +11,17 @@ namespace GroceryStore_Backend.Controllers
     [Route("[controller]")]
     public class ProductController : Controller
     {
-        private readonly IProductService _groceryStoreService;
+        private readonly IProductService _productService;
 
-        public ProductController(IProductService groceryStoreService)
+        public ProductController(IProductService productService)
         {
-            _groceryStoreService = groceryStoreService;
+            _productService = productService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetProductsAsync()
         {
-            var products = await _groceryStoreService.GetProductsAsync();
+            var products = await _productService.GetProductsAsync();
             return Ok(products);
         }
     }

@@ -7,21 +7,16 @@ using System.Threading.Tasks;
 
 namespace GroceryStore_Backend.Services
 {
-    public class ProductService : IProductService
+    public class DepartmentService : IDepartmentService
     {
         private readonly IGroceryStoreRepository _groceryStoreRepository;
-
-        public ProductService(IGroceryStoreRepository groceryStoreRepository)
+        public DepartmentService(IGroceryStoreRepository groceryStoreRepository)
         {
             _groceryStoreRepository = groceryStoreRepository;
         }
-
-
-        public Task<List<Product>> GetProductsAsync()
+        public Task<List<Department>> GetDepartments()
         {
-            return _groceryStoreRepository.GetProductsAsync();
+            return _groceryStoreRepository.GetDepartments();
         }
-
-        
     }
 }

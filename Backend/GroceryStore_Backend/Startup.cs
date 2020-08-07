@@ -31,6 +31,7 @@ namespace Ecommerce_Backend
         {
             services.AddControllers();
             services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<IDepartmentService, DepartmentService>();
             services.AddTransient<IGroceryStoreRepository, GroceryStoreRepository>();
 
             services.AddSwaggerGen(swagger =>
