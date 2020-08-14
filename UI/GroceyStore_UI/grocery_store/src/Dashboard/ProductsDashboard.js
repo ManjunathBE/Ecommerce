@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Dashboard = (props) => {
+export const ProductsDashboard = (props) => {
   const classes = useStyles();
   const { history } = props;
   const [dashboardData, setDashboardData] = useState(mockData);
@@ -34,12 +34,14 @@ export const Dashboard = (props) => {
     console.log(dashboardData[`${catagoryId}`]);
     console.log("cat " + catagoryId);
 
-    const { id, name } = dashboardData[`${catagoryId}`];
-    const sprite = `https://camo.githubusercontent.com/21bfebdd4d567e65f51581a5d31c26adbc885338/687474703a2f2f692e696d6775722e636f6d2f33446b787955682e6a7067`;
+    const { id, name, productType, productId, productName } = dashboardData[
+      `${catagoryId}`
+    ];
+    const sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/shiny/1.png`;
 
     return (
-      <Grid item xs={6} sm={4} key={catagoryId}>
-        <Card onClick={() => history.push(`/${id}`)}>
+      <Grid item xs={6} sm={4} key={productId}>
+        <Card>
           <CardMedia
             className={classes.cardMedia}
             image={sprite}

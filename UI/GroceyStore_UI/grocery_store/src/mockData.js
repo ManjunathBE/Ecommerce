@@ -2,6 +2,16 @@ export default {
   "1": {
     name: "Vegitables",
     id: 1,
+    productType: [
+      {
+        productId: 1,
+        productName: "Onion",
+      },
+      {
+        productId: 2,
+        productName: "garlic",
+      },
+    ],
   },
   "2": {
     name: "Fruits",
