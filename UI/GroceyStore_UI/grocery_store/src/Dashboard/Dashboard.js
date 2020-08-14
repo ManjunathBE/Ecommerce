@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Grid,
   Card,
@@ -6,9 +6,8 @@ import {
   CardContent,
   Typography,
   CircularProgress,
-  TextField,
 } from "@material-ui/core";
-import { fade, makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { toFirstCharUppercase } from "../Healper";
 import mockData from "../mockData";
 
