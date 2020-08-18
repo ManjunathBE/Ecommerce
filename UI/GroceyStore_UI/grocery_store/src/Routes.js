@@ -16,8 +16,8 @@ export const Routes= ()=> (
             <Route path="/Cart" component = {Cart} />
             <Route path="/History" component = {History} />
             <Route path="/Notification" component = {Notification} />
-            <Route path="/SelectView" component = {SelectView} />
-            <Route path="/UserProfile" component = {UserProfile} /> 
+            <Route path="/Select View" component = {SelectView} />
+            <Route path="/User Profile" component = {UserProfile} /> 
         </Switch>
     </div>
 );

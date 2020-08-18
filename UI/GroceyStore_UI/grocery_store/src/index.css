@@ -12,13 +12,38 @@ code {
     monospace;
 }
 
+#header{
+  background-color: lightgray;
+}
+
 #footer {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   height: 2.5rem; 
   width: 100%; 
+  overflow: hidden;
+  background-color: black;
+  
+}
+
+.footerLink:hover{
+  color: green;
+  text-decoration: none;
 }
 
 .footerLink{
-  margin-left: 1%;
+  /* margin-left: 1%; */
+  color: white;
+}
+.headerTitle{
+  text-align: center;
+  font-size: x-large;
+}
+
+
+@media screen and (max-width: 600px) {
+  .footerLink:hover{
+    color: green;
+    text-decoration: none;
+  }
 }
