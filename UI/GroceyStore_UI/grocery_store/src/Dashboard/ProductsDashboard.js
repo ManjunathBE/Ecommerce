@@ -29,22 +29,20 @@ export const ProductsDashboard = (props) => {
   const classes = useStyles();
   const { history } = props;
   const [dashboardData, setDashboardData] = useState(mockData);
+  const images = require.context('../assets/catagory', true);
 
   const getCard = (catagoryId) => {
-    console.log(dashboardData[`${catagoryId}`]);
-    console.log("cat " + catagoryId);
-
-    const { id, name, productType, productId, productName } = dashboardData[
+    const { name } = dashboardData[
       `${catagoryId}`
     ];
-    const sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/shiny/1.png`;
+    const image = images(`./${name}.jpg`);
 
     return (
-      <Grid item xs={6} sm={4} key={productId}>
+      <Grid item xs={6} sm={4} key={catagoryId}>
         <Card>
           <CardMedia
             className={classes.cardMedia}
-            image={sprite}
+            image={image}
             style={{ width: "130px", height: "130px" }}
           />
           <CardContent className={classes.cardContent}>
@@ -62,8 +60,8 @@ export const ProductsDashboard = (props) => {
           {Object.keys(dashboardData).map((catagoryId) => getCard(catagoryId))}
         </Grid>
       ) : (
-        <CircularProgress />
-      )}
+          <CircularProgress />
+        )}
     </div>
   );
 };

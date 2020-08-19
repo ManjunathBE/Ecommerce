@@ -29,21 +29,19 @@ export const Dashboard = (props) => {
   const classes = useStyles();
   const { history } = props;
   const [dashboardData, setDashboardData] = useState(mockData);
+  const images = require.context('../assets/catagory', true);
 
   const getCard = (catagoryId) => {
-    console.log(dashboardData[`${catagoryId}`]);
-    console.log("cat " + catagoryId);
-
     const { id, name } = dashboardData[`${catagoryId}`];
-    const sprite = `https://camo.githubusercontent.com/21bfebdd4d567e65f51581a5d31c26adbc885338/687474703a2f2f692e696d6775722e636f6d2f33446b787955682e6a7067`;
+    const image = images(`./${name}.jpg`);
 
     return (
       <Grid item xs={6} sm={4} key={catagoryId}>
         <Card onClick={() => history.push(`/${id}`)}>
           <CardMedia
             className={classes.cardMedia}
-            image={sprite}
-            style={{ width: "130px", height: "130px" }}
+            image={image}
+            style={{ width: "180px", height: "130px", paddingTop: "90px" }}
           />
           <CardContent className={classes.cardContent}>
             <Typography>{`${toFirstCharUppercase(name)}`}</Typography>
@@ -60,8 +58,8 @@ export const Dashboard = (props) => {
           {Object.keys(dashboardData).map((catagoryId) => getCard(catagoryId))}
         </Grid>
       ) : (
-        <CircularProgress />
-      )}
+          <CircularProgress />
+        )}
     </div>
   );
 };

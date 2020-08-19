@@ -38,7 +38,7 @@ export default {
     id: 7,
   },
   "8": {
-    name: "All in One",
+    name: "Allinone",
     id: 8,
   },
 };
