@@ -1,12 +1,13 @@
-import React, {Component} from "react"
+import React, { Component } from "react"
+import Header from './Header'
 
 
-class UserProfile extends Component{
+class UserProfile extends Component {
 
-    render(){
-        return(
+    render() {
+        return (
             <div>
-               You are in User Profile page
+                <Header title={(this.props.location.pathname).substring(1)} />
             </div>
         )
     }
