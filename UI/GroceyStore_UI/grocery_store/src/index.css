@@ -17,18 +17,21 @@ code {
 }
 
 #footer {
-  position: absolute;
   position: fixed;
   bottom: 0;
   height: 2.5rem; 
   width: 100%; 
   overflow: hidden;
   background-color: black;
+  
+}
 
+.footerLink:hover{
+  color: green;
+  text-decoration: none;
 }
 
 .footerLink{
-  margin-left: 1%;
   /* margin-left: 1%; */
   color: white;
 }
@@ -43,8 +46,4 @@ code {
     color: green;
     text-decoration: none;
   }
-} 
-
-.footerLink{
-  margin-left: 1%;
 }

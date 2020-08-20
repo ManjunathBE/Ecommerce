@@ -8,15 +8,17 @@ import UserProfile from "./UserProfile";
 import { Dashboard } from "./Dashboard/Dashboard";
 import { ProductsDashboard } from "./Dashboard/ProductsDashboard";
 
+
 export const Routes = () => (
+
   <div>
     <Switch>
-      <Route exact path="/" component={Dashboard} />
       <Route
         exact
         path="/:productsId"
         render={(props) => <ProductsDashboard {...props} />}
       />
+      <Route exact path="/" component={Home} />
       <Route path="/Cart" component={Cart} />
       <Route path="/History" component={History} />
       <Route path="/Notification" component={Notification} />
