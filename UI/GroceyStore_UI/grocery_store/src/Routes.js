@@ -18,7 +18,7 @@ export const Routes = () => (
         path="/:productsId"
         render={(props) => <ProductsDashboard {...props} />}
       />
-      <Route exact path="/" component={Home} />
+      <Route exact path="/" component={Dashboard} />
       <Route path="/Cart" component={Cart} />
       <Route path="/History" component={History} />
       <Route path="/Notification" component={Notification} />
