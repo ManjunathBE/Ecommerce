@@ -1,13 +1,13 @@
-import React, {Component} from "react"
+import React, { Component } from "react"
 import Header from './Header'
 
 
-class Cart extends Component{
+class Cart extends Component {
 
-    render(){
-        return(
+    render() {
+        return (
             <div>
-                <Header title={(this.props.location.pathname).substring(1)}/>
+                <Header title={(this.props.location.pathname).substring(1)} />
                You are in cart page
             </div>
         )

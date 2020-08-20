@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import Header from './Header'
 
-class Notification extends Component{
+class Notification extends Component {
 
-    render(){
-        return(
+    render() {
+        return (
             <div>
-                <Header title={(this.props.location.pathname).substring(1)}/>
+                <Header title={(this.props.location.pathname).substring(1)} />
                 This is Notification page
             </div>
-            )
+        )
     }
 
 }
