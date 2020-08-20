@@ -1,0 +1,39 @@
+.Address {
+  box-sizing: border-box;
+  padding: 20px;
+  font-family: 'Montserrat', sans-serif;
+  background: #5a9908;
+  margin-top: 5px;
+  margin-bottom: 20px;
+
+  height: 220px;
+  box-shadow: 0 20px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  text-align: Left;
+}
+
+.DisplayAddressUL {
+  list-style: none;
+}
+
+.RecipientName {
+  color: white;
+  font-size: 20px;
+}
+
+.DoorNumApartment,
+.StreetNo,
+.Locality,
+.City,
+.Pincode,
+.RecipientContact,
+.Landmark {
+  margin-top: 5px;
+  color: #fff;
+  font-size: 15px;
+}
+
+.DeliveryPhoneNumber {
+  color: #d35400;
+  font-size: 18px;
+}
