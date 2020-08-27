@@ -13,17 +13,18 @@ export const Routes = () => (
 
   <div>
     <Switch>
-      <Route
-        exact
-        path="/:productsId"
-        render={(props) => <ProductsDashboard {...props} />}
-      />
+
       <Route exact path="/" component={Dashboard} />
       <Route path="/Cart" component={Cart} />
       <Route path="/History" component={History} />
       <Route path="/Notification" component={Notification} />
       <Route path="/Select View" component={SelectView} />
       <Route path="/User Profile" component={UserProfile} />
+      <Route
+        exact
+        path="/:productName"
+        render={(props) => <ProductsDashboard {...props} />}
+      />
     </Switch>
   </div>
 );

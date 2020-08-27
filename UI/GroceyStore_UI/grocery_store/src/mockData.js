@@ -1,6 +1,6 @@
 export default {
   "1": {
-    name: "Vegitables",
+    name: "Vegetables",
     id: 1,
     productType: [
       {

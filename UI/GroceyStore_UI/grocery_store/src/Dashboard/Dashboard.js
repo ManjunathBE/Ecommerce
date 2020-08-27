@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Header from '../Header'
 import {
   Grid,
   Card,
@@ -37,7 +38,7 @@ export const Dashboard = (props) => {
 
     return (
       <Grid item xs={6} sm={4} key={catagoryId}>
-        <Card onClick={() => history.push(`/${id}`)}>
+        <Card onClick={() => history.push(`/${name}`)}>
           <CardMedia
             className={classes.cardMedia}
             image={image}
@@ -53,6 +54,7 @@ export const Dashboard = (props) => {
 
   return (
     <div>
+      <Header title="Organic House"/>
       {dashboardData ? (
         <Grid container spacing={2} className={classes.DashboardContainer}>
           {Object.keys(dashboardData).map((catagoryId) => getCard(catagoryId))}
