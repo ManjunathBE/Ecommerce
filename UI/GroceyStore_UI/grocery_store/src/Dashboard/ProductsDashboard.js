@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Header from '../Header'
 import {
   Grid,
   Card,
@@ -26,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const ProductsDashboard = (props) => {
+
   const classes = useStyles();
   const { history } = props;
   const [dashboardData, setDashboardData] = useState(mockData);
@@ -54,7 +56,8 @@ export const ProductsDashboard = (props) => {
   };
 
   return (
-    <div>
+    <div>   
+       <Header title={(props.location.pathname).substring(1)} />
       {dashboardData ? (
         <Grid container spacing={2} className={classes.DashboardContainer}>
           {Object.keys(dashboardData).map((catagoryId) => getCard(catagoryId))}
