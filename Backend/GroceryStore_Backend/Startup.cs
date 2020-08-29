@@ -63,6 +63,7 @@ namespace Ecommerce_Backend
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Grocery Shop API");
+                c.RoutePrefix = "";
             });
         }
     }
