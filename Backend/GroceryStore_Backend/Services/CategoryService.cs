@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace GroceryStore_Backend.Services
 {
-    public class DepartmentService : IDepartmentService
+    public class CategoryService : ICategoryService
     {
         private readonly IGroceryStoreRepository _groceryStoreRepository;
-        public DepartmentService(IGroceryStoreRepository groceryStoreRepository)
+        public CategoryService(IGroceryStoreRepository groceryStoreRepository)
         {
             _groceryStoreRepository = groceryStoreRepository;
         }
-        public Task<List<Department>> GetDepartments()
+        public Task<List<Category>> GetCategory()
         {
-            return _groceryStoreRepository.GetDepartments();
+            return _groceryStoreRepository.GetCategorys();
         }
     }
 }

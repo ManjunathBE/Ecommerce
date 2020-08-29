@@ -8,7 +8,7 @@ namespace GroceryStore_Backend.Repository
 {
     public class GroceryStoreRepository : IGroceryStoreRepository
     {
-        public async Task<List<Department>> GetDepartments()
+        public async Task<List<Category>> GetCategorys()
         {
             return CreateDepartments();
         }
@@ -70,32 +70,32 @@ namespace GroceryStore_Backend.Repository
             return productList;
         }
 
-        private List<Department> CreateDepartments()
+        private List<Category> CreateDepartments()
         {
-            var departmentList = new List<Department>();
+            var departmentList = new List<Category>();
 
-            var department1 = new Department()
+            var department1 = new Category()
             {
-                Id = 1,
-                DepartmentName = "vegitables"
+                CategoryId = 1,
+                Name = "vegitables"
             };
 
-            var department2 = new Department()
+            var department2 = new Category()
             {
-                Id = 2,
-                DepartmentName = "fruits"
+                CategoryId = 2,
+                Name = "fruits"
             };
 
-            var department3 = new Department()
+            var department3 = new Category()
             {
-                Id = 3,
-                DepartmentName = "leafs"
+                CategoryId = 3,
+                Name = "leafs"
             };
 
-            var department4 = new Department()
+            var department4 = new Category()
             {
-                Id = 4,
-                DepartmentName = "drinks"
+                CategoryId = 4,
+                Name = "drinks"
             };
 
             departmentList.Add(department1);
