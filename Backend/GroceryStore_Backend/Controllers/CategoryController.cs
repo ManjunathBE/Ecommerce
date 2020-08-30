@@ -11,18 +11,18 @@ namespace GroceryStore_Backend.Controllers
     [Route("[controller]")]
     public class CategoryController : Controller
     {
-        private readonly ICategoryService _departmentService;
+        private readonly ICategoryService _categoryService;
 
-        public CategoryController(ICategoryService departmentService)
+        public CategoryController(ICategoryService categoryService)
         {
-            _departmentService = departmentService;
+            _categoryService = categoryService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetDepartmentsAsync()
         {
-            var departments = await _departmentService.GetCategory();
-            return Ok(departments);
+            var catagories = await _categoryService.GetCategory();
+            return Ok(catagories);
         }
     }
 }
