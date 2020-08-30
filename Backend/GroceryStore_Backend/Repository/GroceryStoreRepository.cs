@@ -10,7 +10,7 @@ namespace GroceryStore_Backend.Repository
     {
         public async Task<List<Category>> GetCategorys()
         {
-            return CreateDepartments();
+            return CreateCategory();
         }
 
         public async Task<List<Product>> GetProductsAsync()
@@ -22,10 +22,27 @@ namespace GroceryStore_Backend.Repository
         {
             var productList = new List<Product>();
 
+            Category category1 = new Category();
+            category1.CategoryId = 1;
+            category1.Name = "vegitables";
+
+            Category category2 = new Category();
+            category2.CategoryId = 2;
+            category2.Name = "fruits";
+
+            Category category3 = new Category();
+            category3.CategoryId = 2;
+            category3.Name = "leafs";
+
+            Category category4 = new Category();
+            category4.CategoryId = 2;
+            category4.Name = "breads";
+
+
             var product1 = new Product()
             {
                 Id = 1,
-                Department = "vegitables",
+                Category = category1,
                 Descrption = "Red Onion",
                 ProductName = "Red_Onion",
                 ImagePath = "",
@@ -35,7 +52,7 @@ namespace GroceryStore_Backend.Repository
             var product2 = new Product()
             {
                 Id = 1,
-                Department = "vegitables",
+                Category = category1,
                 Descrption = "White Onion",
                 ProductName = "White_Onion",
                 ImagePath = "",
@@ -45,7 +62,7 @@ namespace GroceryStore_Backend.Repository
             var product3 = new Product()
             {
                 Id = 1,
-                Department = "fruits",
+                Category = category2,
                 Descrption = "Bananna",
                 ProductName = "Bananna",
                 ImagePath = "",
@@ -55,7 +72,7 @@ namespace GroceryStore_Backend.Repository
             var product4 = new Product()
             {
                 Id = 1,
-                Department = "leafs",
+                Category = category3,
                 Descrption = "Coriander",
                 ProductName = "Coriander",
                 ImagePath = "",
@@ -70,39 +87,39 @@ namespace GroceryStore_Backend.Repository
             return productList;
         }
 
-        private List<Category> CreateDepartments()
+        private List<Category> CreateCategory()
         {
-            var departmentList = new List<Category>();
+            var categoryList = new List<Category>();
 
-            var department1 = new Category()
+            var category1 = new Category()
             {
                 CategoryId = 1,
                 Name = "vegitables"
             };
 
-            var department2 = new Category()
+            var category2 = new Category()
             {
                 CategoryId = 2,
                 Name = "fruits"
             };
 
-            var department3 = new Category()
+            var category3 = new Category()
             {
                 CategoryId = 3,
                 Name = "leafs"
             };
 
-            var department4 = new Category()
+            var category4 = new Category()
             {
                 CategoryId = 4,
                 Name = "drinks"
             };
 
-            departmentList.Add(department1);
-            departmentList.Add(department2);
-            departmentList.Add(department3);
-            departmentList.Add(department4);
-            return departmentList;
+            categoryList.Add(category1);
+            categoryList.Add(category2);
+            categoryList.Add(category3);
+            categoryList.Add(category4);
+            return categoryList;
         }
     }
 }
