@@ -10,6 +10,6 @@ namespace GroceryStore_Backend.Repository
     {
         Task<List<Product>> GetProductsAsync();
 
-        Task<List<Department>> GetDepartments();
+        Task<List<Category>> GetCategorys();
     }
 }

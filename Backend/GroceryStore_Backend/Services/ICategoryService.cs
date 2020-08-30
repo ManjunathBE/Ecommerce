@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace GroceryStore_Backend.Services
 {
-    public interface IDepartmentService
+    public interface ICategoryService
     {
-        Task<List<Department>> GetDepartments();
+        Task<List<Category>> GetCategory();
 
     }
 }
