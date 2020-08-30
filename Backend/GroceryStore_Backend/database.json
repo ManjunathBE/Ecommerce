@@ -1,31 +1,31 @@
 {
   "category": [
     {
-      "id": 1,
+      "CategoryId": 1,
       "name": "Vegitables"
     },
     {
-      "id": 2,
+      "CategoryId": 2,
       "name": "Fruits"
     },
     {
-      "id": 3,
+      "CategoryId": 3,
       "name": "Leafs"
     },
     {
-      "id": 4,
+      "CategoryId": 4,
       "name": "Bread"
     },
     {
-      "id": 5,
+      "CategoryId": 5,
       "name": "Eggs"
     },
     {
-      "id": 6,
+      "CategoryId": 6,
       "name": "Drinks"
     },
     {
-      "id": 7,
+      "CategoryId": 7,
       "name": "Drinks"
     }
   ],
