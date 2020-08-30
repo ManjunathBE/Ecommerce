@@ -17,9 +17,9 @@ namespace GroceryStore_Backend.Services
         }
 
 
-        public Task<List<Product>> GetProductsAsync()
+        public Task<List<Product>> GetProductsAsync(string category)
         {
-            return _groceryStoreRepository.GetProductsAsync();
+            return _groceryStoreRepository.GetProductsAsync(category);
         }
 
         

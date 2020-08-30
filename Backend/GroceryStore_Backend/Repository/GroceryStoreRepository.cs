@@ -1,4 +1,5 @@
 ﻿using GroceryStore_Backend.Models;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,14 +9,34 @@ namespace GroceryStore_Backend.Repository
 {
     public class GroceryStoreRepository : IGroceryStoreRepository
     {
+        string json = System.IO.File.ReadAllText("database.json");
         public async Task<List<Category>> GetCategorys()
         {
             return CreateCategory();
         }
 
-        public async Task<List<Product>> GetProductsAsync()
+        public async Task<List<Product>> GetProductsAsync(string category)
         {
-            return CreateProduct();
+            var jsonObj = JObject.Parse(json);
+            List<Product> ProductList = new List<Product>();
+            JArray ProductArray = jsonObj.GetValue("products") as JArray;
+
+            foreach (var obj in ProductArray)
+            {
+                Product product = obj.ToObject<Product>();
+                if (!string.IsNullOrEmpty(category))
+                {
+                    if (product.Category.ToUpper() == category.ToUpper())
+                    {
+                        ProductList.Add(product);
+                    }
+                }
+                else
+                {
+                    ProductList.Add(product);
+                }
+            }
+            return ProductList;
         }
 
         private List<Product> CreateProduct()
@@ -42,7 +63,7 @@ namespace GroceryStore_Backend.Repository
             var product1 = new Product()
             {
                 Id = 1,
-                Category = category1,
+                //Category = category1,
                 Descrption = "Red Onion",
                 ProductName = "Red_Onion",
                 ImagePath = "",
@@ -52,7 +73,7 @@ namespace GroceryStore_Backend.Repository
             var product2 = new Product()
             {
                 Id = 1,
-                Category = category1,
+                //Category = category1,
                 Descrption = "White Onion",
                 ProductName = "White_Onion",
                 ImagePath = "",
@@ -62,7 +83,7 @@ namespace GroceryStore_Backend.Repository
             var product3 = new Product()
             {
                 Id = 1,
-                Category = category2,
+                //Category = category2,
                 Descrption = "Bananna",
                 ProductName = "Bananna",
                 ImagePath = "",
@@ -72,7 +93,7 @@ namespace GroceryStore_Backend.Repository
             var product4 = new Product()
             {
                 Id = 1,
-                Category = category3,
+                //Category = category3,
                 Descrption = "Coriander",
                 ProductName = "Coriander",
                 ImagePath = "",

@@ -1,0 +1,83 @@
+{
+  "category": [
+    {
+      "id": 1,
+      "name": "Vegitables"
+    },
+    {
+      "id": 2,
+      "name": "Fruits"
+    },
+    {
+      "id": 3,
+      "name": "Leafs"
+    },
+    {
+      "id": 4,
+      "name": "Bread"
+    },
+    {
+      "id": 5,
+      "name": "Eggs"
+    },
+    {
+      "id": 6,
+      "name": "Drinks"
+    },
+    {
+      "id": 7,
+      "name": "Drinks"
+    }
+  ],
+
+  "products": [
+    {
+      "id": 1,
+      "description": "apple",
+      "ProductName": "apple",
+      "ImagePath": null,
+      "price": 0.50,
+      "Category": "Fruits"
+    },
+    {
+      "id": 2,
+      "description": "orange",
+      "ProductName": "orange",
+      "ImagePath": null,
+      "price": 0.75,
+      "Category": "Fruits"
+    },
+    {
+      "id": 3,
+      "description": "banana",
+      "ProductName": "banana",
+      "ImagePath": null,
+      "price": 0.85,
+      "Category": "fruits"
+    },
+    {
+      "id": 3,
+      "description": "beans",
+      "ProductName": "beans",
+      "ImagePath": null,
+      "price": 0.85,
+      "Category": "Vegitables"
+    },
+    {
+      "id": 3,
+      "description": "brinjal",
+      "ProductName": "brinjal",
+      "ImagePath": null,
+      "price": 0.85,
+      "Category": "Vegitables"
+    },
+    {
+      "id": 3,
+      "description": "carrot",
+      "ProductName": "carrot",
+      "ImagePath": null,
+      "price": 0.85,
+      "Category": "Vegitables"
+    }
+  ]
+}
