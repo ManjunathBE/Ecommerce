@@ -47,39 +47,5 @@ namespace GroceryStore_Backend.Repository
             }
             return ProductList;
         }
-        private List<Category> CreateCategory()
-        {
-            var categoryList = new List<Category>();
-
-            var category1 = new Category()
-            {
-                CategoryId = 1,
-                Name = "vegitables"
-            };
-
-            var category2 = new Category()
-            {
-                CategoryId = 2,
-                Name = "fruits"
-            };
-
-            var category3 = new Category()
-            {
-                CategoryId = 3,
-                Name = "leafs"
-            };
-
-            var category4 = new Category()
-            {
-                CategoryId = 4,
-                Name = "drinks"
-            };
-
-            categoryList.Add(category1);
-            categoryList.Add(category2);
-            categoryList.Add(category3);
-            categoryList.Add(category4);
-            return categoryList;
-        }
-    }
+         }
 }
