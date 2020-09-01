@@ -12,8 +12,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { toFirstCharUppercase } from "../Healper";
 import mockData from "../mockData";
 
-import img from '../../src/assets/products/'
-
 const useStyles = makeStyles((theme) => ({
   DashboardContainer: {
     paddingTop: "20px",
