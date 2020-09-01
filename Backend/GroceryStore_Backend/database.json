@@ -35,7 +35,7 @@
       "id": 1,
       "description": "amla",
       "ProductName": "amla",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/amla.jpg",
       "price": 0.50,
       "Category": "Vegetables"
     },
@@ -43,7 +43,7 @@
       "id": 2,
       "description": "arbi(sham_root)",
       "ProductName": "arbi(sham_root)",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/arbi(sham_root).jpg",
       "price": 0.75,
       "Category": "Vegetables"
     },
@@ -51,7 +51,7 @@
       "id": 3,
       "description": "baby_corn",
       "ProductName": "baby_corn",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/baby_corn.jpg",
       "price": 0.85,
       "Category": "Vegetables"
     },
@@ -59,7 +59,7 @@
       "id": 4,
       "description": "baby_jackfruit",
       "ProductName": "beans",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/baby_jackfruit.jpg",
       "price": 0.85,
       "Category": "Vegetables"
     },
@@ -67,7 +67,7 @@
       "id": 5,
       "description": "banana_flower",
       "ProductName": "banana_flower",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/banana_flower.jpg",
       "price": 0.85,
       "Category": "Vegetables"
     },
@@ -75,7 +75,7 @@
       "id": 6,
       "description": "banana_stem",
       "ProductName": "banana_stem",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/banana_stem.jpg",
       "price": 0.85,
       "Category": "Vegetables"
     },
@@ -83,7 +83,7 @@
       "id": 7,
       "description": "beans_long",
       "ProductName": "beans_long",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/beans_long.jpg",
       "price": 0.50,
       "Category": "Vegetables"
     },
@@ -91,7 +91,7 @@
       "id": 8,
       "description": "beans_natti",
       "ProductName": "beans_natti",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/beans_natti.jpg",
       "price": 0.50,
       "Category": "Vegetables"
     },
@@ -99,7 +99,7 @@
       "id": 9,
       "description": "beans_ring",
       "ProductName": "beans_ring",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/beans_ring.jpg",
       "price": 0.50,
       "Category": "Vegetables"
     },
@@ -107,7 +107,7 @@
       "id": 10,
       "description": "beetroot",
       "ProductName": "beetroot",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/beetroot.jpg",
       "price": 0.50,
       "Category": "Vegetables"
     },
@@ -115,7 +115,7 @@
       "id": 11,
       "description": "bitter_gourd",
       "ProductName": "bitter_gourd",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/bitter_gourd.jpg",
       "price": 0.50,
       "Category": "Vegetables"
     },
@@ -123,7 +123,7 @@
       "id": 12,
       "description": "bottle_brinjal",
       "ProductName": "bottle_brinjal",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/bottle_brinjal.jpg",
       "price": 0.50,
       "Category": "Vegetables"
     },
@@ -131,7 +131,7 @@
       "id": 13,
       "description": "bottle_gourd",
       "ProductName": "bottle_gourd",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/bottle_gourd.jpg",
       "price": 0.50,
       "Category": "Vegetables"
     },
@@ -139,7 +139,7 @@
       "id": 14,
       "description": "brinjal_green",
       "ProductName": "brinjal_green",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/brinjal_green.jpg",
       "price": 0.50,
       "Category": "Vegetables"
     },
@@ -147,7 +147,7 @@
       "id": 15,
       "description": "brinjal_round",
       "ProductName": "brinjal_round",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/brinjal_round.jpg",
       "price": 0.50,
       "Category": "Vegetables"
     },
@@ -155,7 +155,7 @@
       "id": 16,
       "description": "broccoli",
       "ProductName": "broccoli",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/broccoli.jpg",
       "price": 0.50,
       "Category": "Vegetables"
     },
@@ -163,7 +163,7 @@
       "id": 17,
       "description": "cabbage",
       "ProductName": "cabbage",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/cabbage.jpg",
       "price": 0.50,
       "Category": "Vegetables"
     },
@@ -171,7 +171,7 @@
       "id": 18,
       "description": "capsicum_green",
       "ProductName": "capsicum_green",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/capsicum_green.jpg",
       "price": 0.50,
       "Category": "Vegetables"
     },
@@ -179,7 +179,7 @@
       "id": 19,
       "description": "capsicum_red",
       "ProductName": "capsicum_red",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/capsicum_red.jpg",
       "price": 0.50,
       "Category": "Vegetables"
     },
@@ -187,7 +187,7 @@
       "id": 20,
       "description": "capsicum_yellow",
       "ProductName": "capsicum_yellow",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/capsicum_yellow.jpg",
       "price": 0.50,
       "Category": "Vegetables"
     },
@@ -195,7 +195,7 @@
       "id": 21,
       "description": "carrot_ooty",
       "ProductName": "carrot_ooty",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/carrot_ooty.jpg",
       "price": 0.50,
       "Category": "Vegetables"
     },
@@ -203,7 +203,7 @@
       "id": 22,
       "description": "cauli_flower",
       "ProductName": "cauli_flower",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/cauli_flower.jpg",
       "price": 0.50,
       "Category": "Vegetables"
     },
@@ -211,7 +211,7 @@
       "id": 23,
       "description": "chilli_green",
       "ProductName": "chilli_green",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/chilli_green.jpg",
       "price": 0.50,
       "Category": "Vegetables"
     },
@@ -219,7 +219,7 @@
       "id": 24,
       "description": "chow_chow",
       "ProductName": "chow_chow",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/chow_chow.jpg",
       "price": 0.50,
       "Category": "Vegetables"
     },
@@ -228,7 +228,7 @@
       "id": 25,
       "description": "cluster_beans",
       "ProductName": "cluster_beans",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/cluster_beans.jpg",
       "price": 0.50,
       "Category": "Vegetables"
     },
@@ -236,7 +236,7 @@
       "id": 26,
       "description": "coconut",
       "ProductName": "coconut",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/coconut.jpg",
       "price": 0.50,
       "Category": "Vegetables"
     },
@@ -244,7 +244,7 @@
       "id": 27,
       "description": "flat_beans",
       "ProductName": "flat_beans",
-      "ImagePath": null,
+      "ImagePath": "../../src/assets/products/flat_beans.jpg",
       "price": 0.50,
       "Category": "Vegetables"
     }
