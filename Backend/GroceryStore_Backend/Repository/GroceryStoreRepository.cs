@@ -47,5 +47,40 @@ namespace GroceryStore_Backend.Repository
             }
             return ProductList;
         }
-         }
+
+        public async Task<User> GetUser(string userId)
+        {
+            return createUser();
+
+        }
+
+        private User createUser()
+        {
+            User user = new User();
+            Address address = new Address();
+            address.AreaName = "Sarjapur";
+            address.City = "Bengaluru";
+            address.HouseName = "163";
+            address.PinCode = "566125";
+
+            Address address2 = new Address();
+            address2.AreaName = "Sarjapur";
+            address2.City = "Bengaluru";
+            address2.HouseName = "163";
+            address2.PinCode = "566125";
+
+            List<Address> addresses = new List<Address>();
+            addresses.Add(address);
+            addresses.Add( address2);
+
+            user.Address = addresses;
+            user.Email = "user@gmail.com";
+            user.FirstName = "First Name";
+            user.LastName = "Last name";
+            user.Id = 3;
+            user.PhoneNumber = "45669";
+
+            return user;
+        }
+    }
 }
