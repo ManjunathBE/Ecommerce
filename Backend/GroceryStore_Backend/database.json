@@ -1,4 +1,33 @@
 {
+  "user": [
+    {
+      "Id": 1,
+      "firstname": "Name1",
+      "LastName": "Name2",
+      "Email": "test@gmail.com",
+      "PhoneNumb": "484845",
+      "Address": [
+        {
+          "HouseName": "h1",
+          "AreaName": "a1",
+          "City": "bengaluru",
+          "PinCode": "577525"
+        },
+        {
+          "HouseName": "h2",
+          "AreaName": "a2",
+          "City": "bengaluru urban",
+          "PinCode": "577526"
+        }
+
+      ]
+    }
+
+
+  ],
+
+
+
   "category": [
     {
       "CategoryId": 1,
@@ -223,7 +252,7 @@
       "price": 0.50,
       "Category": "Vegetables"
     },
-    
+
     {
       "id": 25,
       "description": "cluster_beans",

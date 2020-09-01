@@ -8,7 +8,7 @@ namespace GroceryStore_Backend.Services
 {
 	public interface IUsersService
 	{
-		Task<User> GetUsersasync (string userId);
+		Task<User> GetUsersasync (int userId);
 
 	}
 }
