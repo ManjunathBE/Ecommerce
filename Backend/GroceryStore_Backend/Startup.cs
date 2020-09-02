@@ -65,6 +65,7 @@ namespace Ecommerce_Backend
             {
                 c.RoutePrefix = "";
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Grocery Shop API");
+                c.RoutePrefix = "";
             });
         }
     }
