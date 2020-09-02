@@ -47,5 +47,22 @@ namespace GroceryStore_Backend.Repository
             }
             return ProductList;
         }
-         }
+
+        public async Task<User> GetUser(int userId)
+        {
+            var jsonObj = JObject.Parse(json);
+            User UserList = new User();
+            JArray UserArray = jsonObj.GetValue("user") as JArray;
+
+            foreach (var obj in UserArray)
+            {
+                User user = obj.ToObject<User>();
+                if(user.Id == userId)
+                {
+                    return user;
+                }
+            }
+            return null;
+        }
+    }
 }

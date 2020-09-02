@@ -1,4 +1,5 @@
 ﻿using GroceryStore_Backend.Models;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,7 @@ namespace GroceryStore_Backend.Repository
         Task<List<Product>> GetProductsAsync(string category);
 
         Task<List<Category>> GetCategorys();
+
+        Task<User> GetUser(int userId);
     }
 }
