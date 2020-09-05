@@ -10,16 +10,16 @@ namespace GroceryStore_Backend.Repository
 {
     public class GroceryStoreRepository : IGroceryStoreRepository
     {
-        private readonly GroceryStoreDbContext _groceryStoreDbContext1;
+        private readonly GroceryStoreDbContext _groceryStoreDbContext;
         public GroceryStoreRepository(GroceryStoreDbContext groceryStoreDbContext)
         {
-            _groceryStoreDbContext1 = groceryStoreDbContext;
+            _groceryStoreDbContext = groceryStoreDbContext;
 
         }
         string json = System.IO.File.ReadAllText("database.json");
         public async Task<List<Category>> GetCategorys()
         {
-            return _groceryStoreDbContext1.Category.ToList();
+            return _groceryStoreDbContext.Category.ToList();
 
            
         }
