@@ -87,7 +87,7 @@
     {
       "id": 4,
       "description": "baby_jackfruit",
-      "ProductName": "beans",
+      "ProductName": "baby_jackfruit",
       "ImagePath": "../../src/assets/products/baby_jackfruit.jpg",
       "price": 0.85,
       "Category": "Vegetables"
