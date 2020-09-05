@@ -1,30 +1,30 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Goutham\\source\\repos\\Ecommerce\\Backend\\GroceryStore_Backend\\GroceryStore_Backend.csproj": {}
+    "C:\\Users\\Dhrithi K M\\ECOMMERCE\\Ecommerce\\Backend\\GroceryStore_Backend\\GroceryStore_Backend.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Goutham\\source\\repos\\Ecommerce\\Backend\\GroceryStore_Backend\\GroceryStore_Backend.csproj": {
+    "C:\\Users\\Dhrithi K M\\ECOMMERCE\\Ecommerce\\Backend\\GroceryStore_Backend\\GroceryStore_Backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Goutham\\source\\repos\\Ecommerce\\Backend\\GroceryStore_Backend\\GroceryStore_Backend.csproj",
+        "projectUniqueName": "C:\\Users\\Dhrithi K M\\ECOMMERCE\\Ecommerce\\Backend\\GroceryStore_Backend\\GroceryStore_Backend.csproj",
         "projectName": "GroceryStore_Backend",
-        "projectPath": "C:\\Users\\Goutham\\source\\repos\\Ecommerce\\Backend\\GroceryStore_Backend\\GroceryStore_Backend.csproj",
-        "packagesPath": "C:\\Users\\Goutham\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Goutham\\source\\repos\\Ecommerce\\Backend\\GroceryStore_Backend\\obj\\",
+        "projectPath": "C:\\Users\\Dhrithi K M\\ECOMMERCE\\Ecommerce\\Backend\\GroceryStore_Backend\\GroceryStore_Backend.csproj",
+        "packagesPath": "C:\\Users\\Dhrithi K M\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Dhrithi K M\\ECOMMERCE\\Ecommerce\\Backend\\GroceryStore_Backend\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Goutham\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\Dhrithi K M\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -43,7 +43,17 @@
           "dependencies": {
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[3.1.6, )"
+              "version": "[3.1.7, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[3.1.7, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.1.7, )"
             },
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",

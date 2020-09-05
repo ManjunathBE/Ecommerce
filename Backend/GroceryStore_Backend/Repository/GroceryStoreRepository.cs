@@ -1,4 +1,5 @@
 ﻿using GroceryStore_Backend.Models;
+using GroceryStore_Backend.Repository.Database;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -9,19 +10,18 @@ namespace GroceryStore_Backend.Repository
 {
     public class GroceryStoreRepository : IGroceryStoreRepository
     {
+        private readonly GroceryStoreDbContext _groceryStoreDbContext;
+        public GroceryStoreRepository(GroceryStoreDbContext groceryStoreDbContext)
+        {
+            _groceryStoreDbContext = groceryStoreDbContext;
+
+        }
         string json = System.IO.File.ReadAllText("database.json");
         public async Task<List<Category>> GetCategorys()
         {
-            var jsonObj = JObject.Parse(json);
-            List<Category> CategoryList = new List<Category>();
-            JArray CategoryArray = jsonObj.GetValue("category") as JArray;
+            return _groceryStoreDbContext.Category.ToList();
 
-            foreach (var obj in CategoryArray)
-            {
-                Category product = obj.ToObject<Category>();
-                CategoryList.Add(product);
-            }
-            return CategoryList;
+           
         }
 
         public async Task<List<Product>> GetProductsAsync(string category)
