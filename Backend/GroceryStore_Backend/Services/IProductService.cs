@@ -8,6 +8,6 @@ namespace GroceryStore_Backend.Services
 {
     public interface IProductService
     {
-        Task<List<Product>> GetProductsAsync();
+        Task<List<Product>> GetProductsAsync(string category = "");
     }
 }

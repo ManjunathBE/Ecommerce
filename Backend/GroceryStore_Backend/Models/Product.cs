@@ -12,6 +12,6 @@ namespace GroceryStore_Backend.Models
         public string ImagePath { get; set; }
         public string Price { get; set; }
         public string Descrption { get; set; }
-        public string Department { get; set; }
+        public string Category { get; set; }
     }
 }

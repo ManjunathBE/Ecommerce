@@ -1,4 +1,6 @@
 ﻿using GroceryStore_Backend.Models;
+using GroceryStore_Backend.Repository.Database;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,101 +10,59 @@ namespace GroceryStore_Backend.Repository
 {
     public class GroceryStoreRepository : IGroceryStoreRepository
     {
-        public async Task<List<Department>> GetDepartments()
+        private readonly GroceryStoreDbContext _groceryStoreDbContext;
+        public GroceryStoreRepository(GroceryStoreDbContext groceryStoreDbContext)
         {
-            return CreateDepartments();
+            _groceryStoreDbContext = groceryStoreDbContext;
+
+        }
+        string json = System.IO.File.ReadAllText("database.json");
+        public async Task<List<Category>> GetCategorys()
+        {
+            return _groceryStoreDbContext.Category.ToList();
+
+           
         }
 
-        public async Task<List<Product>> GetProductsAsync()
+        public async Task<List<Product>> GetProductsAsync(string category)
         {
-            return CreateProduct();
+            var jsonObj = JObject.Parse(json);
+            List<Product> ProductList = new List<Product>();
+            JArray ProductArray = jsonObj.GetValue("products") as JArray;
+
+            foreach (var obj in ProductArray)
+            {
+                Product product = obj.ToObject<Product>();
+                if (!string.IsNullOrEmpty(category))
+                {
+                    if (product.Category.ToUpper() == category.ToUpper())
+                    {
+                        ProductList.Add(product);
+                    }
+                }
+                else
+                {
+                    ProductList.Add(product);
+                }
+            }
+            return ProductList;
         }
 
-        private List<Product> CreateProduct()
+        public async Task<User> GetUser(int userId)
         {
-            var productList = new List<Product>();
+            var jsonObj = JObject.Parse(json);
+            User UserList = new User();
+            JArray UserArray = jsonObj.GetValue("user") as JArray;
 
-            var product1 = new Product()
+            foreach (var obj in UserArray)
             {
-                Id = 1,
-                Department = "vegitables",
-                Descrption = "Red Onion",
-                ProductName = "Red_Onion",
-                ImagePath = "",
-                Price = "40"
-            };
-
-            var product2 = new Product()
-            {
-                Id = 1,
-                Department = "vegitables",
-                Descrption = "White Onion",
-                ProductName = "White_Onion",
-                ImagePath = "",
-                Price = "45"
-            };
-
-            var product3 = new Product()
-            {
-                Id = 1,
-                Department = "fruits",
-                Descrption = "Bananna",
-                ProductName = "Bananna",
-                ImagePath = "",
-                Price = "40"
-            };
-
-            var product4 = new Product()
-            {
-                Id = 1,
-                Department = "leafs",
-                Descrption = "Coriander",
-                ProductName = "Coriander",
-                ImagePath = "",
-                Price = "40"
-            };
-
-            productList.Add(product1);
-            productList.Add(product2);
-            productList.Add(product3);
-            productList.Add(product4);
-
-            return productList;
-        }
-
-        private List<Department> CreateDepartments()
-        {
-            var departmentList = new List<Department>();
-
-            var department1 = new Department()
-            {
-                Id = 1,
-                DepartmentName = "vegitables"
-            };
-
-            var department2 = new Department()
-            {
-                Id = 2,
-                DepartmentName = "fruits"
-            };
-
-            var department3 = new Department()
-            {
-                Id = 3,
-                DepartmentName = "leafs"
-            };
-
-            var department4 = new Department()
-            {
-                Id = 4,
-                DepartmentName = "drinks"
-            };
-
-            departmentList.Add(department1);
-            departmentList.Add(department2);
-            departmentList.Add(department3);
-            departmentList.Add(department4);
-            return departmentList;
+                User user = obj.ToObject<User>();
+                if(user.Id == userId)
+                {
+                    return user;
+                }
+            }
+            return null;
         }
     }
 }
