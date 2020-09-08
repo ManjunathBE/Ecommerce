@@ -10,6 +10,6 @@ namespace GroceryStore_Backend.Models
         public string TransactionTime { get; set; }
         public string Status { get; set; }
         public int OrderId { get; set; }
-        public int Id { get; set; }
+        public int UserId { get; set; }
     }
 }

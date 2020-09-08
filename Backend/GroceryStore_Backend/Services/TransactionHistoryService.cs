@@ -14,9 +14,9 @@ namespace GroceryStore_Backend.Services
         {
             _groceryStoreRepository = groceryStoreRepository;
         }
-        public Task<List<TransactionHistory>> GetTransactionsasync(string UserId)
+        public Task<List<TransactionHistory>> GetTransactionsasync(int UserId)
         {
-            return _groceryStoreRepository.GetTransactionHistories();
+            return _groceryStoreRepository.GetTransactionHistories(UserId);
         }
     }
 }

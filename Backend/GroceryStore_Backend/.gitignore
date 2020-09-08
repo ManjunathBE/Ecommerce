@@ -152,8 +152,10 @@ nCrunchTemp_*
 *.mm.*
 AutoTest.Net/
 
+
 # Web workbench (sass)
 .sass-cache/
+.cache/
 
 # Installshield output folder
 [Ee]xpress/
@@ -265,6 +267,7 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
+*.cache
 
 # Visual Studio LightSwitch build output
 **/*.HTMLClient/GeneratedArtifacts

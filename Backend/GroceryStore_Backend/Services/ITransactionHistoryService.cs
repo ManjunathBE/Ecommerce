@@ -6,6 +6,6 @@ namespace GroceryStore_Backend.Services
 {
     public interface ITransactionHistoryService
     {
-        public Task<List<TransactionHistory>> GetTransactionsasync(string UserId);
+        public Task<List<TransactionHistory>> GetTransactionsasync(int UserId);
     }
 }

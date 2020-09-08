@@ -19,7 +19,7 @@ namespace GroceryStore_Backend.Controllers
             _transactionHistoryService = transactionHistoryService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetTransactionsasync(string UserId)
+        public async Task<IActionResult> GetTransactionsasync(int UserId)
         {
             return Ok(await _transactionHistoryService.GetTransactionsasync(UserId));
         }
