@@ -4,14 +4,16 @@ using GroceryStore_Backend.Repository.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GroceryStore_Backend.Migrations
 {
     [DbContext(typeof(GroceryStoreDbContext))]
-    partial class GroceryStoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200908174004_Transaction-Seeding")]
+    partial class TransactionSeeding
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,7 +116,7 @@ namespace GroceryStore_Backend.Migrations
 
                     b.HasKey("TransactionId");
 
-                    b.ToTable("TransactionHistory");
+                    b.ToTable("TransactionHistories");
 
                     b.HasData(
                         new
