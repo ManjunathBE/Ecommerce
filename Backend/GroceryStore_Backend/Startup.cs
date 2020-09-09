@@ -39,6 +39,16 @@ namespace Ecommerce_Backend
             services.AddTransient<ITransactionHistoryService, TransactionHistoryService>();
             services.AddTransient<IGroceryStoreRepository, GroceryStoreRepository>();
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AnyOrigin", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
             services.AddSwaggerGen(swagger =>
             {
                 swagger.SwaggerDoc("v1", new OpenApiInfo { Title = "Grocery Shop API" });
@@ -63,7 +73,6 @@ namespace Ecommerce_Backend
             {
                 endpoints.MapControllers();
             });
-
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
