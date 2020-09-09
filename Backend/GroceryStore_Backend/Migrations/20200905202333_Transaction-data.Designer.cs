@@ -4,14 +4,16 @@ using GroceryStore_Backend.Repository.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GroceryStore_Backend.Migrations
 {
     [DbContext(typeof(GroceryStoreDbContext))]
-    partial class GroceryStoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200905202333_Transaction-data")]
+    partial class Transactiondata
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,12 +111,9 @@ namespace GroceryStore_Backend.Migrations
                     b.Property<string>("TransactionTime")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("TransactionId");
 
-                    b.ToTable("TransactionHistory");
+                    b.ToTable("TransactionHistories");
 
                     b.HasData(
                         new
@@ -123,44 +122,15 @@ namespace GroceryStore_Backend.Migrations
                             OrderId = 1,
                             Status = "Executed",
                             TransactionDate = "06-09-2020",
-                            TransactionTime = "01:00:00 AM",
-                            UserId = 1
+                            TransactionTime = "01:00:00 AM"
                         },
                         new
                         {
                             TransactionId = 2,
-                            OrderId = 1,
+                            OrderId = 2,
                             Status = "Processing",
                             TransactionDate = "06-09-2020",
-                            TransactionTime = "02:00:00 AM",
-                            UserId = 2
-                        },
-                        new
-                        {
-                            TransactionId = 3,
-                            OrderId = 2,
-                            Status = "Validating",
-                            TransactionDate = "07-09-2020",
-                            TransactionTime = "03:00:00 AM",
-                            UserId = 1
-                        },
-                        new
-                        {
-                            TransactionId = 4,
-                            OrderId = 3,
-                            Status = "Finished",
-                            TransactionDate = "07-09-2020",
-                            TransactionTime = "04:00:00 AM",
-                            UserId = 2
-                        },
-                        new
-                        {
-                            TransactionId = 5,
-                            OrderId = 4,
-                            Status = "Finished",
-                            TransactionDate = "08-09-2020",
-                            TransactionTime = "05:00:00 AM",
-                            UserId = 1
+                            TransactionTime = "02:00:00 AM"
                         });
                 });
 

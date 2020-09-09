@@ -64,5 +64,11 @@ namespace GroceryStore_Backend.Repository
             }
             return null;
         }
+ 
+        public async Task<List<TransactionHistory>> GetTransactionHistory(int UserId)
+        {
+            return _groceryStoreDbContext.TransactionHistory.Where( e => e.UserId == UserId).ToList();
+        }
+ 
     }
 }
