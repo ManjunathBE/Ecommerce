@@ -54,7 +54,7 @@ export default function History() {
 
     var columns = [
         { title: "id", field: "transactionId", hidden: true },
-        { title: "Date", field: "transactionDate" },
+        { title: "Date", field: "transactionDate"},
         { title: "Time", field: "transactionTime" },
         { title: "Status", field: "status" }
     ]
@@ -67,8 +67,6 @@ export default function History() {
     useEffect(() => {
         api.get("https://grocerystorebackend20200828043724.azurewebsites.net/Transaction?UserId=1")
             .then(res => {
-                debugger;
-                console.log("data from API", res.data)
                 setData(res.data)
             })
             .catch(error => {
@@ -95,10 +93,12 @@ export default function History() {
                             </Alert>
                         }
                     </div>
+
+                    
                     <MaterialTable
-                        title="data from remote source"
+                        title="History"
                         columns={columns}
-                        data={data}
+                        data={data} 
                         icons={tableIcons}
                     />
                 </Grid>

@@ -13,6 +13,12 @@
   }
 }
 
+[data-rbd-drag-handle-context-id="1"] {
+  cursor: -webkit-grab;
+  cursor: grab;
+  font-weight: bold;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
