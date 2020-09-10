@@ -62,6 +62,7 @@ namespace Ecommerce_Backend
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseCors("AnyOrigin");
 
             app.UseHttpsRedirection();
 
