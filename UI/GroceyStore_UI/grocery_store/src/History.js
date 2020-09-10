@@ -1,140 +1,109 @@
-import React, { Component, Link } from "react";
-import Header from './Header'
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import './App.css';
+import { forwardRef } from 'react';
+import Grid from '@material-ui/core/Grid'
 
-const columns = [
-  { id: 'date', label: 'Date', minWidth: 130 },
-  { id: 'time', label: 'Time', minWidth: 130 },
-  {
-    id: 'status',
-    label: 'Status',
-    minWidth: 130,
-    //align: 'right',
-    //format: (value) => value.toLocaleString('en-US'),
-  },
-];
+import MaterialTable from "material-table";
+import AddBox from '@material-ui/icons/AddBox';
+import ArrowDownward from '@material-ui/icons/ArrowDownward';
+import Check from '@material-ui/icons/Check';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import ChevronRight from '@material-ui/icons/ChevronRight';
+import Clear from '@material-ui/icons/Clear';
+import DeleteOutline from '@material-ui/icons/DeleteOutline';
+import Edit from '@material-ui/icons/Edit';
+import FilterList from '@material-ui/icons/FilterList';
+import FirstPage from '@material-ui/icons/FirstPage';
+import LastPage from '@material-ui/icons/LastPage';
+import Remove from '@material-ui/icons/Remove';
+import SaveAlt from '@material-ui/icons/SaveAlt';
+import Search from '@material-ui/icons/Search';
+import ViewColumn from '@material-ui/icons/ViewColumn';
+import axios from 'axios'
+import Alert from '@material-ui/lab/Alert';
 
-function createData(date, time, status) {
-  return { date, time, status };
-}
 
-const rows = [
-  createData('07-07-2020', '1:00 PM', 'Delivered'),
-  createData('09-07-2020', '2:00 PM', 'Our for Delivery'),
-  createData('11-07-2020', '3:00 PM', 'Delivered'),
-  createData('13-07-2020', '4:00 PM', 'Delivered'),
-  createData('15-07-2020', '5:00 PM', 'Delivered'),
-  createData('17-07-2020', '6:00 PM', 'Our for Delivery'),
-  createData('19-07-2020', '7:00 PM', 'Delivered'),
-  createData('21-07-2020', '8:00 PM', 'Delivered'),
-  createData('22-07-2020', '9:00 PM', 'Delivered'),
+const tableIcons = {
+    Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
+    Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
+    Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+    Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
+    DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+    Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
+    Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
+    Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
+    FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
+    LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
+    NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+    PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
+    ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+    Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
+    SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
+    ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
+    ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
+};
 
-];
+const api = axios.create({
+    baseURL: `https://reqres.in/api`
+})
 
-const useStyles = makeStyles({
-  root: {
-    width: '100%',
-  },
-  container: {
-    maxHeight: 440,
-  },
-});
+
+
 
 export default function History() {
-  const classes = useStyles();
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  let [transactionData, setTransactionData] = React.useState('')
 
-  const fetchData = React.useCallback(() => {
-    axios({
-      "method": "GET",
-      "url": "https://grocerystorebackend20200828043724.azurewebsites.net/Transaction",
-      "headers": {
-        "content-type": "application/json; charset=utf-8",
-        "Access-Control-Allow-Origin": "*"
-      }, "params": {
-        "UserId": 1
-      }
-    })
-      .then((response) => {
-        setTransactionData(response.data)
-        console.log("tnx data", response.data)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-  }, [])
+    var columns = [
+        { title: "id", field: "transactionId", hidden: true },
+        { title: "Date", field: "transactionDate" },
+        { title: "Time", field: "transactionTime" },
+        { title: "Status", field: "status" }
+    ]
 
-  React.useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    const [data, setData] = useState([]); //table data
+    //for error handling
+    const [iserror, setIserror] = useState(false)
+    const [errorMessages, setErrorMessages] = useState([])
+
+    useEffect(() => {
+        api.get("https://grocerystorebackend20200828043724.azurewebsites.net/Transaction?UserId=1")
+            .then(res => {
+                debugger;
+                console.log("data from API", res.data)
+                setData(res.data)
+            })
+            .catch(error => {
+                setIserror(true)
+            })
+    }, [])
+
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    let [transactionData, setTransactionData] = React.useState('')
 
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
-  return (
-    <Paper className={classes.root}>
-      <TableContainer className={classes.container}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-              return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                  {columns.map((column) => {
-                    const value = row[column.id];
-                    return (
-                      <TableCell
-                        numeric component="a" href="/Notification"
-                        key={column.id} align={column.align}>
-                        {column.format && typeof value === 'number' ? column.format(value) : value}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
-    </Paper>
-  );
+    return (
+        <div className="App">
+            <Grid container spacing={1}>
+                <Grid item xs={3}></Grid>
+                <Grid item xs={6}>
+                    <div>
+                        {iserror &&
+                            <Alert severity="error">
+                                {errorMessages.map((msg, i) => {
+                                    return <div key={i}>{msg}</div>
+                                })}
+                            </Alert>
+                        }
+                    </div>
+                    <MaterialTable
+                        title="data from remote source"
+                        columns={columns}
+                        data={data}
+                        icons={tableIcons}
+                    />
+                </Grid>
+                <Grid item xs={3}></Grid>
+            </Grid>
+        </div>
+    );
 }
