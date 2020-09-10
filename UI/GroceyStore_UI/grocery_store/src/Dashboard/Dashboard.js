@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from '../Header'
 import {
   Grid,
@@ -30,10 +30,40 @@ export const Dashboard = (props) => {
   const classes = useStyles();
   const { history } = props;
   const [dashboardData, setDashboardData] = useState(mockData);
+  const [category, setCategory] = useState({});
   const images = require.context('../assets/catagory', true);
 
+  useEffect(() => {
+    fetchCategory()
+  }, [])
+
+  const fetchCategory = () => {
+
+    fetch('https://grocerystorebackend20200828043724.azurewebsites.net/Category', 
+    {
+      mode:'cors'})
+      .then(result => {
+        console.log(result)
+        if (result.status === 404) {
+          console.log('result is 404')
+        } else if (result.status !== 200) {
+          console.log('result is not 200')
+        } else {
+          result.json().then(body => {
+            console.log(body,'response kjkjkjk')
+            setCategory(body)
+
+          });
+        }
+      })
+      .catch(error => {
+        console.log("error from server", JSON.stringify(error, Object.getOwnPropertyNames(error)));
+      });
+  }
+
+
   const getCard = (catagoryId) => {
-    const { id, name } = dashboardData[`${catagoryId}`];
+    const { categoryId, name } = category[`${catagoryId}`];
     const image = images(`./${name}.jpg`);
 
     return (
@@ -54,10 +84,10 @@ export const Dashboard = (props) => {
 
   return (
     <div>
-      <Header title="Organic House"/>
-      {dashboardData ? (
+      <Header title="Organic House" />
+      {category ? (
         <Grid container spacing={2} className={classes.DashboardContainer}>
-          {Object.keys(dashboardData).map((catagoryId) => getCard(catagoryId))}
+          {Object.keys(category).map((catagoryId) => getCard(catagoryId))}
         </Grid>
       ) : (
           <CircularProgress />
