@@ -13,7 +13,7 @@ namespace GroceryStore_Backend.Repository.Database
         public DbSet<Category> Category { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<Address> Address { get; set; }
-        public DbSet<TransactionHistory> TransactionHistories { get; set; }
+        public DbSet<TransactionHistory> TransactionHistory { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
