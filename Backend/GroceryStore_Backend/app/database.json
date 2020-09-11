@@ -1,0 +1,303 @@
+{
+  "user": [
+    {
+      "Id": 1,
+      "firstname": "User1",
+      "LastName": "Name2",
+      "Email": "user1@gmail.com",
+      "PhoneNumb": "484845",
+      "Address": [
+        {
+          "HouseName": "h1",
+          "AreaName": "a1",
+          "City": "bengaluru",
+          "PinCode": "577525"
+        },
+        {
+          "HouseName": "h2",
+          "AreaName": "a2",
+          "City": "bengaluru urban",
+          "PinCode": "577526"
+        }
+
+      ]
+    },
+    {
+      "Id": 2,
+      "firstname": "User2",
+      "LastName": "Name2",
+      "Email": "user2@gmail.com",
+      "PhoneNumb": "484845",
+      "Address": [
+        {
+          "HouseName": "h1",
+          "AreaName": "a1",
+          "City": "bengaluru",
+          "PinCode": "577525"
+        },
+        {
+          "HouseName": "h2",
+          "AreaName": "a2",
+          "City": "bengaluru urban",
+          "PinCode": "577526"
+        }
+
+      ]
+    }
+
+
+  ],
+
+
+
+  "category": [
+    {
+      "CategoryId": 1,
+      "name": "Vegetables"
+    },
+    {
+      "CategoryId": 2,
+      "name": "Fruits"
+    },
+    {
+      "CategoryId": 3,
+      "name": "Leafs"
+    },
+    {
+      "CategoryId": 4,
+      "name": "Bread"
+    },
+    {
+      "CategoryId": 5,
+      "name": "Eggs"
+    },
+    {
+      "CategoryId": 6,
+      "name": "Drinks"
+    },
+    {
+      "CategoryId": 7,
+      "name": "Drinks"
+    }
+  ],
+
+  "products": [
+    {
+      "id": 1,
+      "description": "amla",
+      "ProductName": "Amla",
+      "ImagePath": "amla",
+      "price": 90,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 2,
+      "description": "arbi(sham_root)",
+      "ProductName": "Arbi",
+      "ImagePath": "arbi",
+      "price":40,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 3,
+      "description": "baby_corn",
+      "ProductName": "Baby Corn",
+      "ImagePath": "baby_corn",
+      "price":100,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 4,
+      "description": "baby_jackfruit",
+      "ProductName": "Baby Jackfruit",
+      "ImagePath": ".baby_jackfruit",
+      "price": 200,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 5,
+      "description": "banana_flower",
+      "ProductName": "Banana Flower",
+      "ImagePath": "banana_flower",
+      "price": 175,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 6,
+      "description": "banana_stem",
+      "ProductName": "Banana Stem",
+      "ImagePath": "banana_stem",
+      "price": 100,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 7,
+      "description": "beans_long",
+      "ProductName": "Beans Long",
+      "ImagePath": "beans_long",
+      "price":80,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 8,
+      "description": "beans_natti",
+      "ProductName": "Beans Natti",
+      "ImagePath": "beans_natti",
+      "price": 95,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 9,
+      "description": "beans_ring",
+      "ProductName": "Beans Ring",
+      "ImagePath": "beans_ring",
+      "price": 75,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 10,
+      "description": "beetroot",
+      "ProductName": "Beetroot",
+      "ImagePath": "beetroot",
+      "price":70,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 11,
+      "description": "bitter_gourd",
+      "ProductName": "Bitter Gourd",
+      "ImagePath": "bitter_gourd",
+      "price": 60,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 12,
+      "description": "bottle_brinjal",
+      "ProductName": "Bottle Brinjal",
+      "ImagePath": "bottle_brinjal",
+      "price": 50,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 13,
+      "description": "bottle_gourd",
+      "ProductName": "Bottle Gourd",
+      "ImagePath": "bottle_gourd",
+      "price": 65,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 14,
+      "description": "brinjal_green",
+      "ProductName": "Brinjal Green",
+      "ImagePath": "brinjal_green",
+      "price":40,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 15,
+      "description": "brinjal_round",
+      "ProductName": "Brinjal Round",
+      "ImagePath": "brinjal_round",
+      "price": 30,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 16,
+      "description": "broccoli",
+      "ProductName": "Broccoli",
+      "ImagePath": "broccoli",
+      "price": 120,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 17,
+      "description": "cabbage",
+      "ProductName": "Cabbage",
+      "ImagePath": "cabbage",
+      "price": 80,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 18,
+      "description": "capsicum_green",
+      "ProductName": "Capsicum Green",
+      "ImagePath": "capsicum_green",
+      "price":50,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 19,
+      "description": "capsicum_red",
+      "ProductName": "Capsicum Red",
+      "ImagePath": "capsicum_red",
+      "price":90,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 20,
+      "description": "capsicum_yellow",
+      "ProductName": "Capsicum Yellow",
+      "ImagePath": "capsicum_yellow",
+      "price":100,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 21,
+      "description": "carrot_ooty",
+      "ProductName": "Carrot Ooty",
+      "ImagePath": "carrot_ooty",
+      "price": 120,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 22,
+      "description": "cauli_flower",
+      "ProductName": "Cauliflower",
+      "ImagePath": "cauli_flower",
+      "price": 80,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 23,
+      "description": "chilli_green",
+      "ProductName": "Chilli Green",
+      "ImagePath": "chilli_green",
+      "price":40,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 24,
+      "description": "chow_chow",
+      "ProductName": "Chow Chow",
+      "ImagePath": "chow_chow",
+      "price": 80,
+      "Category": "Vegetables"
+    },
+
+    {
+      "id": 25,
+      "description": "cluster_beans",
+      "ProductName": "Cluster Beans",
+      "ImagePath": "cluster_beans",
+      "price":60,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 26,
+      "description": "coconut",
+      "ProductName": "Coconut",
+      "ImagePath": "coconut",
+      "price": 50,
+      "Category": "Vegetables"
+    },
+    {
+      "id": 27,
+      "description": "flat_beans",
+      "ProductName": "Flat Beans",
+      "ImagePath": "flat_beans",
+      "price": 40,
+      "Category": "Vegetables"
+    }
+  ]
+}
