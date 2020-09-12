@@ -12,7 +12,6 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { toFirstCharUppercase } from "../Healper";
-import mockData from "../mockData";
 import { AddProduct } from '../AddProduct'
 import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
@@ -47,15 +46,18 @@ export const ProductsDashboard = (props) => {
   const [openAddProductDialog, setOpenAddProductDialogState] = useState(false)
   const classes = useStyles();
   const { history } = props;
-  const [dashboardData, setDashboardData] = useState(mockData);
-  const images = require.context('../assets/catagory', true);
+  const [products, setProducts] = useState("");
+  const [productPrice, setProductPrice] = useState(0)
+  const [productName, setproductName] = useState("")
+  const images = require.context('../assets/products', true);
 
   useEffect(() => {
     fetchProducts()
   }, [])
-
+  const categoryName = (props.location.pathname).substring(1)
   const fetchProducts = () => {
-    fetch('https://grocerystorebackend20200828043724.azurewebsites.net/product',)
+    
+    fetch('https://eorganicshop.herokuapp.com/Product?category='+categoryName,)
       .then(result => {
         if (result.status === 404) {
           console.log('result is 404')
@@ -64,6 +66,7 @@ export const ProductsDashboard = (props) => {
         } else {
           result.json().then(body => {
             console.log(body)
+            setProducts(body.slice(0,3))
           });
         }
       })
@@ -72,29 +75,38 @@ export const ProductsDashboard = (props) => {
       });
   }
 
-  const getCard = (catagoryId) => {
-    const { name } = dashboardData[
-      `${catagoryId}`
+  const getCard = (id) => {
+    console.log(id,'kkkkk')
+    const { productName, price, imagePath } = products[
+      `${id}`
     ];
-    const image = images(`./${name}.jpg`);
+    const img =toFirstCharUppercase(imagePath)
+    const image = images(`./${imagePath}.jpg`);
+    // setPrice(price)
 
     return (
 
-      <Grid item xs={6} sm={4} key={catagoryId}>
-        <Card onClick={() => setOpenAddProductDialogState(true)}>
+      <Grid item xs={6} sm={4} key={id}>
+        <Card onClick={()=>handleProductClick(price, productName)}>
           <CardMedia
             className={classes.cardMedia}
             image={image}
             style={{ width: "130px", height: "130px" }}
           />
           <CardContent className={classes.cardContent}>
-            <Typography>{`${toFirstCharUppercase(name)}`}</Typography>
+            <Typography>{`${toFirstCharUppercase(productName)}`}</Typography>
           </CardContent>
         </Card>
       </Grid>
 
     );
   };
+
+  const handleProductClick=(price, productName) =>{
+    setProductPrice(price)
+    setproductName(productName)
+    setOpenAddProductDialogState(true)
+  }
 
   const handleDialogClose = () => {
     setOpenAddProductDialogState(false)
@@ -105,9 +117,9 @@ export const ProductsDashboard = (props) => {
     <div>
       <Header title={(props.location.pathname).substring(1)} />
 
-      {dashboardData ? (
+      {products ? (
         <Grid container spacing={2} className={classes.DashboardContainer}>
-          {Object.keys(dashboardData).map((catagoryId) => getCard(catagoryId))}
+          {Object.keys(products).map((id) => getCard(id))}
         </Grid>
       ) : (
           <CircularProgress />
@@ -117,10 +129,10 @@ export const ProductsDashboard = (props) => {
         <IconButton  className={classes.closeButton} aria-label="close" onClick={handleDialogClose}>
           <CloseIcon />
         </IconButton>
-        Veggies
+        {productName}
         </DialogTitle>
         <DialogContent dividers>
-        <AddProduct open={openAddProductDialog} />
+        <AddProduct open={openAddProductDialog} price={productPrice} />
         </DialogContent>
       </Dialog>
 

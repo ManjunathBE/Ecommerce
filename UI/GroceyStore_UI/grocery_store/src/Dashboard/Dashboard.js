@@ -10,7 +10,6 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { toFirstCharUppercase } from "../Healper";
-import mockData from "../mockData";
 
 const useStyles = makeStyles((theme) => ({
   DashboardContainer: {
@@ -29,7 +28,6 @@ const useStyles = makeStyles((theme) => ({
 export const Dashboard = (props) => {
   const classes = useStyles();
   const { history } = props;
-  const [dashboardData, setDashboardData] = useState(mockData);
   const [category, setCategory] = useState({});
   const images = require.context('../assets/catagory', true);
 
@@ -39,7 +37,7 @@ export const Dashboard = (props) => {
 
   const fetchCategory = () => {
 
-    fetch('https://grocerystorebackend20200828043724.azurewebsites.net/Category', 
+    fetch('https://eorganicshop.herokuapp.com/Category', 
     {
       mode:'cors'})
       .then(result => {
@@ -52,7 +50,6 @@ export const Dashboard = (props) => {
           result.json().then(body => {
             console.log(body,'response kjkjkjk')
             setCategory(body)
-
           });
         }
       })

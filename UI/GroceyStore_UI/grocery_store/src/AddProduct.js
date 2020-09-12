@@ -15,16 +15,19 @@ const useStyles = makeStyles((theme) => ({
 
 
 export const AddProduct = (props) => {
-
+    console.log(props.price,'priceeee')
+    const price = props.price
+    const [units, setUnits] = useState(1)
     const [valueGroups, setValueGroups] = useState({
-        Weight: '500 gm'
+        Weight: '500'
     })
     const [optionGroups, setOptionGroups] = useState({
         Weight: [
-            { value: '250 gm', labeladding: '250 gm' },
-            { value: '500 gm', label: '500 gm' },
-            { value: '750 gm', label: '750 gm' },
-            { value: '1 kg', label: '1kg' },
+            { value: '250', label: '250 gm' },
+            { value: '500', label: '500 gm' },
+            { value: '750', label: '750 gm' },
+            { value: '1000', label: '1kg' },
+            
         ],
     })
 
@@ -32,10 +35,18 @@ export const AddProduct = (props) => {
         setValueGroups({ Weight: value })
     };
 
+    const handleUnitsChange = (event) =>{
+        
+        console.log('herere',units)
+        setUnits(event.target.value)
+    }
+
     const classes = useStyles()
 
     return (
         <div>
+            Price: {(price * (valueGroups.Weight/1000))* units}
+           
             <Grid container spacing={3}>
                 <Grid xs={6}>
                     <Picker id="weightPicker" className={classes.PickerMargin}
@@ -47,9 +58,11 @@ export const AddProduct = (props) => {
                 <Grid xs={6}>
 
                     <TextField className={classes.TextFieldMargin}
+                    onChange={handleUnitsChange}
                         id="outlined-number"
                         label="Units"
                         type="number"
+                        defaultValue="1"
                         InputLabelProps={{
                             shrink: true,
                         }}
