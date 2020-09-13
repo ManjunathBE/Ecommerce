@@ -13,9 +13,18 @@ const UserProfile = (props) => {
   // State variables
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
+  const deleteAddressHandler = (addressItem) => {
+    console.log(addressItem);
+    props.deleteAddress(addressItem);
+  };
+
   //// Address list - This holds the list of addresses already added by the user
   const addressList = props.profile.address.map((addressElement) => (
-    <Address key={addressElement.key} address={addressElement}></Address>
+    <Address
+      deleteAddress={deleteAddressHandler}
+      key={addressElement.key}
+      address={addressElement}
+    ></Address>
   ));
 
   //addAddressHandler - Receives the address added by the user from AddAddress dialog and updates it
@@ -56,39 +65,38 @@ const UserProfile = (props) => {
       </div>
       {/* User Profile Panel */}
       <div className={classes.UserProfile}>
-        <div className={classes.Wrapper}>
-          <div className={classes.Profile}>
-            {/* 1. Profile Image */}
-            <div className={classes.ProfileImage}>
-              <div className={classes.Image}>
-                <img src="/images/User1.jpg" alt="profile_pic" />
-              </div>
-              <div className={classes.Info}>
-                {/* 2. Profile Display Name */}
-                <p className={classes.DisplayName}>{props.profile.userName}</p>
-                {/* 3. Primary Mobile number */}
-                <div className={classes.PrimaryMobile}>
-                  <FaMobileAlt color="white" size="1rem" />
-                  {props.profile.primaryContact}
-                </div>
-                {/* 4. Primary Email */}
-                <div className={classes.PrimaryEmail}>
-                  <HiOutlineMail color="white" size="1rem" />
-                  {props.profile.email}
-                </div>
-              </div>
+        {/* 1. Profile Image */}
+        <div className={classes.ProfileImage}>
+          <img src="/images/User1.jpg" alt="profile_pic" />
+          <div className={classes.Info}>
+            {/* 2. Profile Display Name */}
+            <p className={classes.DisplayName}>{props.profile.userName}</p>
+            {/* 3. Primary Mobile number */}
+            <div className={classes.PrimaryMobile}>
+              <FaMobileAlt size="1rem" />
+              {props.profile.primaryContact}
             </div>
-            {/* 5. Address Panel */}
-            <div className={classes.AddressPanel}>
-              {/* 6. Address Panel Banner */}
-              <div className={classes.AddressBanner}>Address Details</div>
-              {/* 7. Add Address Button */}
-              <button onClick={() => setModalIsOpen(true)}> Add Address</button>
-              <div className={classes.AddressSection}>
-                <div>{addressList}</div>
-              </div>
+            {/* 4. Primary Email */}
+            <div className={classes.PrimaryEmail}>
+              <HiOutlineMail size="1rem" />
+              {props.profile.email}
             </div>
           </div>
+        </div>
+        {/* 5. Address Panel */}
+        <div className={classes.AddressPanel}>
+          {/* 6. Address Panel Banner */}
+          {/* <div className={classes.AddressBanner}>Address Details</div> */}
+          {/* 7. Add Address Button */}
+          <div className={classes.AddressButtonPanel}>
+            <button
+              className={classes.AddAddressButton}
+              onClick={() => setModalIsOpen(true)}
+            >
+              Add Address
+            </button>
+          </div>
+          <div className={classes.AddressSection}>{addressList}</div>
         </div>
       </div>
     </AuxComponent>

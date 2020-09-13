@@ -1,5 +1,13 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
+  background: #fefefe;
+
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -12,37 +20,35 @@ code {
     monospace;
 }
 
-#header{
+#header {
   background-color: lightgray;
 }
 
 #footer {
   position: fixed;
   bottom: 0;
-  height: 2.5rem; 
-  width: 100%; 
+  height: 2.5rem;
+  width: 100%;
   overflow: hidden;
   background-color: black;
-  
 }
 
-.footerLink:hover{
+.footerLink:hover {
   color: green;
   text-decoration: none;
 }
 
-.footerLink{
+.footerLink {
   /* margin-left: 1%; */
   color: white;
 }
-.headerTitle{
+.headerTitle {
   text-align: center;
   font-size: x-large;
 }
 
-
 @media screen and (max-width: 600px) {
-  .footerLink:hover{
+  .footerLink:hover {
     color: green;
     text-decoration: none;
   }

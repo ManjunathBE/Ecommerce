@@ -56,6 +56,21 @@ class ProfileBuilder extends Component {
     }));
   };
 
+  deleteItemHandler = (addressItem) => {
+    console.log('Inside Profile Builder');
+    console.log(addressItem);
+
+    let existingObject = this.state.userObj;
+    const filteredItems = existingObject.address.filter(
+      (item) => item.id !== addressItem.id
+    );
+    existingObject.address = filteredItems;
+
+    this.setState((prevState) => ({
+      userObj: existingObject,
+    }));
+  };
+
   render() {
     ////Return JSX code
     return (
@@ -63,6 +78,7 @@ class ProfileBuilder extends Component {
         <UserProfile
           profile={this.state.userObj}
           addAddress={this.addAddressHandler}
+          deleteAddress={this.deleteItemHandler}
         />
       </AuxComponent>
     );

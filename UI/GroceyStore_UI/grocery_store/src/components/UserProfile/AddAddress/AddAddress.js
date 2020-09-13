@@ -19,7 +19,19 @@ const AddAddr = (props) => {
   };
   ////State variables
   const [addressItem, setAddressItem] = useState(defaultAddressItem);
+  const [recipientNameError, setRecipientNameError] = useState({});
 
+  const formValidation = (e) => {
+    const recipientNameError = {};
+    let isValid = true;
+
+    if (addressItem.recipientName.trim().length == 0) {
+      recipientNameError.shortRecipientName = 'Please enter a name';
+      isValid = false;
+    }
+    setRecipientNameError(recipientNameError);
+    return isValid;
+  };
   return (
     <div>
       <div className={classes.Wrapper}>
@@ -38,6 +50,12 @@ const AddAddr = (props) => {
                 })
               }
             />
+            <br />
+            {Object.keys(recipientNameError).map((key) => {
+              return (
+                <div style={{ color: 'red' }}>{recipientNameError[key]} </div>
+              );
+            })}
           </div>
           <div className={classes.InputField}>
             <label>DoorNo/Apartment</label>
@@ -128,7 +146,12 @@ const AddAddr = (props) => {
               type="submit"
               value="Add Address"
               className={classes.SubmitButton}
-              onClick={() => props.addAddress(addressItem)}
+              onClick={() => {
+                const isValid = formValidation();
+                if (isValid) {
+                  props.addAddress(addressItem);
+                }
+              }}
             />
           </div>
           <div className={classes.InputField}>

@@ -1,15 +1,14 @@
 .Address {
   box-sizing: border-box;
+  width: 300px;
   padding: 20px;
   font-family: 'Montserrat', sans-serif;
-  background: #5a9908;
   margin-top: 5px;
   margin-bottom: 20px;
-
-  height: 220px;
   box-shadow: 0 20px 20px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   text-align: Left;
+  background-color: #fff;
 }
 
 .DisplayAddressUL {
@@ -17,7 +16,7 @@
 }
 
 .RecipientName {
-  color: white;
+  color: 000;
   font-size: 20px;
 }
 
@@ -29,7 +28,6 @@
 .RecipientContact,
 .Landmark {
   margin-top: 5px;
-  color: #fff;
   font-size: 15px;
 }
 
