@@ -18,9 +18,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 export const AddProduct = (props) => {
-    console.log(props,'propsss')
    const {cart, setCart} = useStore();
-    console.log(props.price, 'priceeee')
     const { productName, price,history } = props
     const [units, setUnits] = useState(1)
     const [valueGroups, setValueGroups] = useState({
@@ -51,7 +49,6 @@ export const AddProduct = (props) => {
 
     const addToCart = () => {
         const weight = valueGroups.Weight
-        console.log(productName, ' ', ' ', valueGroups.Weight, units)
         if(cart.length===0) {setCart({productName, weight, units, type:'Add'})}
         cart.forEach(item => {
             if(item.productName===productName){
