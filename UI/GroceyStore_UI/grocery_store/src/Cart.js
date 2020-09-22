@@ -1,17 +1,21 @@
 import React, { Component } from "react"
 import Header from './Header'
+import { useStore } from "./Store";
 
 
-class Cart extends Component {
+export const Cart = (props) => {
+    const {cart, setCart} = useStore();
+    const cartItems = cart.map((cart) =>
+    <li key={cart.itemNumber}>
+        {cart.productName} {cart.weight}
+    </li>)
 
-    render() {
+console.log(cart,'dfsdfsdf')
         return (
             <div>
-                <Header title={(this.props.location.pathname).substring(1)} />
-               You are in cart page
+                
+                <Header title={(props.location.pathname).substring(1)}/>
+                {cartItems}
             </div>
         )
     }
-}
-
-export default Cart

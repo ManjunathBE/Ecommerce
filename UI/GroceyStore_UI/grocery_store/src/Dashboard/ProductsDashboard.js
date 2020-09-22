@@ -132,7 +132,7 @@ export const ProductsDashboard = (props) => {
         {productName}
         </DialogTitle>
         <DialogContent dividers>
-        <AddProduct open={openAddProductDialog} price={productPrice} />
+        <AddProduct open={openAddProductDialog} price={productPrice} productName={productName} />
         </DialogContent>
       </Dialog>
 

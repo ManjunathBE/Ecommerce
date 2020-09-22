@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import Cart from "./Cart";
+import {Cart} from "./Cart";
 import History from "./History";
 import Notification from "./Notification";
 import SelectView from "./SelectView";
