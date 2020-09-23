@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Header from '../Header'
+import {Header} from '../Header'
 import {
   Grid,
   Card,
@@ -81,7 +81,7 @@ export const Dashboard = (props) => {
 
   return (
     <div>
-      <Header title="Organic House" />
+      <Header title="Organic House" history={props.history} />
       {category ? (
         <Grid container spacing={2} className={classes.DashboardContainer}>
           {Object.keys(category).map((catagoryId) => getCard(catagoryId))}

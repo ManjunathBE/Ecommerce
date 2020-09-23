@@ -1,17 +1,15 @@
 import React, { Component } from "react";
-import Header from './Header'
+import {Header} from './Header'
 
-class SelectView extends Component {
-    render() {
+export const SelectView =(props)=>{
+    
 
         return (
             <div>
-                <Header title={(this.props.location.pathname).substring(1)} />
+                <Header title={(props.location.pathname).substring(1)} history={props.history}/>
                 This is SelectView page
             </div>
         )
     }
 
-}
 
-export default SelectView;

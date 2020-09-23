@@ -1,10 +1,10 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import {Cart} from "./Cart";
-import History from "./History";
-import Notification from "./Notification";
-import SelectView from "./SelectView";
-import UserProfile from "./UserProfile";
+import {History} from "./History";
+import {Notification} from "./Notification";
+import {SelectView} from "./SelectView";
+import {UserProfile} from "./UserProfile";
 import { Dashboard } from "./Dashboard/Dashboard";
 import { ProductsDashboard } from "./Dashboard/ProductsDashboard";
 

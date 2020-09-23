@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Header from '../Header'
+import {Header} from '../Header'
 import {
   Grid,
   Card,
@@ -113,9 +113,13 @@ export const ProductsDashboard = (props) => {
     console.log('in close')
   }
 
+  const closeModal=()=>{
+    setOpenAddProductDialogState(false)
+  }
+
   return (
     <div>
-      <Header title={(props.location.pathname).substring(1)} />
+      <Header title={(props.location.pathname).substring(1)} history={props.history} />
 
       {products ? (
         <Grid container spacing={2} className={classes.DashboardContainer}>
@@ -132,7 +136,7 @@ export const ProductsDashboard = (props) => {
         {productName}
         </DialogTitle>
         <DialogContent dividers>
-        <AddProduct open={openAddProductDialog} price={productPrice} productName={productName} />
+        <AddProduct modelOpen={closeModal} price={productPrice} productName={productName} />
         </DialogContent>
       </Dialog>
 

@@ -1,17 +1,11 @@
 import React, { Component } from "react";
-import Header from './Header'
+import {Header} from './Header'
 
-class Notification extends Component {
-
-    render() {
+export const  Notification =(props)=> {
         return (
             <div>
-                <Header title={(this.props.location.pathname).substring(1)} />
+                <Header title={(props.location.pathname).substring(1)} history={props.history}/>
                 This is Notification page
             </div>
         )
     }
-
-}
-
-export default Notification;
