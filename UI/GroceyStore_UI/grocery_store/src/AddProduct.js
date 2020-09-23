@@ -49,16 +49,16 @@ export const AddProduct = (props) => {
 
     const addToCart = () => {
         const weight = valueGroups.Weight
-        if(cart.length===0) {setCart({productName, weight, units, type:'Add'})}
+        if(cart.length===0) {setCart({productName, weight, units, price: (price * (valueGroups.Weight / 1000)) * units, type:'Add'})}
         cart.forEach(item => {
             if(item.productName===productName){
-                setCart({productName, weight, units, type:'Update'})
+                setCart({productName, weight, units, price: (price * (valueGroups.Weight / 1000)) * units, type:'Update'})
             }
             else{
-                setCart({productName, weight, units, type:'Add'})
+                setCart({productName, weight, units, price: (price * (valueGroups.Weight / 1000)) * units, type:'Add'})
             }
         });
-        
+        props.modelOpen("false")
     
     }
 
@@ -67,7 +67,7 @@ export const AddProduct = (props) => {
     return (
         <div>
            
-            Price: {(price * (valueGroups.Weight / 1000)) * units}
+    Price: {(price * (valueGroups.Weight / 1000)) * units} <span>MRP: {price}/kg</span>
 
             <Grid container spacing={3}>
                 <Grid xs={6}>
