@@ -16,12 +16,13 @@ const cartReducer = (state, action) => {
                     itemNumber: itemNumber++,
                     productName: action.productName,
                     weight: action.weight,
-                    units: action.units
+                    units: action.units,
+                    price: action.price
                 }
             ]
         case 'Update':
             return state.map((item)=>(item.productName===action.productName ? 
-                            {...item, weight:action.weight, units:action.units} : item))
+                            {...item, weight:action.weight, units:action.units, price: action.price} : item))
 
         case 'Delete':
             return {
