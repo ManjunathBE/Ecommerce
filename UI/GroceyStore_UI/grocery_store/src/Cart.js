@@ -143,7 +143,7 @@ export const Cart = (props) => {
                                 })}
                             {emptyRows > 0 && (
                                 <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                                    <TableCell colSpan={6} />
+                                    <TableCell colSpan={6}> Cart is empty</TableCell>
                                 </TableRow>
                             )}
                         </TableBody>
