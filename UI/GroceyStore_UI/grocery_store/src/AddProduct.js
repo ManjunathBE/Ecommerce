@@ -30,21 +30,16 @@ export const AddProduct = (props) => {
             { value: '500', label: '500 gm' },
             { value: '750', label: '750 gm' },
             { value: '1000', label: '1kg' },
-
         ],
     })
 
-    //const [finalProductPrice, setFinalProductPrice] = useState((price * (valueGroups.Weight / 1000)) * units)
 
     const handleChange = (name, value) => {
-        setValueGroups({ Weight: value })
-        //setFinalProductPrice((price * (valueGroups.Weight / 1000)) * units)
+        setValueGroups({ Weight: value })       
     };
 
     const handleUnitsChange = (event) => {
-        console.log('herere', units)
-        setUnits(event.target.value)
-        //setFinalProductPrice((price * (valueGroups.Weight / 1000)) * units)
+        setUnits(event.target.value)       
     }
 
     const addToCart = () => {

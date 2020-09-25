@@ -5,7 +5,6 @@ import HomeIcon from '@material-ui/icons/Home';
 
 export const Header = (props) => {
     const { history } = props;
-    console.log('props in header', props)
 
     return (
         <div id="header">

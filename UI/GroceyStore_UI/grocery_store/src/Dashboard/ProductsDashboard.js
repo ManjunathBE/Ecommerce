@@ -76,7 +76,6 @@ export const ProductsDashboard = (props) => {
   }
 
   const getCard = (id) => {
-    console.log(id,'kkkkk')
     const { productName, price, imagePath } = products[
       `${id}`
     ];
@@ -110,7 +109,6 @@ export const ProductsDashboard = (props) => {
 
   const handleDialogClose = () => {
     setOpenAddProductDialogState(false)
-    console.log('in close')
   }
 
   const closeModal=()=>{
