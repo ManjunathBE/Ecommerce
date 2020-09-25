@@ -1,8 +1,13 @@
 import React, { Component } from "react"
 import { Header } from './Header'
 import { useStore } from "./Store";
-import { Table, TableContainer, TableBody, TableCell, TableHead, TableRow, Checkbox, Paper } from '@material-ui/core'
+import { Table, TableContainer, TableBody, TableCell, TableHead, TableRow, Checkbox, Paper, Toolbar, Typography, Tooltip } from '@material-ui/core'
 import { lighten, makeStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
+import clsx from 'clsx';
+import DeleteIcon from '@material-ui/icons/Delete';
+import IconButton from '@material-ui/core/IconButton';
+import FilterListIcon from '@material-ui/icons/FilterList';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -11,7 +16,17 @@ const useStyles = makeStyles((theme) => ({
     paper: {
         width: '100%',
         marginBottom: theme.spacing(2),
-    }
+    }, visuallyHidden: {
+        border: 0,
+        clip: 'rect(0 0 0 0)',
+        height: 1,
+        margin: -1,
+        overflow: 'hidden',
+        padding: 0,
+        position: 'absolute',
+        top: 20,
+        width: 1,
+      },
 }));
 
 const TableHeaders = [
@@ -23,16 +38,15 @@ const TableHeaders = [
 ];
 
 function EnhancedTableHead(props) {
-    const { classes, onSelectAllClick, numSelected, rowCount, onRequestSort } = props;
-
+    const { classes, onSelectAllClick, numSelected, cartCount } = props;
 
     return (
         <TableHead>
             <TableRow>
                 <TableCell padding="checkbox">
                     <Checkbox
-                        indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={rowCount > 0 && numSelected === rowCount}
+                        indeterminate={numSelected > 0 && numSelected < cartCount}
+                        checked={cartCount > 0 && numSelected === cartCount}
                         onChange={onSelectAllClick}
                         inputProps={{ 'aria-label': 'select all desserts' }}
                     />
@@ -52,6 +66,70 @@ function EnhancedTableHead(props) {
         </TableHead>
     );
 }
+
+
+EnhancedTableHead.propTypes = {
+    classes: PropTypes.object.isRequired,
+    numSelected: PropTypes.number.isRequired,
+    onRequestSort: PropTypes.func.isRequired,
+    onSelectAllClick: PropTypes.func.isRequired,
+    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+    orderBy: PropTypes.string.isRequired,
+    cartCount: PropTypes.number.isRequired,
+  };
+  
+  const useToolbarStyles = makeStyles((theme) => ({
+    root: {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(1),
+    },
+    highlight:
+      theme.palette.type === 'light'
+        ? {
+            color: theme.palette.secondary.main,
+            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+          }
+        : {
+            color: theme.palette.text.primary,
+            backgroundColor: theme.palette.secondary.dark,
+          },
+    title: {
+      flex: '1 1 100%',
+    },
+  }));
+  
+  const EnhancedTableToolbar = (props) => {
+    const classes = useToolbarStyles();
+    const { numSelected } = props;
+  
+    return (
+      <Toolbar
+        className={clsx(classes.root, {
+          [classes.highlight]: numSelected > 0,
+        })}
+      >
+        {numSelected > 0 ? (
+          <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
+            {numSelected} selected
+          </Typography>
+        ):"" }
+  
+        {numSelected > 0 ? (
+          <Tooltip title="Delete">
+            <IconButton aria-label="delete">
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        ) :""}
+      </Toolbar>
+    );
+  };
+  
+  EnhancedTableToolbar.propTypes = {
+    numSelected: PropTypes.number.isRequired,
+  };
+
+
 export const Cart = (props) => {
     const classes = useStyles();
     const [order, setOrder] = React.useState('asc');
@@ -70,6 +148,16 @@ export const Cart = (props) => {
             </li>))
     }
 
+    const handleSelectAllClick = (event) => {
+        debugger
+        if (event.target.checked) {
+          const newSelecteds = cart.map((n) => n.productName);
+          setSelected(newSelecteds);
+          return;
+        }
+        setSelected([]);
+      };
+    
     const handleClick = (event, name) => {
         const selectedIndex = selected.indexOf(name);
         let newSelected = [];
@@ -90,9 +178,7 @@ export const Cart = (props) => {
         setSelected(newSelected);
       };
     
-    const handleSelectAllClick = () => {
-
-    }
+      
     const isSelected = (name) => selected.indexOf(name) !== -1;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, cart.length - page * rowsPerPage);
     console.log(cart, 'dfsdfsdf')
@@ -102,6 +188,7 @@ export const Cart = (props) => {
             
 
             <Paper className={classes.paper}>
+            <EnhancedTableToolbar numSelected={selected.length} />
                 <TableContainer>
                     <Table>
                         <EnhancedTableHead
