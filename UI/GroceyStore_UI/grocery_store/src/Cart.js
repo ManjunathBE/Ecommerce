@@ -139,7 +139,6 @@ export const Cart = (props) => {
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const { cart, setCart } = useStore();
-    console.log(cart, 'cart in cart')
 
     const CartItems = () => {
         return (cart.map((cart) =>
@@ -180,8 +179,7 @@ export const Cart = (props) => {
     
       
     const isSelected = (name) => selected.indexOf(name) !== -1;
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, cart.length - page * rowsPerPage);
-    console.log(cart, 'dfsdfsdf')
+    const emptyRows = cart.length
     return (
         <div>
             <Header title={(props.location.pathname).substring(1)} history={props.history} />
@@ -190,7 +188,7 @@ export const Cart = (props) => {
             <Paper className={classes.paper}>
             <EnhancedTableToolbar numSelected={selected.length} />
                 <TableContainer>
-                    <Table>
+               { emptyRows? <Table>
                         <EnhancedTableHead
                             classes={classes}
                             numSelected={selected.length}
@@ -228,13 +226,9 @@ export const Cart = (props) => {
                                         </TableRow>
                                     );
                                 })}
-                            {emptyRows > 0 && (
-                                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                                    <TableCell colSpan={6}> Cart is empty</TableCell>
-                                </TableRow>
-                            )}
+
                         </TableBody>
-                    </Table>
+                    </Table> : "Cart is empty"}
                 </TableContainer>
 
 
