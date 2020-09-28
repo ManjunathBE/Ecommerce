@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
-import FilterListIcon from '@material-ui/icons/FilterList';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -71,11 +70,8 @@ function EnhancedTableHead(props) {
 EnhancedTableHead.propTypes = {
     classes: PropTypes.object.isRequired,
     numSelected: PropTypes.number.isRequired,
-    onRequestSort: PropTypes.func.isRequired,
     onSelectAllClick: PropTypes.func.isRequired,
-    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-    orderBy: PropTypes.string.isRequired,
-    cartCount: PropTypes.number.isRequired,
+    cartCount: PropTypes.number.isRequired
   };
   
   const useToolbarStyles = makeStyles((theme) => ({
@@ -132,25 +128,14 @@ EnhancedTableHead.propTypes = {
 
 export const Cart = (props) => {
     const classes = useStyles();
-    const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('calories');
     const [selected, setSelected] = React.useState([]);
-    const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const { cart, setCart } = useStore();
-
-    const CartItems = () => {
-        return (cart.map((cart) =>
-            <li key={cart.itemNumber}>
-                {cart.productName} {cart.weight}gms {cart.units} {cart.price}
-            </li>))
-    }
+    const { cartStore } = useStore();
 
     const handleSelectAllClick = (event) => {
         debugger
         if (event.target.checked) {
-          const newSelecteds = cart.map((n) => n.productName);
+          const newSelecteds = cartStore.cart.map((n) => n.productName);
           setSelected(newSelecteds);
           return;
         }
@@ -179,7 +164,7 @@ export const Cart = (props) => {
     
       
     const isSelected = (name) => selected.indexOf(name) !== -1;
-    const emptyRows = cart.length
+    const emptyRows = cartStore.cart
     return (
         <div>
             <Header title={(props.location.pathname).substring(1)} history={props.history} />
@@ -193,10 +178,10 @@ export const Cart = (props) => {
                             classes={classes}
                             numSelected={selected.length}
                             onSelectAllClick={handleSelectAllClick}
-                            cartCount={cart.length}
+                            cartCount={cartStore.cart.length}
                         />
                         <TableBody>
-                            {cart.map((cart, index) => {
+                            {cartStore.cart.map((cart, index) => {
                                     const isItemSelected = isSelected(cart.productName);
                                     const labelId = `enhanced-table-checkbox-${index}`;
 

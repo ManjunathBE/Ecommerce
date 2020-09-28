@@ -1,6 +1,6 @@
 import React, { useState, useReducer } from "react"
 import Picker from 'react-scrollable-picker';
-import { TextField, Grid } from '@material-ui/core';
+import { TextField, Grid, AccordionActions } from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button"
 import { useStore } from "./Store";
@@ -18,8 +18,8 @@ const useStyles = makeStyles((theme) => ({
 
 
 export const AddProduct = (props) => {
-   const {cart, setCart} = useStore();
-    const { productName, price,history } = props
+    const { cartStore, setCartStore } = useStore();
+    const { productName, price, history } = props
     const [units, setUnits] = useState(1)
     const [valueGroups, setValueGroups] = useState({
         Weight: '500'
@@ -35,34 +35,42 @@ export const AddProduct = (props) => {
 
 
     const handleChange = (name, value) => {
-        setValueGroups({ Weight: value })       
+        setValueGroups({ Weight: value })
     };
 
     const handleUnitsChange = (event) => {
-        setUnits(event.target.value)       
+        setUnits(event.target.value)
     }
 
     const addToCart = () => {
+        var isUpdate = false
         const weight = valueGroups.Weight
-        if(cart.length===0) {setCart({productName, weight, units, price: (price * (valueGroups.Weight / 1000)) * units, type:'Add'})}
-        cart.forEach(item => {
-            if(item.productName===productName){
-                setCart({productName, weight, units, price: (price * (valueGroups.Weight / 1000)) * units, type:'Update'})
+
+        cartStore.cart.forEach(item => {
+            debugger
+            if (item.productName === productName) {
+                isUpdate = true
             }
-            else{
-                setCart({productName, weight, units, price: (price * (valueGroups.Weight / 1000)) * units, type:'Add'})
-            }
+
         });
-        props.modelOpen("false")
-    
+
+        if (isUpdate) {
+            setCartStore({ productName, weight, units, price: (price * (valueGroups.Weight / 1000)) * units, type: 'Update' })
+            props.modelOpen("false")
+        }
+        else {
+            setCartStore({ productName, weight, units, price: (price * (valueGroups.Weight / 1000)) * units, type: 'Add' })
+            props.modelOpen("false")
+        }
+
     }
 
     const classes = useStyles()
 
     return (
         <div>
-           
-    Price: {(price * (valueGroups.Weight / 1000)) * units} <span>MRP: {price}/kg</span>
+
+            Price: {(price * (valueGroups.Weight / 1000)) * units} <span>MRP: {price}/kg</span>
 
             <Grid container spacing={3}>
                 <Grid xs={6}>
