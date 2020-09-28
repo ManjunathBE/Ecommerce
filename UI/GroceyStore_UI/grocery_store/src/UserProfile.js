@@ -1,19 +1,14 @@
 import React, { Component } from "react"
-import Header from './Header'
+import {Header} from './Header'
 
 
-class UserProfile extends Component {
-
-    render() {
-
+export const UserProfile =(props)=> {
 
         return (
             <div>
-                <Header title={(this.props.location.pathname).substring(1)} />
+                <Header title={(props.location.pathname).substring(1)} history={props.history}/>
                You are in User Profile page
             </div>
         )
     }
-}
 
-export default UserProfile

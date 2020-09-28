@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Header from '../Header'
+import {Header} from '../Header'
 import {
   Grid,
   Card,
@@ -16,6 +16,7 @@ import { AddProduct } from '../AddProduct'
 import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import { useStore } from "../Store";
 
 const useStyles = makeStyles((theme) => ({
   DashboardContainer: {
@@ -50,6 +51,7 @@ export const ProductsDashboard = (props) => {
   const [productPrice, setProductPrice] = useState(0)
   const [productName, setproductName] = useState("")
   const images = require.context('../assets/products', true);
+  const {viewStore} = useStore();
 
   useEffect(() => {
     fetchProducts()
@@ -75,15 +77,11 @@ export const ProductsDashboard = (props) => {
       });
   }
 
-  const getCard = (id) => {
-    console.log(id,'kkkkk')
+  const getGridCard = (id) => {
     const { productName, price, imagePath } = products[
       `${id}`
     ];
-    const img =toFirstCharUppercase(imagePath)
     const image = images(`./${imagePath}.jpg`);
-    // setPrice(price)
-
     return (
 
       <Grid item xs={6} sm={4} key={id}>
@@ -102,6 +100,51 @@ export const ProductsDashboard = (props) => {
     );
   };
 
+  const getListCard = (id) => {
+    const { productName, price, imagePath } = products[
+      `${id}`
+    ];
+    const image = images(`./${imagePath}.jpg`);
+    return (
+      <Card onClick={()=>handleProductClick(price, productName)}>
+        <Grid container key={id}>
+          <Grid item xs={4} >
+            <CardMedia
+              className={classes.cardMedia}
+              image={image}
+              style={{ width: "130px", height: "130px" }}
+            />
+          </Grid>
+          <Grid item xs={8}>
+            <CardContent className={classes.cardContent}>
+              <Typography>{`${toFirstCharUppercase(productName)}`}</Typography>
+            </CardContent>
+          </Grid>
+        </Grid>
+      </Card>
+
+    );
+
+  }
+
+  const SetView = () => {
+    console.log(viewStore,'fdfdfd')
+    if(viewStore.view==="List"){
+      console.log('in if')
+        return (<div>
+        {Object.keys(products).map((id) => getListCard(id))}
+      </div>)
+    }
+     else {
+      return (<Grid container className={classes.DashboardContainer}>
+        {Object.keys(products).map((id) => getGridCard(id))}
+      </Grid>)
+    }
+  }
+
+
+
+
   const handleProductClick=(price, productName) =>{
     setProductPrice(price)
     setproductName(productName)
@@ -110,17 +153,18 @@ export const ProductsDashboard = (props) => {
 
   const handleDialogClose = () => {
     setOpenAddProductDialogState(false)
-    console.log('in close')
+  }
+
+  const closeModal=()=>{
+    setOpenAddProductDialogState(false)
   }
 
   return (
     <div>
-      <Header title={(props.location.pathname).substring(1)} />
+      <Header title={(props.location.pathname).substring(1)} history={props.history} />
 
       {products ? (
-        <Grid container spacing={2} className={classes.DashboardContainer}>
-          {Object.keys(products).map((id) => getCard(id))}
-        </Grid>
+        SetView()
       ) : (
           <CircularProgress />
         )}
@@ -132,7 +176,7 @@ export const ProductsDashboard = (props) => {
         {productName}
         </DialogTitle>
         <DialogContent dividers>
-        <AddProduct open={openAddProductDialog} price={productPrice} productName={productName} />
+        <AddProduct modelOpen={closeModal} price={productPrice} productName={productName} />
         </DialogContent>
       </Dialog>
 

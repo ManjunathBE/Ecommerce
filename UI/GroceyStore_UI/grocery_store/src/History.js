@@ -1,17 +1,14 @@
 import React, { Component } from "react";
-import Header from './Header'
+import {Header} from './Header'
 
-class History extends Component {
+export const History =(props)=> {
 
-    render() {
+
         return (
             <div>
-                <Header title={(this.props.location.pathname).substring(1)} />
+                <Header title={(props.location.pathname).substring(1)} history={props.history} />
                 This is History page
             </div>
         )
     }
 
-}
-
-export default History;
