@@ -132,12 +132,12 @@ export const ProductsDashboard = (props) => {
     if(viewStore.view==="List"){
       console.log('in if')
         return (<div>
-        {Object.keys(products).map((id) => getGridCard(id))}
+        {Object.keys(products).map((id) => getListCard(id))}
       </div>)
     }
      else {
-      return (<Grid container spacing={2} className={classes.DashboardContainer}>
-        {Object.keys(products).map((id) => getListCard(id))}
+      return (<Grid container className={classes.DashboardContainer}>
+        {Object.keys(products).map((id) => getGridCard(id))}
       </Grid>)
     }
   }
