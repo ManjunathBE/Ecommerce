@@ -28,8 +28,8 @@ const cartReducer = (state = initialState, action) => {
                         
 
         case 'Delete':
-            return {
-                // todo
+            return { 
+                ...state, cart:state.cart.filter(item=>item.productName!==action.item)             
             }
         default:
             return initialState
