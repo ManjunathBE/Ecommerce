@@ -19,9 +19,16 @@ namespace GroceryStore_Backend.Repository
         string json = System.IO.File.ReadAllText("database.json");
         public async Task<List<Category>> GetCategorys()
         {
-            return _groceryStoreDbContext.Category.ToList();
+            var jsonObj = JObject.Parse(json);
+            List<Category> CategoryList = new List<Category>();
+            JArray CategoryArray = jsonObj.GetValue("category") as JArray;
 
-           
+            foreach (var obj in CategoryArray)
+            {
+                Category category = obj.ToObject<Category>();
+                CategoryList.Add(category);
+            }
+            return CategoryList;
         }
 
         public async Task<List<Product>> GetProductsAsync(string category)
