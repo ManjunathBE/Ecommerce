@@ -64,6 +64,7 @@ const columns = [
   
     return (
       <Paper className={classes.root}>
+      <Header title={(props.location.pathname).substring(1)} history={props.history} />
         <TableContainer className={classes.container}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>

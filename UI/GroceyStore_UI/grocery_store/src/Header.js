@@ -1,18 +1,25 @@
 import React, { Component } from "react"
+import { Grid } from "@material-ui/core"
+import HomeIcon from '@material-ui/icons/Home';
 
 
-class Header extends Component {
+export const Header = (props) => {
+    const { history } = props;
 
-
-    render() {
-        return (
-            <div id="header">
-                <p className="headerTitle">
-                    {this.props.title}
-                </p>
-            </div>
-        )
-    }
+    return (
+        <div id="header">
+            <Grid container>
+                <Grid xs={3}>
+                    <HomeIcon onClick={() => history.push('/')} />
+                </Grid>
+                <Grid xs={6}>
+                    <p className="headerTitle">
+                        {props.title}
+                    </p>
+                </Grid>
+                <Grid xs={3}>
+                </Grid>
+            </Grid>
+        </div>
+    )
 }
-
-export default Header
