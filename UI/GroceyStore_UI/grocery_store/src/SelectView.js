@@ -4,9 +4,21 @@ import ListIcon from '@material-ui/icons/List';
 import AppsIcon from '@material-ui/icons/Apps';
 import { Grid } from "@material-ui/core";
 import { useStore } from "./Store";
+import { makeStyles } from "@material-ui/core/styles";
 
+const useStyles = makeStyles((theme) => ({
+    gridPosition: {
+      paddingTop: "10%",
+      paddingLeft: "10%",
+      paddingRight: "10%",
+    }
+  }));
 
 export const SelectView = (props) => {
+    
+
+      const classes = useStyles();
+
     const {viewStore, setviewStore} = useStore();
 
     const handleListView = () =>{
@@ -22,10 +34,11 @@ export const SelectView = (props) => {
 
 
     return (
-        <div>
+      <React.Fragment>
             <Header title={(props.location.pathname).substring(1)} history={props.history} />
+            <div className="text-center">
                 Select from the options below
-            <Grid container  spacing={3}>
+            <Grid container  spacing={3} className={classes.gridPosition}>
                 <Grid  xs={6} onClick={handleListView}>
                     <ListIcon  /> List View
                </Grid>
@@ -34,6 +47,7 @@ export const SelectView = (props) => {
                </Grid>
             </Grid>
         </div>
+        </React.Fragment>
     )
 }
 
