@@ -85,7 +85,7 @@
     {
       "id": 1,
       "description": "amla",
-      "ProductName": "amla",
+      "ProductName": "Amla",
       "ImagePath": "amla",
       "price": 90,
       "Category": "Vegetables"
@@ -93,7 +93,7 @@
     {
       "id": 2,
       "description": "arbi(sham_root)",
-      "ProductName": "arbi",
+      "ProductName": "Arbi",
       "ImagePath": "arbi",
       "price":40,
       "Category": "Vegetables"
@@ -101,7 +101,7 @@
     {
       "id": 3,
       "description": "baby_corn",
-      "ProductName": "baby corn",
+      "ProductName": "Baby Corn",
       "ImagePath": "baby_corn",
       "price":100,
       "Category": "Vegetables"
@@ -109,7 +109,7 @@
     {
       "id": 4,
       "description": "baby_jackfruit",
-      "ProductName": "baby jackfruit",
+      "ProductName": "Baby Jackfruit",
       "ImagePath": ".baby_jackfruit",
       "price": 200,
       "Category": "Vegetables"
@@ -117,7 +117,7 @@
     {
       "id": 5,
       "description": "banana_flower",
-      "ProductName": "banana flower",
+      "ProductName": "Banana Flower",
       "ImagePath": "banana_flower",
       "price": 175,
       "Category": "Vegetables"
@@ -125,7 +125,7 @@
     {
       "id": 6,
       "description": "banana_stem",
-      "ProductName": "banana stem",
+      "ProductName": "Banana Stem",
       "ImagePath": "banana_stem",
       "price": 100,
       "Category": "Vegetables"
@@ -133,7 +133,7 @@
     {
       "id": 7,
       "description": "beans_long",
-      "ProductName": "beans long",
+      "ProductName": "Beans Long",
       "ImagePath": "beans_long",
       "price":80,
       "Category": "Vegetables"
@@ -141,7 +141,7 @@
     {
       "id": 8,
       "description": "beans_natti",
-      "ProductName": "beans natti",
+      "ProductName": "Beans Natti",
       "ImagePath": "beans_natti",
       "price": 95,
       "Category": "Vegetables"
@@ -149,7 +149,7 @@
     {
       "id": 9,
       "description": "beans_ring",
-      "ProductName": "beans ring",
+      "ProductName": "Beans Ring",
       "ImagePath": "beans_ring",
       "price": 75,
       "Category": "Vegetables"
@@ -157,7 +157,7 @@
     {
       "id": 10,
       "description": "beetroot",
-      "ProductName": "beetroot",
+      "ProductName": "Beetroot",
       "ImagePath": "beetroot",
       "price":70,
       "Category": "Vegetables"
@@ -165,7 +165,7 @@
     {
       "id": 11,
       "description": "bitter_gourd",
-      "ProductName": "bitter gourd",
+      "ProductName": "Bitter Gourd",
       "ImagePath": "bitter_gourd",
       "price": 60,
       "Category": "Vegetables"
@@ -173,7 +173,7 @@
     {
       "id": 12,
       "description": "bottle_brinjal",
-      "ProductName": "bottle brinjal",
+      "ProductName": "Bottle Brinjal",
       "ImagePath": "bottle_brinjal",
       "price": 50,
       "Category": "Vegetables"
@@ -181,7 +181,7 @@
     {
       "id": 13,
       "description": "bottle_gourd",
-      "ProductName": "bottle gourd",
+      "ProductName": "Bottle Gourd",
       "ImagePath": "bottle_gourd",
       "price": 65,
       "Category": "Vegetables"
@@ -189,7 +189,7 @@
     {
       "id": 14,
       "description": "brinjal_green",
-      "ProductName": "brinjal green",
+      "ProductName": "Brinjal Green",
       "ImagePath": "brinjal_green",
       "price":40,
       "Category": "Vegetables"
@@ -197,7 +197,7 @@
     {
       "id": 15,
       "description": "brinjal_round",
-      "ProductName": "brinjal round",
+      "ProductName": "Brinjal Round",
       "ImagePath": "brinjal_round",
       "price": 30,
       "Category": "Vegetables"
@@ -205,7 +205,7 @@
     {
       "id": 16,
       "description": "broccoli",
-      "ProductName": "broccoli",
+      "ProductName": "Broccoli",
       "ImagePath": "broccoli",
       "price": 120,
       "Category": "Vegetables"
@@ -213,7 +213,7 @@
     {
       "id": 17,
       "description": "cabbage",
-      "ProductName": "cabbage",
+      "ProductName": "Cabbage",
       "ImagePath": "cabbage",
       "price": 80,
       "Category": "Vegetables"
@@ -221,7 +221,7 @@
     {
       "id": 18,
       "description": "capsicum_green",
-      "ProductName": "capsicum green",
+      "ProductName": "Capsicum Green",
       "ImagePath": "capsicum_green",
       "price":50,
       "Category": "Vegetables"
@@ -229,7 +229,7 @@
     {
       "id": 19,
       "description": "capsicum_red",
-      "ProductName": "capsicum red",
+      "ProductName": "Capsicum Red",
       "ImagePath": "capsicum_red",
       "price":90,
       "Category": "Vegetables"
@@ -237,7 +237,7 @@
     {
       "id": 20,
       "description": "capsicum_yellow",
-      "ProductName": "capsicum yellow",
+      "ProductName": "Capsicum Yellow",
       "ImagePath": "capsicum_yellow",
       "price":100,
       "Category": "Vegetables"
@@ -245,7 +245,7 @@
     {
       "id": 21,
       "description": "carrot_ooty",
-      "ProductName": "carrot ooty",
+      "ProductName": "Carrot Ooty",
       "ImagePath": "carrot_ooty",
       "price": 120,
       "Category": "Vegetables"
@@ -253,7 +253,7 @@
     {
       "id": 22,
       "description": "cauli_flower",
-      "ProductName": "cauliflower",
+      "ProductName": "Cauliflower",
       "ImagePath": "cauli_flower",
       "price": 80,
       "Category": "Vegetables"
@@ -261,7 +261,7 @@
     {
       "id": 23,
       "description": "chilli_green",
-      "ProductName": "chilli green",
+      "ProductName": "Chilli Green",
       "ImagePath": "chilli_green",
       "price":40,
       "Category": "Vegetables"
@@ -269,7 +269,7 @@
     {
       "id": 24,
       "description": "chow_chow",
-      "ProductName": "chow chow",
+      "ProductName": "Chow Chow",
       "ImagePath": "chow_chow",
       "price": 80,
       "Category": "Vegetables"
@@ -278,7 +278,7 @@
     {
       "id": 25,
       "description": "cluster_beans",
-      "ProductName": "cluster beans",
+      "ProductName": "Cluster Beans",
       "ImagePath": "cluster_beans",
       "price":60,
       "Category": "Vegetables"
@@ -286,7 +286,7 @@
     {
       "id": 26,
       "description": "coconut",
-      "ProductName": "coconut",
+      "ProductName": "Coconut",
       "ImagePath": "coconut",
       "price": 50,
       "Category": "Vegetables"
@@ -294,7 +294,7 @@
     {
       "id": 27,
       "description": "flat_beans",
-      "ProductName": "flat beans",
+      "ProductName": "Flat Beans",
       "ImagePath": "flat_beans",
       "price": 40,
       "Category": "Vegetables"
