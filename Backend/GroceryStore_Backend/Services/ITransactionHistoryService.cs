@@ -7,5 +7,6 @@ namespace GroceryStore_Backend.Services
     public interface ITransactionHistoryService
     {
         public Task<List<TransactionHistory>> GetTransactionsasync(int UserId);
+        Task AddTransactionsasync(TransactionHistory transaction);
     }
 }
