@@ -31,7 +31,8 @@ namespace Ecommerce_Backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<GroceryStoreDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:GroceryStoreDB"]));
+            //services.AddDbContext<GroceryStoreDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:GroceryStoreDB"]));
+            services.AddDbContext<GroceryStoreDbContext>(opts => opts.UseInMemoryDatabase("GroceryStoreDB"));
             services.AddControllers();
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<ICategoryService, CategoryService>();
