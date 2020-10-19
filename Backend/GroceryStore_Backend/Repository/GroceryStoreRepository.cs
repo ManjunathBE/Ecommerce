@@ -1,5 +1,6 @@
 ﻿using GroceryStore_Backend.Models;
 using GroceryStore_Backend.Repository.Database;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -72,10 +73,44 @@ namespace GroceryStore_Backend.Repository
             return null;
         }
  
-        public async Task<List<TransactionHistory>> GetTransactionHistory(int UserId)
+        public async Task<List<TransactionHistory>> GetTransactionHistory(int userId)
         {
-            return _groceryStoreDbContext.TransactionHistory.Where( e => e.UserId == UserId).ToList();
+           // var x = _groceryStoreDbContext.OrderedProducts.Count();
+            return _groceryStoreDbContext.TransactionHistory.Where(tran => tran.UserId == userId).Include(d => d.OrderedProducts).ToList();
+
+            //var jsonObj = JObject.Parse(json);
+            //List<TransactionHistory> transactions = new List<TransactionHistory>();
+            //JArray TransactionArray = jsonObj.GetValue("Transaction") as JArray;
+
+            //foreach (var obj in TransactionArray)
+            //{
+            //    TransactionHistory transaction = obj.ToObject<TransactionHistory>();
+            //    if (transaction.UserId == userId)
+            //    {
+            //        transactions.Add(transaction);
+            //    }
+            //}
+            //return transactions;
+
+            // return _groceryStoreDbContext.TransactionHistory.Where( e => e.UserId == UserId).ToList();
         }
- 
+
+        public async Task AddTrnsaction(TransactionHistory transaction)
+        {
+            //_groceryStoreDbContext.Add(transaction.OrderedProducts);
+
+             _groceryStoreDbContext.Add(new TransactionHistory()
+             {
+                 OrderedProducts = transaction.OrderedProducts,
+                 Status = transaction.Status,
+                 TransactionDateTime = DateTime.Now,
+                 UserId = transaction.UserId
+                 
+             }
+                 );
+             _groceryStoreDbContext.SaveChanges();
+            
+
+        }
     }
 }

@@ -22,14 +22,14 @@ export const AddProduct = (props) => {
     const { productName, price, history } = props
     const [units, setUnits] = useState(1)
     const [valueGroups, setValueGroups] = useState({
-        Weight: '500'
+        Weight: 500
     })
     const [optionGroups, setOptionGroups] = useState({
         Weight: [
-            { value: '250', label: '250 gm' },
-            { value: '500', label: '500 gm' },
-            { value: '750', label: '750 gm' },
-            { value: '1000', label: '1kg' },
+            { value: 250, label: '250 gm' },
+            { value: 500, label: '500 gm' },
+            { value: 750, label: '750 gm' },
+            { value: 1000, label: '1kg' },
         ],
     })
 
@@ -69,8 +69,10 @@ export const AddProduct = (props) => {
 
     return (
         <div>
-
-            Price: {(price * (valueGroups.Weight / 1000)) * units} <span>MRP: {price}/kg</span>
+<div>
+           <span> Price: {(price * (valueGroups.Weight / 1000)) * units}</span> 
+           <span className="positionRight">MRP: {price}/kg</span>
+           </div>
 
             <Grid container spacing={3}>
                 <Grid xs={6}>
@@ -94,7 +96,9 @@ export const AddProduct = (props) => {
                     />
                 </Grid>
             </Grid  >
+            <div className="text-center">
             <Button onClick={addToCart}>Add to Cart</Button>
+            </div>
         </div>
     )
 

@@ -17,5 +17,6 @@ namespace GroceryStore_Backend.Repository
         Task<User> GetUser(int userId);
         
         Task<List<TransactionHistory>> GetTransactionHistory(int UserId);
+        Task AddTrnsaction(TransactionHistory transaction);
     }
 }
