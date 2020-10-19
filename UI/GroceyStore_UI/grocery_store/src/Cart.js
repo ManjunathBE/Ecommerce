@@ -8,6 +8,8 @@ import clsx from 'clsx';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 import { Delete } from "@material-ui/icons";
+import Recaptcha from "react-recaptcha";
+import Button from "@material-ui/core/Button"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -165,6 +167,28 @@ export const Cart = (props) => {
     setSelected(newSelected);
   };
 
+  const RecaptchaCallback = () => {
+
+  }
+
+  const handlePlaceOrder = () => {
+
+    const payload = {
+      UserId: 1,
+      Status: 'Ordered',
+      // TransactionDateTime : Date.now(), 
+      orderedProducts: cartStore.cart
+    }
+    console.log(payload, 'ordered products')
+    fetch('https://localhost:44360/transaction',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body:JSON.stringify(payload)
+    })
+
+  }
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
   const emptyRows = cartStore.cart
@@ -179,7 +203,7 @@ export const Cart = (props) => {
       <Paper className={classes.paper}>
         <EnhancedTableToolbar numSelected={selected.length} selectedItems={selected} />
         <TableContainer>
-          {emptyRows.length ? <Table>
+          {emptyRows.length ? <React.Fragment><Table>
             <EnhancedTableHead
               classes={classes}
               numSelected={selected.length}
@@ -219,14 +243,20 @@ export const Cart = (props) => {
                 );
               })}
               <TableRow>
-                <TableCell colspan={5}align="right">total price:  {totalPrice} <br/>
+                <TableCell colspan={5} align="right">total price:  {totalPrice} <br />
                               total items :{cartStore.cart.length}</TableCell>
 
               </TableRow>
             </TableBody>
-          </Table> : "Cart is empty"}
+          </Table>
+            <Recaptcha
+              sitekey="6Le-eNQZAAAAAOIanBY7tfhCXaMEQlg3oXxJo7CG"
+              render="explicit"
+              onloadCallback={RecaptchaCallback}
+            />
+          </React.Fragment> : "Cart is empty"}
         </TableContainer>
-
+        <Button onClick={handlePlaceOrder}>Place Order</Button>
 
       </Paper>
 
