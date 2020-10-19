@@ -39,6 +39,12 @@ code {
   text-align: center;
   font-size: x-large;
 }
+.positionRight{
+  float: right;
+}
+.positionLeft{
+  float: left;
+}
 
 
 @media screen and (max-width: 600px) {

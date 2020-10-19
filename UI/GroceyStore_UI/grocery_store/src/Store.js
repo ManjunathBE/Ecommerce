@@ -6,7 +6,7 @@ const StoreContext = createContext();
 const initialState = { view: "", cart:[] };
 
 const cartReducer = (state = initialState, action) => {
-    debugger
+    
     var itemNumber = 1
     console.log(action, 'action in store')
 
@@ -15,7 +15,6 @@ const cartReducer = (state = initialState, action) => {
             console.log('in store add')
             return {
                 ...state,cart: [...state.cart,{
-                    itemNumber: itemNumber++,
                     productName: action.productName,
                     weight: action.weight,
                     units: action.units,
