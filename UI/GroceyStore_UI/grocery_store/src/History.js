@@ -9,8 +9,9 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import {Dialog, DialogContent, DialogTitle} from '@material-ui/core';
+import { Dialog, DialogContent, DialogTitle } from '@material-ui/core';
 import Button from "@material-ui/core/Button"
+import { useStore } from "./Store";
 
 
 const columns = [
@@ -25,23 +26,6 @@ const columns = [
   },
 ];
 
-function createData(date, time, status) {
-  return { date, time, status };
-}
-
-const rows = [
-  createData('07-07-2020', '1:00 PM', 'Delivered'),
-  createData('09-07-2020', '2:00 PM', 'Our for Delivery'),
-  createData('11-07-2020', '3:00 PM', 'Delivered'),
-  createData('13-07-2020', '4:00 PM', 'Delivered'),
-  createData('15-07-2020', '5:00 PM', 'Delivered'),
-  createData('17-07-2020', '6:00 PM', 'Our for Delivery'),
-  createData('19-07-2020', '7:00 PM', 'Delivered'),
-  createData('21-07-2020', '8:00 PM', 'Delivered'),
-  createData('22-07-2020', '9:00 PM', 'Delivered'),
-
-];
-
 const useStyles = makeStyles({
   root: {
     width: '100%',
@@ -52,15 +36,17 @@ const useStyles = makeStyles({
 });
 
 
- 
+
 export function History(props) {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [transactions, setTransactions] = React.useState([]);
   const userId = 1
-  const [Dialogview, setDialogView]=React.useState(false)
-  const [selectedRow, setSelectedRow]=React.useState([])
+  const [Dialogview, setDialogView] = React.useState(false)
+  const [selectedRow, setSelectedRow] = React.useState([])
+  const { cartStore, setCartStore } = useStore();
+  const { history } = props;
 
 
   useEffect(() => {
@@ -87,12 +73,12 @@ export function History(props) {
       });
   }
 
-const handleClick=(tran)=>{
-  console.log('in method')
-  setSelectedRow(tran)
-setDialogView(true)
-}
-  
+  const handleClick = (tran) => {
+    console.log('in method')
+    setSelectedRow(tran)
+    setDialogView(true)
+  }
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -103,65 +89,86 @@ setDialogView(true)
     setPage(0);
   };
 
-  const HistoricOrder =(props)=>  {
+  const HistoricOrder = (props) => {
     var tran = props.transaction
-    const Headers =[
+    var orderedProducts = tran.orderedProducts
+    const Headers = [
       { id: 'Product', numeric: false, disablePadding: true, label: 'Product Name' },
       { id: 'Price', numeric: true, disablePadding: true, label: 'Price' },
-      { id: 'Weight', numeric: true, disablePadding: true, label: 'Weight' },
+      { id: 'Quantity', numeric: true, disablePadding: true, label: 'Quantity' },
       { id: 'Units', numeric: true, disablePadding: true, label: 'Units' },
-     ]
-    //setView(false)
-        const handleClose=()=>{
-    setDialogView(false)
-        }
-        console.log(tran, 'tran in order')
-        debugger
-        return (
-          <Dialog onClose={handleClose} open={Dialogview}>
-            <DialogTitle>
-             
-            </DialogTitle>
-            <DialogContent>
-              
+    ]
+
+    const handleEditOrder = ()=>{
+      orderedProducts.map((item)=>  setCartStore({item, type: 'AddFromHistory' }))     
+      history.push(`/cart`)
+    }
+
+    const handleClose = () => {
+      setDialogView(false)
+    }
+    console.log(tran, 'tran in order')
+
+    const showActionButtons = () => {
+
+      if (tran.status === 'Executed') {
+        return (<Button>Reorder</Button>)
+      }
+      else if (tran.status === 'Ordered') {
+        return (<Button onClick={handleEditOrder}>Edit</Button>)
+      }
+      else if (tran.status === 'Processed') {
+        return (<React.Fragment><Button>Missing</Button>
+          <Button>Return</Button>
+          <Button>Confirm received products</Button></React.Fragment>)
+      }
+    }
+
+    return (
+      <Dialog onClose={handleClose} open={Dialogview}>
+        <DialogTitle>
+
+        </DialogTitle>
+        <DialogContent>
+
           <TableContainer>
             <Table>
               <TableHead>
                 <TableRow>
                   {Headers.map((headCell) => (
-            <TableCell
-              key={headCell.id}
-              align={headCell.numeric ? 'right' : 'left'}
-              padding={headCell.disablePadding ? 'none' : 'default'}
-            >
-              {headCell.label}
-            </TableCell>
-          ))}
+                    <TableCell
+                      key={headCell.id}
+                      align={headCell.numeric ? 'right' : 'left'}
+                      padding={headCell.disablePadding ? 'none' : 'default'}
+                    >
+                      {headCell.label}
+                    </TableCell>
+                  ))}
                 </TableRow>
-    
+
               </TableHead>
               <TableBody>
                 {tran.orderedProducts.map((p) => {
-    
+
                   return (
                     <TableRow>
                       <TableCell>{p.productName}</TableCell>
-                  <TableCell>{p.price}</TableCell>
-                  <TableCell>{p.weight}</TableCell>
-                  <TableCell>{p.units}</TableCell>
+                      <TableCell>{p.price}</TableCell>
+                      <TableCell>{p.quantity}</TableCell>
+                      <TableCell>{p.unit}</TableCell>
                     </TableRow>
                   )
                 })}
               </TableBody>
             </Table>
           </TableContainer>
-          <Button>Reorder</Button>
-          </DialogContent>
-          </Dialog>
-        )
-      }
-    
-  
+          {showActionButtons()}
+        </DialogContent>
+      </Dialog>
+    )
+  }
+
+
 
   return (<div>
     <Paper className={classes.root}>
@@ -187,9 +194,9 @@ setDialogView(true)
               var transactionDateTime = new Date(column.transactionDateTime)
               var transactionDate = transactionDateTime.toLocaleDateString()
               var transactionTime = transactionDateTime.toLocaleTimeString()
-                 
-                return (
-                <TableRow hover role="checkbox" tabIndex={-1} onClick={()=>handleClick(column)}>
+
+              return (
+                <TableRow hover role="checkbox" tabIndex={-1} onClick={() => handleClick(column)}>
 
                   {/* const value = row[column.transactionId]; */}
 
@@ -227,14 +234,14 @@ setDialogView(true)
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={rows.length}
+        count={transactions.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
       />
     </Paper>
-    {Dialogview? <HistoricOrder transaction={selectedRow}/>:null}
-    </div>
+    {Dialogview ? <HistoricOrder transaction={selectedRow} /> : null}
+  </div>
   );
 }
