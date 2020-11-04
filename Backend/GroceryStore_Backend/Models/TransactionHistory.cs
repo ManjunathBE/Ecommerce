@@ -13,8 +13,8 @@ namespace GroceryStore_Backend.Models
         public int ItemNumber { get; set; }
         public string ProductName { get; set; }
         public double Price { get; set; }
-        public int Units { get; set; }
-        public int Weight { get; set; }
+        public string Unit { get; set; }
+        public double Quantity { get; set; }
     }
     public class TransactionHistory
     {
@@ -22,8 +22,7 @@ namespace GroceryStore_Backend.Models
         public int TransactionId { get; set; }
         public DateTime TransactionDateTime { get; set; }
         public string Status { get; set; }
-        public int UserId { get; set; }
-        
+        public int UserId { get; set; }     
         public List<OrderedProducts> OrderedProducts { get; set; }
         
     }

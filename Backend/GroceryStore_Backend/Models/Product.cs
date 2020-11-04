@@ -13,5 +13,6 @@ namespace GroceryStore_Backend.Models
         public string Price { get; set; }
         public string Descrption { get; set; }
         public string Category { get; set; }
+        public string UnitType { get; set; }
     }
 }
