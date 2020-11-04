@@ -172,7 +172,8 @@
       "ProductName": "Amla",
       "ImagePath": "amla",
       "price": 90,
-      "Category": "Vegetables"
+      "Category": "Vegetables",
+      "UnitType": "Kilograms"
     },
     {
       "id": 2,
@@ -180,7 +181,8 @@
       "ProductName": "Arbi",
       "ImagePath": "arbi",
       "price": 40,
-      "Category": "Vegetables"
+      "Category": "Vegetables",
+      "UnitType": "Kilograms"
     },
     {
       "id": 3,
@@ -188,15 +190,17 @@
       "ProductName": "Baby Corn",
       "ImagePath": "baby_corn",
       "price": 100,
-      "Category": "Vegetables"
+      "Category": "Vegetables",
+      "UnitType": "Kilograms"
     },
     {
       "id": 4,
       "description": "baby_jackfruit",
       "ProductName": "Baby Jackfruit",
-      "ImagePath": ".baby_jackfruit",
+      "ImagePath": "baby_jackfruit",
       "price": 200,
-      "Category": "Vegetables"
+      "Category": "Vegetables",
+      "UnitType": "Numbers"
     },
     {
       "id": 5,
@@ -204,7 +208,8 @@
       "ProductName": "Banana Flower",
       "ImagePath": "banana_flower",
       "price": 175,
-      "Category": "Vegetables"
+      "Category": "Vegetables",
+      "UnitType": "Numbers"
     },
     {
       "id": 6,
