@@ -8,7 +8,6 @@ import clsx from 'clsx';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 import { Delete } from "@material-ui/icons";
-import Recaptcha from "react-recaptcha";
 import Button from "@material-ui/core/Button"
 
 const useStyles = makeStyles((theme) => ({
@@ -33,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 
 const TableHeaders = [
   { id: 'Product', numeric: false, disablePadding: true, label: 'Product' },
-  { id: 'Weight', numeric: true, disablePadding: false, label: 'Weight' },
+  { id: 'Quantity', numeric: true, disablePadding: false, label: 'Quantity' },
   { id: 'Untis', numeric: true, disablePadding: false, label: 'Units' },
   { id: 'Price', numeric: true, disablePadding: false, label: 'Price' },
 ];
@@ -100,6 +99,8 @@ export const Cart = (props) => {
   const [selected, setSelected] = React.useState([]);
   const [dense, setDense] = React.useState(false);
   const { cartStore, setCartStore } = useStore();
+  const [disablePlaceOrderButton, setDisablePlaceOrderButton] = React.useState(true)
+  const { history } = props;
 
   const EnhancedTableToolbar = (props) => {
     const classes = useToolbarStyles();
@@ -167,16 +168,11 @@ export const Cart = (props) => {
     setSelected(newSelected);
   };
 
-  const RecaptchaCallback = () => {
-
-  }
-
   const handlePlaceOrder = () => {
 
     const payload = {
       UserId: 1,
       Status: 'Ordered',
-      // TransactionDateTime : Date.now(), 
       orderedProducts: cartStore.cart
     }
     console.log(payload, 'ordered products')
@@ -236,8 +232,8 @@ export const Cart = (props) => {
                     <TableCell component="th" id={labelId} scope="row" padding="none">
                       {cart.productName}
                     </TableCell>
-                    <TableCell align="right">{cart.weight}</TableCell>
-                    <TableCell align="right">{cart.units}</TableCell>
+                    <TableCell align="right">{cart.quantity}</TableCell>
+                    <TableCell align="right">{cart.unit}</TableCell>
                     <TableCell align="right">{cart.price}</TableCell>
                   </TableRow>
                 );
@@ -249,14 +245,12 @@ export const Cart = (props) => {
               </TableRow>
             </TableBody>
           </Table>
-            <Recaptcha
-              sitekey="6Le-eNQZAAAAAOIanBY7tfhCXaMEQlg3oXxJo7CG"
-              render="explicit"
-              onloadCallback={RecaptchaCallback}
-            />
+         
+          <Button onClick={()=>history.push("/")}>Continue Shopping</Button>
+        <Button onClick={handlePlaceOrder}>Place Order</Button>
           </React.Fragment> : "Cart is empty"}
         </TableContainer>
-        <Button onClick={handlePlaceOrder}>Place Order</Button>
+        
 
       </Paper>
 
