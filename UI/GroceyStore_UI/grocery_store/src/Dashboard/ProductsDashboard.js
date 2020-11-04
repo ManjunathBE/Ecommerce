@@ -40,6 +40,9 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
     padding: theme.spacing(2),
   },
+  addProductPopUpDimesnsion:{
+    width:"350px",
+  },
 }));
 
 export const ProductsDashboard = (props) => {
@@ -50,6 +53,7 @@ export const ProductsDashboard = (props) => {
   const [products, setProducts] = useState("");
   const [productPrice, setProductPrice] = useState(0)
   const [productName, setproductName] = useState("")
+  const [unitType, setUnitType] = useState("")
   const images = require.context('../assets/products', true);
   const {viewStore} = useStore();
 
@@ -59,7 +63,7 @@ export const ProductsDashboard = (props) => {
   const categoryName = (props.location.pathname).substring(1)
   const fetchProducts = () => {
     
-    fetch('https://eorganicshop.herokuapp.com/Product?category='+categoryName,)
+    fetch('https://localhost:44360/Product?category='+categoryName,)
       .then(result => {
         if (result.status === 404) {
           console.log('result is 404')
@@ -68,7 +72,7 @@ export const ProductsDashboard = (props) => {
         } else {
           result.json().then(body => {
             console.log(body)
-            setProducts(body.slice(0,3))
+            setProducts(body.slice(0,4))
           });
         }
       })
@@ -78,14 +82,14 @@ export const ProductsDashboard = (props) => {
   }
 
   const getGridCard = (id) => {
-    const { productName, price, imagePath } = products[
+    const { productName, price, imagePath, unitType } = products[
       `${id}`
     ];
     const image = images(`./${imagePath}.jpg`);
     return (
 
       <Grid item xs={6} sm={4} key={id}>
-        <Card onClick={()=>handleProductClick(price, productName)}>
+        <Card onClick={()=>handleProductClick(price, productName, unitType)}>
           <CardMedia
             className={classes.cardMedia}
             image={image}
@@ -101,12 +105,12 @@ export const ProductsDashboard = (props) => {
   };
 
   const getListCard = (id) => {
-    const { productName, price, imagePath } = products[
+    const { productName, price, imagePath, unitType } = products[
       `${id}`
     ];
     const image = images(`./${imagePath}.jpg`);
     return (
-      <Card onClick={()=>handleProductClick(price, productName)}>
+      <Card onClick={()=>handleProductClick(price, productName, unitType)}>
         <Grid container key={id}>
           <Grid item xs={4} >
             <CardMedia
@@ -142,12 +146,10 @@ export const ProductsDashboard = (props) => {
     }
   }
 
-
-
-
-  const handleProductClick=(price, productName) =>{
+  const handleProductClick=(price, productName, unitType) =>{
     setProductPrice(price)
     setproductName(productName)
+    setUnitType(unitType)
     setOpenAddProductDialogState(true)
   }
 
@@ -168,7 +170,7 @@ export const ProductsDashboard = (props) => {
       ) : (
           <CircularProgress />
         )}
-      <Dialog onClose={handleDialogClose} open={openAddProductDialog}>
+      <Dialog classes={{paper:classes.addProductPopUpDimesnsion}} onClose={handleDialogClose} open={openAddProductDialog}>
         <DialogTitle className={classes.root}>
         <IconButton  className={classes.closeButton} aria-label="close" onClick={handleDialogClose}>
           <CloseIcon />
@@ -176,7 +178,7 @@ export const ProductsDashboard = (props) => {
         {productName}
         </DialogTitle>
         <DialogContent dividers>
-        <AddProduct modelOpen={closeModal} price={productPrice} productName={productName} />
+        <AddProduct modelOpen={closeModal} price={productPrice} productName={productName} unitType={unitType}/>
         </DialogContent>
       </Dialog>
 
