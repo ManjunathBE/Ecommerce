@@ -7,6 +7,7 @@ import {SelectView} from "./SelectView";
 import {UserProfile} from "./UserProfile";
 import { Dashboard } from "./Dashboard/Dashboard";
 import { ProductsDashboard } from "./Dashboard/ProductsDashboard";
+import {Login} from './Login';
 
 
 export const Routes = () => (
@@ -20,6 +21,7 @@ export const Routes = () => (
       <Route path="/Notification" component={Notification} />
       <Route path="/Select View" component={SelectView} />
       <Route path="/User Profile" component={UserProfile} />
+      <Route path="/login" component={Login} />
       <Route
         exact
         path="/:productName"
