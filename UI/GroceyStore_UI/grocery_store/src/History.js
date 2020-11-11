@@ -55,7 +55,7 @@ export function History(props) {
 
   const fetchTransactions = () => {
 
-    fetch('https://localhost:44360/Transaction?userId=' + userId,)
+    fetch('https://grocerystoreapi.azurewebsites.net/Transaction?userId=' + userId,)
       .then(result => {
         if (result.status === 404) {
           console.log('result is 404')

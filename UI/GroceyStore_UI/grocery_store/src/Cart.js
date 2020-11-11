@@ -176,7 +176,7 @@ export const Cart = (props) => {
       orderedProducts: cartStore.cart
     }
     console.log(payload, 'ordered products')
-    fetch('https://localhost:44360/transaction',{
+    fetch('https://grocerystoreapi.azurewebsites.net/transaction',{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
