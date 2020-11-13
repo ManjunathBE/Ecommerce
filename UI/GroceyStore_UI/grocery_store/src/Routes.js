@@ -4,10 +4,11 @@ import {Cart} from "./Cart";
 import {History} from "./History";
 import {Notification} from "./Notification";
 import {SelectView} from "./SelectView";
-import {UserProfile} from "./UserProfile";
+import {UserProfile} from "./UserProfile/UserProfile";
 import { Dashboard } from "./Dashboard/Dashboard";
 import { ProductsDashboard } from "./Dashboard/ProductsDashboard";
 import {Login} from './Login';
+import PrivateRoute from './PrivateRoute';
 
 
 export const Routes = () => (
@@ -15,14 +16,14 @@ export const Routes = () => (
   <div>
     <Switch>
 
-      <Route exact path="/" component={Dashboard} />
-      <Route path="/Cart" component={Cart} />
-      <Route path="/History" component={History} />
-      <Route path="/Notification" component={Notification} />
-      <Route path="/Select View" component={SelectView} />
-      <Route path="/User Profile" component={UserProfile} />
+      <PrivateRoute exact path="/" component={Dashboard} />
+      <PrivateRoute path="/Cart" component={Cart} />
+      <PrivateRoute path="/History" component={History} />
+      <PrivateRoute path="/Notification" component={Notification} />
+      <PrivateRoute path="/Select View" component={SelectView} />
+      <PrivateRoute path="/User Profile" component={UserProfile} />
       <Route path="/login" component={Login} />
-      <Route
+      <PrivateRoute
         exact
         path="/:productName"
         render={(props) => <ProductsDashboard {...props} />}

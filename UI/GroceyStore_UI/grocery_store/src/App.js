@@ -1,17 +1,21 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './App.css';
 import { Routes } from './Routes'
-
+import { AuthContext } from "./Auth";
 import Footer from './Footer'
 
 
 function App() {
+  const [loginState, setLoginState] = useState(false)
   return (
+    // <AuthContext.Provider value={{loginState, setLoginState}}>
+    <AuthContext.Provider value={true}>
     <div >
 
       <Routes />
       <Footer />
     </div>
+    </AuthContext.Provider>
   );
 }
 
