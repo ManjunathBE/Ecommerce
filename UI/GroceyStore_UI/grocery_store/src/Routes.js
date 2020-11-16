@@ -5,6 +5,7 @@ import {History} from "./History";
 import {Notification} from "./Notification";
 import {SelectView} from "./SelectView";
 import {UserProfile} from "./UserProfile/UserProfile";
+import {EditUserProfile} from "./UserProfile/EditUserProfile";
 import { Dashboard } from "./Dashboard/Dashboard";
 import { ProductsDashboard } from "./Dashboard/ProductsDashboard";
 import {Login} from './Login';
@@ -22,11 +23,11 @@ export const Routes = () => (
       <PrivateRoute path="/Notification" component={Notification} />
       <PrivateRoute path="/Select View" component={SelectView} />
       <PrivateRoute path="/User Profile" component={UserProfile} />
+      <PrivateRoute path="/Edit User Profile" component={EditUserProfile} />
       <Route path="/login" component={Login} />
-      <PrivateRoute
-        exact
+      <PrivateRoute        
         path="/:productName"
-        render={(props) => <ProductsDashboard {...props} />}
+        component={(props) => <ProductsDashboard {...props} />}
       />
     </Switch>
   </div>
