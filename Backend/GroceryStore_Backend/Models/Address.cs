@@ -10,8 +10,8 @@ namespace GroceryStore_Backend.Models
     {
         [Key]
         public int Id { get; set; }
-        public string HouseName { get; set; }
-        public string AreaName { get; set; }
+        public string AddressLine1 { get; set; }
+        public string AddressLine2 { get; set; }
         public string City { get; set; }
         public string PinCode { get; set; }
     }
