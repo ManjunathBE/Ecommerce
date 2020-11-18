@@ -10,5 +10,7 @@ namespace GroceryStore_Backend.Services
 	{
 		Task<User> GetUsersasync (int userId);
 
+		Task<User> EditUsersasync(int userId, User UpdatedUserData);
+
 	}
 }

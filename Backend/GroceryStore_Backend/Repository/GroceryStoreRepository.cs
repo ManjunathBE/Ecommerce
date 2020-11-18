@@ -58,24 +58,53 @@ namespace GroceryStore_Backend.Repository
 
         public async Task<User> GetUser(int userId)
         {
-            var jsonObj = JObject.Parse(json);
-            User UserList = new User();
-            JArray UserArray = jsonObj.GetValue("user") as JArray;
+            var x = _groceryStoreDbContext.User.Where(user => user.UserId == userId).Include(a => a.Address).FirstOrDefault();
+            return x;
+            //var jsonObj = JObject.Parse(json);
+            //User UserList = new User();
+            //JArray UserArray = jsonObj.GetValue("user") as JArray;
 
-            foreach (var obj in UserArray)
-            {
-                User user = obj.ToObject<User>();
-                if(user.Id == userId)
-                {
-                    return user;
-                }
-            }
-            return null;
+            //foreach (var obj in UserArray)
+            //{
+            //    User user = obj.ToObject<User>();
+            //    if (user.Id == userId)
+            //    {
+            //        return user;
+            //    }
+            //}
+            //return null;
         }
- 
+        public async Task<User> EditUser(int userId, User UpdatedUserData)
+        {
+            try
+            {
+                var user = _groceryStoreDbContext.User.Where(user => user.UserId == userId).Include(a => a.Address).SingleOrDefault();
+                
+                var userEntry = _groceryStoreDbContext.Entry(user);
+                
+                userEntry.CurrentValues.SetValues(UpdatedUserData);
+
+                foreach(var address in UpdatedUserData.Address)
+                {
+                    var existingAddress = user.Address.Where(x => x.Id == address.Id).SingleOrDefault();
+                    if(existingAddress!=null)
+                    _groceryStoreDbContext.Entry(existingAddress).CurrentValues.SetValues(address);             
+                }
+                _groceryStoreDbContext.SaveChanges();
+                
+            }
+            catch (Exception ex)
+            {
+                var x = ex.Message;
+                var y = ex.InnerException;
+                
+            }
+            return UpdatedUserData;
+        }
+
         public async Task<List<TransactionHistory>> GetTransactionHistory(int userId)
         {
-           // var x = _groceryStoreDbContext.OrderedProducts.Count();
+            // var x = _groceryStoreDbContext.OrderedProducts.Count();
             return _groceryStoreDbContext.TransactionHistory.Where(tran => tran.UserId == userId).Include(d => d.OrderedProducts).ToList();
 
             //var jsonObj = JObject.Parse(json);
@@ -99,18 +128,20 @@ namespace GroceryStore_Backend.Repository
         {
             //_groceryStoreDbContext.Add(transaction.OrderedProducts);
 
-             _groceryStoreDbContext.Add(new TransactionHistory()
-             {
-                 OrderedProducts = transaction.OrderedProducts,
-                 Status = transaction.Status,
-                 TransactionDateTime = DateTime.Now,
-                 UserId = transaction.UserId
-                 
-             }
-                 );
-             _groceryStoreDbContext.SaveChanges();
-            
+            _groceryStoreDbContext.Add(new TransactionHistory()
+            {
+                OrderedProducts = transaction.OrderedProducts,
+                Status = transaction.Status,
+                TransactionDateTime = DateTime.Now,
+                UserId = transaction.UserId
+
+            }
+                );
+            _groceryStoreDbContext.SaveChanges();
+
 
         }
+
+
     }
 }

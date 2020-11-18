@@ -14,7 +14,7 @@ export const UserProfile = (props) => {
   const { history } = props;
   const fetchUserDetails = () => {
 
-    fetch('https://localhost:44360/user?userid=1',
+    fetch('https://localhost:44360/api/user?userid=1',
       {
         mode: 'cors'
       })
@@ -23,6 +23,7 @@ export const UserProfile = (props) => {
         if (result.status === 404) {
           console.log('result is 404')
         } else if (result.status !== 200) {
+          console.log(result)
           console.log('result is not 200')
         } else {
           result.json().then(body => {

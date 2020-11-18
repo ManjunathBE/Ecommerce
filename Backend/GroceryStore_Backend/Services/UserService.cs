@@ -19,5 +19,10 @@ namespace GroceryStore_Backend.Services
         {
             return _groceryStoreRepository.GetUser(userId);
         }
+
+        public async Task<User> EditUsersasync(int userId, User UpdatedUserData)
+        {
+             return await  _groceryStoreRepository.EditUser(userId, UpdatedUserData);
+        }
     }
 }
