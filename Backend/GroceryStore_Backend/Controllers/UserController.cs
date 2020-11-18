@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GroceryStore_Backend.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class UserController : Controller
     {
         private readonly IUsersService _userService;
@@ -23,7 +23,14 @@ namespace GroceryStore_Backend.Controllers
         {
             var user = await _userService.GetUsersasync(userId);
             return Ok(user);
-        }  
+        }
+        
+        [HttpPut]
+        public async Task<IActionResult> Edit(int userId, User updatedUserData)
+        {
+            await _userService.EditUsersasync(userId, updatedUserData);
+            return Created($"api/user", updatedUserData);
+        }
         
     }
 }
