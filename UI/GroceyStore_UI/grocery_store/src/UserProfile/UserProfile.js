@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { Header } from '../Header'
-import { Address } from './Address'
 import { Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
+import { useStore } from "../Store";
 
 export const UserProfile = (props) => {
 
@@ -12,9 +12,11 @@ export const UserProfile = (props) => {
   const [user, setUser] = useState({})
   const [isFetched, setIsFetched] = useState(false)
   const { history } = props;
+  const {userStore, setUserStore} = useStore();
   const fetchUserDetails = () => {
 
-    fetch('https://localhost:44360/api/user?userid=1',
+    if(history.location.state)
+    fetch('https://localhost:44360/api/user?phonenumber='+userStore.user.phoneNumber,
       {
         mode: 'cors'
       })
@@ -29,8 +31,9 @@ export const UserProfile = (props) => {
           result.json().then(body => {
             console.log(body, 'response')
             console.log(body.address)
-            setUser(body)
-            setIsFetched(true)
+            var user = body
+            setUserStore({user})
+            
           });
         }
       })
@@ -45,17 +48,17 @@ export const UserProfile = (props) => {
     <div>
       <Header title={(props.location.pathname).substring(1)} history={props.history} />
 
-      <Typography>Name : {user.firstName} {user.lastName}</Typography>
-      <Typography>Mobile : {user.phoneNumber}</Typography>
-      <Typography>Email :  {user.email}</Typography>
+      <Typography>Name : {userStore.user.firstName} {userStore.user.lastName}</Typography>
+      <Typography>Mobile : {userStore.user.phoneNumber}</Typography>
+      <Typography>Email :  {userStore.user.email}</Typography>
 
       {/* {isFetched? user.address.map((item)=><p>{item.AddressLine1}</p>):""} */}
-      {isFetched ? (user.address).map((id) => <Typography>Address : {id.addressLine1} <br />{id.addressLine2}<br />{id.city}<br />{id.pinCode}</Typography>)
-        : ""}
+      { (userStore.user.address).map((id) => <Typography>Address : {id.addressLine1} <br />{id.addressLine2}<br />{id.city}<br />{id.pinCode}</Typography>)
+        }
 
 <Button 
 onClick={()=>history.push({pathname: '/Edit User Profile',
-                          state: {user:user}})}>
+                          state: {user:userStore.user}})}>
   Edit Profile
 </Button>
     </div>
