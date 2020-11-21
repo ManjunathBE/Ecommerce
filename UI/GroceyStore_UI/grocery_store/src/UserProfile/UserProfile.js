@@ -3,6 +3,7 @@ import { Header } from '../Header'
 import { Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import { useStore } from "../Store";
+import { Redirect } from "react-router-dom";
 
 export const UserProfile = (props) => {
 
@@ -41,13 +42,14 @@ export const UserProfile = (props) => {
         console.log("error from server", JSON.stringify(error, Object.getOwnPropertyNames(error)));
       });
   }
-  console.log(user.address, 'user address')
-  console.log(user.email, 'user email')
+  console.log(userStore.user===null, 'user obj length')
+  console.log(userStore.user,'user obj')
 
   return (
+    
     <div>
       <Header title={(props.location.pathname).substring(1)} history={props.history} />
-
+      {Object.keys(userStore.user).length!==0? (<div>
       <Typography>Name : {userStore.user.firstName} {userStore.user.lastName}</Typography>
       <Typography>Mobile : {userStore.user.phoneNumber}</Typography>
       <Typography>Email :  {userStore.user.email}</Typography>
@@ -60,8 +62,10 @@ export const UserProfile = (props) => {
 onClick={()=>history.push({pathname: '/Edit User Profile',
                           state: {user:userStore.user}})}>
   Edit Profile
-</Button>
+</Button></div>)
+:<Redirect to="/AddUserProfile"/>}
     </div>
+
   )
 }
 
