@@ -55,6 +55,7 @@ export const Login = (props) => {
                     console.log('otp error', error)
                 })
         }
+        console.log(errors,'errors in handle otp')
 
     }
 
@@ -70,12 +71,15 @@ export const Login = (props) => {
             fetchUser()
             history.push('/')
         }
+        console.log(errors,'errors')
     }
 
     const validatePhone = () => {
+        console.log(phone)
         var temp = []
         temp.phone = phone ? "" : "phone is required"
         if (!temp.phone) temp.phone = phone.length === 10 ? "" : "phone number should be 10 digits"
+        setErrors({ ...temp })
 
         // temp.password = password?"":"otp is required"
         // if(password!==passwordFromUser)temp.password="otp doensn't match"
