@@ -124,7 +124,7 @@ namespace GroceryStore_Backend.Repository
             // return _groceryStoreDbContext.TransactionHistory.Where( e => e.UserId == UserId).ToList();
         }
 
-        public async Task AddTrnsaction(TransactionHistory transaction)
+        public async Task<TransactionHistory> AddTrnsaction(TransactionHistory transaction)
         {
             //_groceryStoreDbContext.Add(transaction.OrderedProducts);
 
@@ -138,7 +138,7 @@ namespace GroceryStore_Backend.Repository
             }
                 );
             _groceryStoreDbContext.SaveChanges();
-
+            return transaction;
 
         }
 
