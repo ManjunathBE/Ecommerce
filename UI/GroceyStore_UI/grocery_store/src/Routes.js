@@ -6,6 +6,7 @@ import {Notification} from "./Notification";
 import {SelectView} from "./SelectView";
 import {UserProfile} from "./UserProfile/UserProfile";
 import {EditUserProfile} from "./UserProfile/EditUserProfile";
+import {AddUserProfile} from "./UserProfile/AddUserProfile";
 import { Dashboard } from "./Dashboard/Dashboard";
 import { ProductsDashboard } from "./Dashboard/ProductsDashboard";
 import {Login} from './Login';
@@ -24,6 +25,7 @@ export const Routes = () => (
       <PrivateRoute path="/Select View" component={SelectView} />
       <PrivateRoute path="/UserProfile" component={UserProfile} />
       <PrivateRoute path="/Edit User Profile" component={EditUserProfile} />
+      <PrivateRoute path="/AddUserProfile" component={AddUserProfile} />
       <Route path="/login" component={Login} />
       <PrivateRoute        
         path="/:productName"
