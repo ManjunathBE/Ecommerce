@@ -22,7 +22,7 @@ export const Routes = () => (
       <PrivateRoute path="/History" component={History} />
       <PrivateRoute path="/Notification" component={Notification} />
       <PrivateRoute path="/Select View" component={SelectView} />
-      <PrivateRoute path="/User Profile" component={UserProfile} />
+      <PrivateRoute path="/UserProfile" component={UserProfile} />
       <PrivateRoute path="/Edit User Profile" component={EditUserProfile} />
       <Route path="/login" component={Login} />
       <PrivateRoute        
