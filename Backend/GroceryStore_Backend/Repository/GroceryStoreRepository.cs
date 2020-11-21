@@ -56,9 +56,9 @@ namespace GroceryStore_Backend.Repository
             return ProductList;
         }
 
-        public async Task<User> GetUser(int userId)
+        public async Task<User> GetUser(long phoneNumber)
         {
-            var x = _groceryStoreDbContext.User.Where(user => user.UserId == userId).Include(a => a.Address).FirstOrDefault();
+            var x = _groceryStoreDbContext.User.Where(user => user.PhoneNumber == phoneNumber).Include(a => a.Address).FirstOrDefault();
             return x;
             //var jsonObj = JObject.Parse(json);
             //User UserList = new User();

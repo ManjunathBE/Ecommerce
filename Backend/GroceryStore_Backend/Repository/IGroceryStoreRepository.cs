@@ -14,7 +14,7 @@ namespace GroceryStore_Backend.Repository
 
         Task<List<Category>> GetCategorys();
 
-        Task<User> GetUser(int userId);
+        Task<User> GetUser(long phoneNumber);
 
         Task<User> EditUser(int userId, User UpdatedUserData);
         

@@ -19,9 +19,9 @@ namespace GroceryStore_Backend.Controllers
 
 	}
         [HttpGet]
-        public async Task<IActionResult> GetUserAsync (int userId )
+        public async Task<IActionResult> GetUserAsync (long phoneNumber )
         {
-            var user = await _userService.GetUsersasync(userId);
+            var user = await _userService.GetUsersasync(phoneNumber);
             return Ok(user);
         }
         

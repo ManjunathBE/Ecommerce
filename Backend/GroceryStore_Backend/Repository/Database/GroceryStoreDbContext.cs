@@ -30,7 +30,7 @@ namespace GroceryStore_Backend.Repository.Database
                 FirstName = "Andrew",
                 LastName = "Schmidt",
                 Email = "Andrew.schmidt@gmail.com",
-                PhoneNumber = "919658963214"
+                PhoneNumber = 919677513661
             });
 
             modelBuilder.Entity<Address>().HasData(
