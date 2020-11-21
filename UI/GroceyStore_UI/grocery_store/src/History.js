@@ -1,4 +1,4 @@
-import React, { Component, Link, useEffect } from "react";
+import React, { Component, Link, useEffect, useState } from "react";
 import { Header } from './Header'
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -39,14 +39,15 @@ const useStyles = makeStyles({
 
 export function History(props) {
   const classes = useStyles();
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [transactions, setTransactions] = React.useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [transactions, setTransactions] = useState([]);
   const userId = 1
-  const [Dialogview, setDialogView] = React.useState(false)
-  const [selectedRow, setSelectedRow] = React.useState([])
+  const [Dialogview, setDialogView] = useState(false)
+  const [selectedRow, setSelectedRow] = useState([])
   const { cartStore, setCartStore } = useStore();
   const { history } = props;
+  const [warningDialog,setWarningDialog] = useState(false)
 
 
   useEffect(() => {
@@ -89,6 +90,8 @@ export function History(props) {
     setPage(0);
   };
 
+
+
   const HistoricOrder = (props) => {
     var tran = props.transaction
     var orderedProducts = tran.orderedProducts
@@ -99,9 +102,26 @@ export function History(props) {
       { id: 'Units', numeric: true, disablePadding: true, label: 'Units' },
     ]
 
-    const handleEditOrder = ()=>{
+    const handleEditOrReorder = (e)=>{
+      e.preventDefault()
+
+      console.log(cartStore.cart.length,'cart in edit')
+      if(cartStore.cart.length!==0){
+        setWarningDialog(true)
+      }
+      else{
+        orderedProducts.map((item)=>  setCartStore({item, type: 'AddFromHistory' }))     
+        history.push(`/cart`)
+      }     
+    }
+
+    const handleWarningDialogClose =()=>{
+      setWarningDialog(false)
+    }
+  
+    const handleProceedToCart =()=>{
       orderedProducts.map((item)=>  setCartStore({item, type: 'AddFromHistory' }))     
-      history.push(`/cart`)
+       history.push(`/cart`)
     }
 
     const handleClose = () => {
@@ -112,10 +132,10 @@ export function History(props) {
     const showActionButtons = () => {
 
       if (tran.status === 'Executed') {
-        return (<Button>Reorder</Button>)
+        return (<Button onClick={handleEditOrReorder}>Reorder</Button>)
       }
       else if (tran.status === 'Ordered') {
-        return (<Button onClick={handleEditOrder}>Edit</Button>)
+        return (<Button onClick={handleEditOrReorder}>Edit</Button>)
       }
       else if (tran.status === 'Processed') {
         return (<React.Fragment><Button>Missing</Button>
@@ -125,6 +145,7 @@ export function History(props) {
     }
 
     return (
+      <div>
       <Dialog onClose={handleClose} open={Dialogview}>
         <DialogTitle>
 
@@ -165,6 +186,19 @@ export function History(props) {
           {showActionButtons()}
         </DialogContent>
       </Dialog>
+
+      
+      <Dialog onClose={handleWarningDialogClose} open={warningDialog}>
+       <DialogTitle>
+
+       </DialogTitle>
+       <DialogContent>
+         The items in your cart will be deleted
+         <Button onClick={handleProceedToCart}>Proceed</Button>
+       </DialogContent>
+      </Dialog>
+      </div>
+     
     )
   }
 
@@ -242,6 +276,8 @@ export function History(props) {
       />
     </Paper>
     {Dialogview ? <HistoricOrder transaction={selectedRow} /> : null}
+
+
   </div>
   );
 }
