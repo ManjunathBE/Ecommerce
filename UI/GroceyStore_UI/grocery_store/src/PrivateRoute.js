@@ -4,10 +4,11 @@ import { useAuth } from "./Auth";
 
 function PrivateRoute({ component: Component, ...rest }) {
     const isAuthenticated = useAuth();
+    console.log(isAuthenticated.loginState, 'isauth')
 
     return (
         <Route {...rest} render={(props) => 
-            isAuthenticated ? (
+            isAuthenticated.loginState ? (
             <Component {...props} />
         ):(
             <Redirect to="/login" />
