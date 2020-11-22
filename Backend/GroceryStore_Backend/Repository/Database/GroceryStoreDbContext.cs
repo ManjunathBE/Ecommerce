@@ -24,13 +24,14 @@ namespace GroceryStore_Backend.Repository.Database
             //modelBuilder.Entity<Address>()
             // .HasKey(e => new { e.UserId});
 
+            var userid = Guid.NewGuid();
             modelBuilder.Entity<User>().HasData(new User
             {
-                UserId = 1,
-                FirstName = "Andrew",
+                UserId = userid,
+                FirstName = "Anderson",
                 LastName = "Schmidt",
                 Email = "Andrew.schmidt@gmail.com",
-                PhoneNumber = 919677513661
+                PhoneNumber = 9677513661
             });
 
             modelBuilder.Entity<Address>().HasData(
@@ -41,7 +42,7 @@ namespace GroceryStore_Backend.Repository.Database
                     AddressLine2 = "Erlington",
                     City = "Oxford",
                     PinCode = "123456",
-                    UserId = 1
+                    UserId = userid
 
                 },
                  new Address
@@ -51,7 +52,7 @@ namespace GroceryStore_Backend.Repository.Database
                      AddressLine2 = "Erlington",
                      City = "Oxford",
                      PinCode = "123456",
-                     UserId = 1
+                     UserId = userid
 
                  });
             

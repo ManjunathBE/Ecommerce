@@ -22,7 +22,7 @@ namespace GroceryStore_Backend.Models
         public int TransactionId { get; set; }
         public DateTime TransactionDateTime { get; set; }
         public string Status { get; set; }
-        public int UserId { get; set; }     
+        public Guid UserId { get; set; }     
         public List<OrderedProducts> OrderedProducts { get; set; }
         
     }
