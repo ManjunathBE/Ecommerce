@@ -102,7 +102,7 @@ export const Login = (props) => {
 
     const fetchUser = () => {
 
-        fetch('https://localhost:44360/api/user?phoneNumber=91'+phone,
+        fetch('https://localhost:44360/api/user?phoneNumber='+phone,
           {
             mode: 'cors'
           })

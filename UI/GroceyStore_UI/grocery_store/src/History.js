@@ -45,7 +45,7 @@ export function History(props) {
   const userId = 1
   const [Dialogview, setDialogView] = useState(false)
   const [selectedRow, setSelectedRow] = useState([])
-  const { cartStore, setCartStore } = useStore();
+  const { cartStore, setCartStore, userStore } = useStore();
   const { history } = props;
   const [warningDialog,setWarningDialog] = useState(false)
 
@@ -55,8 +55,9 @@ export function History(props) {
   }, [])
 
   const fetchTransactions = () => {
+    console.log(userStore)
 
-    fetch('https://grocerystoreapi.azurewebsites.net/Transaction?userId=' + userId,)
+    fetch('https://localhost:44360/Transaction?userId=' + userStore.user.userId)
       .then(result => {
         if (result.status === 404) {
           console.log('result is 404')

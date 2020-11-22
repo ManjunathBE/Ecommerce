@@ -46,6 +46,10 @@ code {
   float: left;
 }
 
+.flashStyling{
+  background-color: aqua;
+}
+
 
 @media screen and (max-width: 600px) {
   .footerLink:hover{
