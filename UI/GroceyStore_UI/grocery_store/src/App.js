@@ -7,9 +7,10 @@ import Footer from './Footer'
 
 function App() {
   const [loginState, setLoginState] = useState(false)
+  console.log(loginState, 'login state')
   return (
-    // <AuthContext.Provider value={{loginState, setLoginState}}>
-    <AuthContext.Provider value={true}>
+    <AuthContext.Provider value={{loginState, setLoginState}}>
+     {/* <AuthContext.Provider value={true}> */}
     <div >
 
       <Routes />
