@@ -1,86 +1,106 @@
-import React, { useState, useStore } from "react"
+import React, { useState } from "react"
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Header } from '../Header'
+import { useStore } from "../Store"
 
 
 
 
 export const AddUserProfile = (props) => {
+    const { history } = props
 
-    var user ={address:[{addressLine1:"", addressLine2:"", city:"", pinCode:""}],firstName:"", lastName:"", email:"", phoneNumber:""}
-     const [check, setUser] = useState()
-    // const [userStore, setUserStore] = useStore()
-    
+    var user = { address: [{ addressLine1: "", addressLine2: "", city: "", pinCode: "" }], firstName: "", lastName: "", email: "", phoneNumber: "" }
+    const { userStore, setUserStore } = useStore()
 
-    const address =()=>{
-        return(
+
+    const address = () => {
+        return (
             <div>
                 <TextField
-                            margin="normal"
-                            required
-                            id="addressLine1"
-                            label="Address Line 1"
-                            name="addressLine1"
-                            onChange={(event)=>handleAddressChange(event.target.name, event.target.value, address.id)}
-                        />
-                        <br />
-                        <TextField
-                            margin="normal"
-                            id="Address"
-                            label="Address Line 2"
-                            name="addressLine2"
-                            onChange={(event)=>handleAddressChange(event.target.name, event.target.value, address.id)}
+                    margin="normal"
+                    required
+                    id="addressLine1"
+                    label="Address Line 1"
+                    name="addressLine1"
+                    onChange={handleAddressChange}
+                />
+                <br />
+                <TextField
+                    margin="normal"
+                    id="Address"
+                    label="Address Line 2"
+                    name="addressLine2"
+                    onChange={handleAddressChange}
 
-                        />
-                        <br />
-                        <TextField
-                            margin="normal"
-                            required
-                            id="City"
-                            label="City"
-                            name="city"
-                            onChange={(event)=>handleAddressChange(event.target.name, event.target.value, address.id)}
+                />
+                <br />
+                <TextField
+                    margin="normal"
+                    required
+                    id="City"
+                    label="City"
+                    name="city"
+                    onChange={handleAddressChange}
 
-                        />
-                        <br />
-                        <TextField
-                            margin="normal"
-                            required
-                            id="Pin"
-                            label="Pin code"
-                            name="pinCode"
-                            type="number"
-                            onChange={(event)=>handleAddressChange(event.target.name, event.target.value, address.id)}
+                />
+                <br />
+                <TextField
+                    margin="normal"
+                    required
+                    id="Pin"
+                    label="Pin code"
+                    name="pinCode"
+                    type="number"
+                    onChange={handleAddressChange}
 
-                        />
+                />
             </div>
         )
     }
 
-    const handleAddressChange=(event)=>{
+    const handleAddressChange = (event) => {
+        var { name, value } = event.target
+        user.address.map((x) => x.[name] = value)
 
-        var {name, value} = event
-        user.address[0].[name]=value
-        
     }
-    const handleFormChange=(event)=>{
-        user.[event.target.name]=event.target.value
+    const handleFormChange = (event) => {
+        var value = event.target.value
+        if (event.target.name === 'phoneNumber') {
+            value = Number(value)
+        }
+        user.[event.target.name] = value
         //setUser()
     }
 
-    const handleSubmit=(event)=>{
+    const handleSubmit = (event) => {
 
-        console.log('am here')
         event.preventDefault()
         console.log(user)
-        setUser(user)
+
+
+        fetch('https://localhost:44360/api/user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(user)
+        })
+            .then(result => {
+                if (result.status === 201) {
+                    result.json().then(user => {
+                        console.log(user, 'result from backend')
+                        setUserStore({user})
+                    })
+                    history.push('/')
+                }
+            })
     }
 
-    return(
+    return (
         <div>
             <Header title={(props.location.pathname).substring(1)} history={props.history} />
-             <form >
+            <form >
                 <TextField
                     margin="normal"
                     required
@@ -114,9 +134,10 @@ export const AddUserProfile = (props) => {
                     name="phoneNumber"
                     onChange={handleFormChange}
                 />
-                </form>
-                {address()}
-                <Button onClick={handleSubmit}>Update</Button>
+            </form>
+            {address()}
+            <Button onClick={handleSubmit}>Update</Button>
+
         </div>
     )
 }

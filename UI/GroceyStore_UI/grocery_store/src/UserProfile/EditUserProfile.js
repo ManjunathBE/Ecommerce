@@ -2,17 +2,26 @@ import React, { useState } from "react"
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Header } from '../Header'
+import { useStore } from "../Store"
 
 
 export const EditUserProfile = (props) => {
     var userDetails = props.location.state.user
+    console.log('userdetails', userDetails)
     const [updatedUserData, setUpdatedUserData] = useState(userDetails)
     console.log(updatedUserData, 'updated')
     const {history} = props;
+    const {userStore,setUserStore} = useStore();
 
     const handleFormChange = (event) => {
         console.log(event, 'in change')
-        const { name, value } = event.target
+        const { name } = event.target
+
+        var value = event.target.value
+        if(name === 'phoneNumber'){
+            value = Number(value)
+        }
+
         setUpdatedUserData({
             ...updatedUserData,
             [name]: value
@@ -46,11 +55,13 @@ export const EditUserProfile = (props) => {
             })
             .then(result =>{
 
+                var user = result
                 if(result.status ===201){
-                    history.push({
-                        pathname:'/userprofile',
-                        state:{isUserUpdated:true}
+                    result.json().then(user => {
+                        console.log(user, 'result from backend')
+                        setUserStore({user})
                     })
+                    history.push('/UserProfile')
                 }
             })
             }

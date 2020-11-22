@@ -6,7 +6,7 @@ import { useStore } from "../Store";
 import { Redirect } from "react-router-dom";
 
 export const UserProfile = (props) => {
-
+console.log(props,'user profile props')
   useEffect(() => {
     fetchUserDetails()
   }, [])
