@@ -17,6 +17,6 @@ namespace GroceryStore_Backend.Models
         public string PinCode { get; set; }
 
          [ForeignKey("User")]
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
     }
 }

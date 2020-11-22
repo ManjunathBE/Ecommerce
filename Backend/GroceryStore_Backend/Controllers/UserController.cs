@@ -21,16 +21,24 @@ namespace GroceryStore_Backend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUserAsync (long phoneNumber )
         {
-            var user = await _userService.GetUsersasync(phoneNumber);
+            
+            var user = await _userService.GetUserAsync(phoneNumber);
             return Ok(user);
         }
         
         [HttpPut]
-        public async Task<IActionResult> Edit(int userId, User updatedUserData)
-        {
-            await _userService.EditUsersasync(userId, updatedUserData);
+        public async Task<IActionResult> Edit(Guid userId, User updatedUserData)
+        {         
+            await _userService.EditUserAsync(userId, updatedUserData);
             return Created($"api/user", updatedUserData);
         }
-        
+
+        [HttpPost]
+        public async Task<IActionResult> Add(User userData)
+        {
+           var addedUser = await _userService.AddUserAsync(userData);
+            return Created($"api/user", addedUser);
+        }
+
     }
 }

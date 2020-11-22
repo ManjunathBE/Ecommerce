@@ -15,14 +15,19 @@ namespace GroceryStore_Backend.Services
             _groceryStoreRepository = groceryStoreRepository;
         }
 
-        public Task<User> GetUsersasync(long phoneNumber)
+        public Task<User> GetUserAsync(long phoneNumber)
         {
             return _groceryStoreRepository.GetUser(phoneNumber);
         }
 
-        public async Task<User> EditUsersasync(int userId, User UpdatedUserData)
+        public async Task<User> EditUserAsync(Guid userId, User UpdatedUserData)
         {
              return await  _groceryStoreRepository.EditUser(userId, UpdatedUserData);
+        }
+
+        public async Task<User> AddUserAsync(User UserData)
+        {
+            return await _groceryStoreRepository.AddUser(UserData);
         }
     }
 }

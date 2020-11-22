@@ -16,9 +16,11 @@ namespace GroceryStore_Backend.Repository
 
         Task<User> GetUser(long phoneNumber);
 
-        Task<User> EditUser(int userId, User UpdatedUserData);
+        Task<User> EditUser(Guid userId, User UpdatedUserData);
+
+        Task<User> AddUser(User userData);
         
-        Task<List<TransactionHistory>> GetTransactionHistory(int UserId);
+        Task<List<TransactionHistory>> GetTransactionHistory(Guid UserId);
         Task<TransactionHistory> AddTrnsaction(TransactionHistory transaction);
     }
 }

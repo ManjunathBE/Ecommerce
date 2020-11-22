@@ -74,7 +74,41 @@ namespace GroceryStore_Backend.Repository
             //}
             //return null;
         }
-        public async Task<User> EditUser(int userId, User UpdatedUserData)
+
+        public async Task<User> AddUser(User userData)
+        {
+            userData.UserId = Guid.NewGuid();
+            await _groceryStoreDbContext.AddAsync(userData);
+
+            foreach (var address in userData.Address)
+            {
+                await _groceryStoreDbContext.AddAsync(address);
+            }
+
+            //_groceryStoreDbContext.Add<User>(new User
+            //{
+            //    FirstName = userData.FirstName,
+            //    LastName = userData.LastName,
+            //    Email = userData.Email,
+            //    PhoneNumber = userData.PhoneNumber,
+            //    UserId = userData.UserId
+            //});
+
+            //foreach (var address in userData.Address)
+            //{
+            //    _groceryStoreDbContext.Add<Address>(new Address
+            //    {
+            //        AddressLine1 = address.AddressLine1,
+            //        AddressLine2 =address.AddressLine2,
+            //        City = address.City,
+            //        PinCode = address.PinCode
+
+            //    });
+            //        }
+            _groceryStoreDbContext.SaveChanges();
+            return userData;
+        }
+        public async Task<User> EditUser(Guid userId, User UpdatedUserData)
         {
             try
             {
@@ -102,7 +136,7 @@ namespace GroceryStore_Backend.Repository
             return UpdatedUserData;
         }
 
-        public async Task<List<TransactionHistory>> GetTransactionHistory(int userId)
+        public async Task<List<TransactionHistory>> GetTransactionHistory(Guid userId)
         {
             // var x = _groceryStoreDbContext.OrderedProducts.Count();
             return _groceryStoreDbContext.TransactionHistory.Where(tran => tran.UserId == userId).Include(d => d.OrderedProducts).ToList();
