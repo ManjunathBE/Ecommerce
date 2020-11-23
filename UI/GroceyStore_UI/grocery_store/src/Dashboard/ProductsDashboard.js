@@ -63,7 +63,7 @@ export const ProductsDashboard = (props) => {
   const categoryName = (props.location.pathname).substring(1)
   const fetchProducts = () => {
     
-    fetch('https://localhost:44360/Product?category='+categoryName,)
+    fetch('https://grocerystoreapi.azurewebsites.net/Product?category='+categoryName,)
       .then(result => {
         if (result.status === 404) {
           console.log('result is 404')

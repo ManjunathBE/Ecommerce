@@ -20,16 +20,15 @@ namespace GroceryStore_Backend.Controllers
             _transactionHistoryService = transactionHistoryService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetTransactionsasync(int UserId)
+        public async Task<IActionResult> GetTransactionsasync(Guid UserId)
         {       
             return Ok(await _transactionHistoryService.GetTransactionsasync(UserId));
         }
         [HttpPost]
-        public async Task<IActionResult> AddTransaction(TransactionHistory transactionn)
+        public async Task<IActionResult> AddTransaction(TransactionHistory transaction)
         {
-            //TODO: handle properly
-            await _transactionHistoryService.AddTransactionsasync(transactionn);
-            return Ok();
+            await _transactionHistoryService.AddTransactionsasync(transaction);
+            return Created("$transaction", transaction);
         }
     }
 }

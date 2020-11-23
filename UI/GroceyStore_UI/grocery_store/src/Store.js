@@ -3,7 +3,7 @@ import { InsertInvitation, Store } from '@material-ui/icons';
 import React, { createContext, useContext, useReducer } from 'react';
 
 const StoreContext = createContext();
-const initialState = { view: "", cart: [] };
+const initialState = { view: "", cart: [], user:{} };
 
 const cartReducer = (state = initialState, action) => {
 
@@ -35,7 +35,7 @@ const cartReducer = (state = initialState, action) => {
 
         case 'AddFromHistory':       
             return {
-                ...state, cart: [...state.cart, {
+                ...state, cart: [{
                     productName: action.item.productName,
                     quantity: action.item.quantity,
                     unit: action.item.unit,
@@ -51,11 +51,18 @@ const viewReducer = (state, action) => {
     return { ...state, view: action.view }
 }
 
+const userReducer = (state, action) =>{
+
+    console.log('in user store', action)
+    return {...state, user: action.user}
+}
+
 export const StoreProvider = ({ children }) => {
     const [cartStore, setCartStore] = useReducer(cartReducer, initialState);
     const [viewStore, setviewStore] = useReducer(viewReducer, initialState)
+    const [userStore, setUserStore] = useReducer(userReducer, initialState)
     return (
-        <StoreContext.Provider value={{ cartStore, setCartStore, viewStore, setviewStore }}>
+        <StoreContext.Provider value={{ cartStore, setCartStore, viewStore, setviewStore, userStore, setUserStore }}>
             {children}
         </StoreContext.Provider>
     )

@@ -40,7 +40,7 @@ export const Dashboard = (props) => {
 
   const fetchCategory = () => {
 
-    fetch('https://eorganicshop.herokuapp.com/Category',
+    fetch('https://grocerystoreapi.azurewebsites.net/Category',
       {
         mode: 'cors'
       })

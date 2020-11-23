@@ -92,14 +92,16 @@
       "PhoneNumb": "484845",
       "Address": [
         {
-          "HouseName": "h1",
-          "AreaName": "a1",
+          "id": "1",
+          "AddressLine1": "h1",
+          "AdressLine2": "a1",
           "City": "bengaluru",
           "PinCode": "577525"
         },
         {
-          "HouseName": "h2",
-          "AreaName": "a2",
+          "id": "2",
+          "AddressLine1": "h2",
+          "AddressLine2": "a2",
           "City": "bengaluru urban",
           "PinCode": "577526"
         }
@@ -114,14 +116,14 @@
       "PhoneNumb": "484845",
       "Address": [
         {
-          "HouseName": "h1",
-          "AreaName": "a1",
+          "AddressLine1": "h1",
+          "AddressLine2": "a1",
           "City": "bengaluru",
           "PinCode": "577525"
         },
         {
-          "HouseName": "h2",
-          "AreaName": "a2",
+          "AddressLine1": "h2",
+          "AddressLine2": "a2",
           "City": "bengaluru urban",
           "PinCode": "577526"
         }

@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React, { useState } from "react"
 import { Header } from './Header'
 import { useStore } from "./Store";
 import { Table, TableContainer, TableBody, TableCell, TableHead, TableRow, Checkbox, Paper, Toolbar, Typography, Tooltip } from '@material-ui/core'
@@ -9,6 +9,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 import { Delete } from "@material-ui/icons";
 import Button from "@material-ui/core/Button"
+import SuccessPage from './Success'
+import { Redirect } from "react-router-dom";
+import FlashMessage from 'react-flash-message'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -96,11 +99,12 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 export const Cart = (props) => {
   const classes = useStyles();
-  const [selected, setSelected] = React.useState([]);
-  const [dense, setDense] = React.useState(false);
-  const { cartStore, setCartStore } = useStore();
+  const [selected, setSelected] = useState([]);
+  const [dense, setDense] = useState(false);
+  const { cartStore, setCartStore, userStore } = useStore();
   const [disablePlaceOrderButton, setDisablePlaceOrderButton] = React.useState(true)
   const { history } = props;
+  const [isOrderPlaced, setIsOrderPlaced] = useState(false)
 
   const EnhancedTableToolbar = (props) => {
     const classes = useToolbarStyles();
@@ -170,8 +174,9 @@ export const Cart = (props) => {
 
   const handlePlaceOrder = () => {
 
+    console.log(userStore,'userStore')
     const payload = {
-      UserId: 1,
+      UserId: userStore.user.userId,
       Status: 'Ordered',
       orderedProducts: cartStore.cart
     }
@@ -182,6 +187,16 @@ export const Cart = (props) => {
         'Content-Type': 'application/json'
       },
       body:JSON.stringify(payload)
+    })
+    .then(result=>{
+      if(result.status===201){
+      console.log(result, 'result from backend')
+      var orderId = result.transactionId;
+      console.log(orderId, 'orderid')
+
+      setIsOrderPlaced(true)
+
+      }
     })
 
   }
@@ -253,7 +268,9 @@ export const Cart = (props) => {
         
 
       </Paper>
-
+     {isOrderPlaced? <div  className='flashStyling'><FlashMessage duration={5000}>
+    Order placed
+  </FlashMessage> </div>:""} 
     </div>
   )
 }

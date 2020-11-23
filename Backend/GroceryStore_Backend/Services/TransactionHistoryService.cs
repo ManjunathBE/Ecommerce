@@ -15,12 +15,12 @@ namespace GroceryStore_Backend.Services
             _groceryStoreRepository = groceryStoreRepository;
         }
 
-        public async Task AddTransactionsasync(TransactionHistory transaction)
+        public async Task<TransactionHistory> AddTransactionsasync(TransactionHistory transaction)
         {
-             await _groceryStoreRepository.AddTrnsaction(transaction);
+             return await _groceryStoreRepository.AddTrnsaction(transaction);
         }
 
-        public Task<List<TransactionHistory>> GetTransactionsasync(int UserId)
+        public Task<List<TransactionHistory>> GetTransactionsasync(Guid UserId)
         {
             return _groceryStoreRepository.GetTransactionHistory(UserId);
         }
