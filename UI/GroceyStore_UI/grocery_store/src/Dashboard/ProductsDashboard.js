@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {Header} from '../Header'
+import { Header } from '../Header'
 import {
   Grid,
   Card,
@@ -40,9 +40,15 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
     padding: theme.spacing(2),
   },
-  addProductPopUpDimesnsion:{
-    width:"350px",
+  addProductPopUpDimesnsion: {
+    width: "350px",
   },
+  alignLeft:{
+    textAlign: "left"
+  },
+  alignRight:{
+    textAlign: "right"
+  }
 }));
 
 export const ProductsDashboard = (props) => {
@@ -55,15 +61,15 @@ export const ProductsDashboard = (props) => {
   const [productName, setproductName] = useState("")
   const [unitType, setUnitType] = useState("")
   const images = require.context('../assets/products', true);
-  const {viewStore} = useStore();
+  const { viewStore } = useStore();
 
   useEffect(() => {
     fetchProducts()
   }, [])
   const categoryName = (props.location.pathname).substring(1)
   const fetchProducts = () => {
-    
-    fetch('https://grocerystoreapi.azurewebsites.net/Product?category='+categoryName,)
+
+    fetch('https://localhost:44360/Product?category=' + categoryName,)
       .then(result => {
         if (result.status === 404) {
           console.log('result is 404')
@@ -72,7 +78,7 @@ export const ProductsDashboard = (props) => {
         } else {
           result.json().then(body => {
             console.log(body)
-            setProducts(body.slice(0,4))
+            setProducts(body.slice(0, 4))
           });
         }
       })
@@ -85,18 +91,28 @@ export const ProductsDashboard = (props) => {
     const { productName, price, imagePath, unitType } = products[
       `${id}`
     ];
+    var unitToDisplay=""
+    if(unitType==='Kg'){
+      unitToDisplay = '1 Kg'
+    }
+
     const image = images(`./${imagePath}.jpg`);
     return (
 
       <Grid item xs={6} sm={4} key={id}>
-        <Card onClick={()=>handleProductClick(price, productName, unitType)}>
+        <Card onClick={() => handleProductClick(price, productName, unitType)}>
           <CardMedia
             className={classes.cardMedia}
             image={image}
             style={{ width: "130px", height: "130px" }}
           />
-          <CardContent className={classes.cardContent}>
-            <Typography>{`${toFirstCharUppercase(productName)}`}</Typography>
+          <CardContent >
+            <Typography className={classes.cardContent}>{`${toFirstCharUppercase(productName)}`}</Typography>
+            <Grid container>
+            <Grid item >
+            <Typography className={classes.alignLeft}>{price}</Typography></Grid>
+           <Grid item ><Typography className={classes.alignRight}>{unitToDisplay}</Typography></Grid>
+           </Grid>
           </CardContent>
         </Card>
       </Grid>
@@ -110,7 +126,7 @@ export const ProductsDashboard = (props) => {
     ];
     const image = images(`./${imagePath}.jpg`);
     return (
-      <Card onClick={()=>handleProductClick(price, productName, unitType)}>
+      <Card onClick={() => handleProductClick(price, productName, unitType)}>
         <Grid container key={id}>
           <Grid item xs={4} >
             <CardMedia
@@ -132,21 +148,21 @@ export const ProductsDashboard = (props) => {
   }
 
   const SetView = () => {
-    console.log(viewStore,'fdfdfd')
-    if(viewStore.view==="List"){
+    console.log(viewStore, 'fdfdfd')
+    if (viewStore.view === "List") {
       console.log('in if')
-        return (<div>
+      return (<div>
         {Object.keys(products).map((id) => getListCard(id))}
       </div>)
     }
-     else {
+    else {
       return (<Grid container className={classes.DashboardContainer}>
         {Object.keys(products).map((id) => getGridCard(id))}
       </Grid>)
     }
   }
 
-  const handleProductClick=(price, productName, unitType) =>{
+  const handleProductClick = (price, productName, unitType) => {
     setProductPrice(price)
     setproductName(productName)
     setUnitType(unitType)
@@ -157,7 +173,7 @@ export const ProductsDashboard = (props) => {
     setOpenAddProductDialogState(false)
   }
 
-  const closeModal=()=>{
+  const closeModal = () => {
     setOpenAddProductDialogState(false)
   }
 
@@ -170,15 +186,15 @@ export const ProductsDashboard = (props) => {
       ) : (
           <CircularProgress />
         )}
-      <Dialog classes={{paper:classes.addProductPopUpDimesnsion}} onClose={handleDialogClose} open={openAddProductDialog}>
+      <Dialog classes={{ paper: classes.addProductPopUpDimesnsion }} onClose={handleDialogClose} open={openAddProductDialog}>
         <DialogTitle className={classes.root}>
-        <IconButton  className={classes.closeButton} aria-label="close" onClick={handleDialogClose}>
-          <CloseIcon />
-        </IconButton>
-        {productName}
+          <IconButton className={classes.closeButton} aria-label="close" onClick={handleDialogClose}>
+            <CloseIcon />
+          </IconButton>
+          {productName}
         </DialogTitle>
         <DialogContent dividers>
-        <AddProduct modelOpen={closeModal} price={productPrice} productName={productName} unitType={unitType}/>
+          <AddProduct modelOpen={closeModal} price={productPrice} productName={productName} unitType={unitType} />
         </DialogContent>
       </Dialog>
 
