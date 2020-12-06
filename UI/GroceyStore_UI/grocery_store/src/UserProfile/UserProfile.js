@@ -4,8 +4,26 @@ import { Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import { useStore } from "../Store";
 import { Redirect } from "react-router-dom";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  formPosition: {
+      textAlign: "center",
+      marginTop: "40%",
+
+  },
+
+  btnStyling: {
+      width: "60%",
+      padding: "2%",
+      textAlign: "center",
+  }
+
+
+}));
 
 export const UserProfile = (props) => {
+  const classes = useStyles();
 console.log(props,'user profile props')
   useEffect(() => {
     fetchUserDetails()
@@ -47,9 +65,9 @@ console.log(props,'user profile props')
 
   return (
     
-    <div>
+    <div >
       <Header title={(props.location.pathname).substring(1)} history={props.history} />
-      {Object.keys(userStore.user).length!==0? (<div>
+      {Object.keys(userStore.user).length!==0? (<div className={classes.formPosition}>
       <Typography>Name : {userStore.user.firstName} {userStore.user.lastName}</Typography>
       <Typography>Mobile : {userStore.user.phoneNumber}</Typography>
       <Typography>Email :  {userStore.user.email}</Typography>
@@ -58,7 +76,7 @@ console.log(props,'user profile props')
       { (userStore.user.address).map((id) => <Typography>Address : {id.addressLine1} <br />{id.addressLine2}<br />{id.city}<br />{id.pinCode}</Typography>)
         }
 
-<Button 
+<Button color="primary" variant="contained"
 onClick={()=>history.push({pathname: '/Edit User Profile',
                           state: {user:userStore.user}})}>
   Edit Profile
