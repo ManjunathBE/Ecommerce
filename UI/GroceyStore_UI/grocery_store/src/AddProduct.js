@@ -23,8 +23,9 @@ const useStyles = makeStyles((theme) => ({
 
 
 export const AddProduct = (props) => {
+    console.log(props,'props in add')
     const { cartStore, setCartStore } = useStore();
-    const { productName, price, history, unitType } = props
+    const { productName, price, history, unitType, quantityToEdit } = props
     const [units, setUnits] = useState(1)
     const [isEnterWeightSetToManual, setIsEnterWeightSetToManual] = useState(false)
     const [quantityByManualEntry, setQuantityByManualEntry] = useState()
@@ -87,7 +88,7 @@ export const AddProduct = (props) => {
 
     const QuantitySelector = () => {
 
-        if (unitType === "Kilograms") {
+        if (unitType === "Kg") {
             return (
                 <Grid container spacing={3}>
                     <Grid xs={6}>
@@ -119,7 +120,7 @@ export const AddProduct = (props) => {
     }
 
     const ManualQuantityInput = () => {
-        if (unitType === "Kilograms") {
+        if (unitType === "Kg") {
         return (<FormControl>
             <Input
            
@@ -165,9 +166,10 @@ export const AddProduct = (props) => {
     };
 
     const handleManualQuantityChange = (event) => {
-        console.log(event, 'eventtt')
+        console.log(event.target.value, 'eventtt value')
         setQuantityByManualEntry(event.target.value)
-        setCalculatdPrice(price * event.target.value)
+        setCalculatdPrice(price * event.target.value)       
+        
     }
 
     const handleNumbersChange = (name, value) => {
@@ -185,13 +187,23 @@ export const AddProduct = (props) => {
         var isUpdate = false
         var quantity, unit
 
-        if (unitType === 'Kilograms') {
+        if (unitType === 'Kg') {
+            if(isEnterWeightSetToManual){
+                quantity = quantityByManualEntry
+            }
+            else{
             quantity = valueGroupsKG.Weight + valueGroupsGrams.Weight
-            unit = 'kg'
+            }
+            unit = 'Kg'
         }
         else if (unitType === 'Numbers') {
+            if(isEnterWeightSetToManual){
+                quantity = quantityByManualEntry
+            }
+            else{
             quantity = valueGroupsNumbers.Weight
-            unit = 'numbers'
+            }
+            unit = 'Numbers'
         }
         console.log(typeof (quantity), 'typeee')
 
@@ -212,6 +224,7 @@ export const AddProduct = (props) => {
             setCartStore({ productName, quantity, unit, price: price * (quantity), type: 'Add' })
             props.modelOpen("false")
         }
+        setIsEnterWeightSetToManual(false)
 
     }
 
