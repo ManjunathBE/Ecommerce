@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 import { Header } from './Header'
 import { useStore } from "./Store";
-import { Table, TableContainer, TableBody, TableCell, TableHead, TableRow, Checkbox, Paper, Toolbar, Typography, Tooltip } from '@material-ui/core'
+import { Table, TableContainer, TableBody, TableCell, TableHead, TableRow, Checkbox, Paper, Toolbar, Typography, 
+  Tooltip,  DialogTitle, DialogContent, Dialog } from '@material-ui/core'
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -12,6 +13,9 @@ import Button from "@material-ui/core/Button"
 import SuccessPage from './Success'
 import { Redirect } from "react-router-dom";
 import FlashMessage from 'react-flash-message'
+import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
+import {AddProduct} from './AddProduct'
+import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,6 +34,15 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     top: 20,
     width: 1,
+  },
+  addProductPopUpDimesnsion:{
+    width:"350px",
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
   },
 }));
 
@@ -105,6 +118,8 @@ export const Cart = (props) => {
   const [disablePlaceOrderButton, setDisablePlaceOrderButton] = React.useState(true)
   const { history } = props;
   const [isOrderPlaced, setIsOrderPlaced] = useState(false)
+  const [editCart, setEditCart] = useState(false)
+  const [productToEdit, setProductToEdit] = useState([]);
 
   const EnhancedTableToolbar = (props) => {
     const classes = useToolbarStyles();
@@ -172,6 +187,13 @@ export const Cart = (props) => {
     setSelected(newSelected);
   };
 
+  const handleEditClick =(event, cart)=>{
+    console.log(cart,'cart in edit')
+    setEditCart(true)
+    console.log(event,'event in edit')
+ setProductToEdit(cart);
+  }
+
   const handlePlaceOrder = () => {
 
     console.log(userStore,'userStore')
@@ -201,6 +223,10 @@ export const Cart = (props) => {
 
   }
 
+  const handleDialogClose =()=>{
+    setEditCart(false)
+
+  }
   const isSelected = (name) => selected.indexOf(name) !== -1;
   const emptyRows = cartStore.cart
   console.log(emptyRows, 'empt')
@@ -231,7 +257,7 @@ export const Cart = (props) => {
                 return (
                   <TableRow
                     hover
-                    onClick={(event) => handleClick(event, cart.productName)}
+                   
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
@@ -242,10 +268,12 @@ export const Cart = (props) => {
                       <Checkbox
                         checked={isItemSelected}
                         inputProps={{ 'aria-labelledby': labelId }}
+                        onClick={(event) => handleClick(event, cart.productName)}
                       />
                     </TableCell>
                     <TableCell component="th" id={labelId} scope="row" padding="none">
                       {cart.productName}
+                      <EditTwoToneIcon onClick={(event)=> handleEditClick(event, cart)}/>
                     </TableCell>
                     <TableCell align="right">{cart.quantity}</TableCell>
                     <TableCell align="right">{cart.unit}</TableCell>
@@ -268,6 +296,23 @@ export const Cart = (props) => {
         
 
       </Paper>
+
+      <Dialog classes={{paper:classes.addProductPopUpDimesnsion}} onClose={handleDialogClose} open={editCart}>
+        <DialogTitle className={classes.root}>
+        <IconButton  className={classes.closeButton} aria-label="close" onClick={handleDialogClose}>
+          <CloseIcon />
+        </IconButton>
+        {productToEdit.productName}
+        </DialogTitle>
+        <DialogContent dividers>
+        <AddProduct modelOpen={handleDialogClose} price={productToEdit.price} 
+            productName={productToEdit.productName} 
+            unitType={productToEdit.unit}
+            quantityToEdit={productToEdit.quantity}/>
+        </DialogContent>
+      </Dialog>
+
+      
      {isOrderPlaced? <div  className='flashStyling'><FlashMessage duration={5000}>
     Order placed
   </FlashMessage> </div>:""} 
