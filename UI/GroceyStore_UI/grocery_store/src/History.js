@@ -195,7 +195,7 @@ export function History(props) {
        </DialogTitle>
        <DialogContent>
          The items in your cart will be deleted
-         <Button onClick={handleProceedToCart}>Proceed</Button>
+         <Button varaint="contained" color="primary" onClick={handleProceedToCart}>Proceed</Button>
        </DialogContent>
       </Dialog>
       </div>

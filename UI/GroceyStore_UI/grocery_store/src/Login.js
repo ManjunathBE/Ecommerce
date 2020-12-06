@@ -2,11 +2,37 @@ import React, { Component, useState } from "react";
 import { Header } from './Header'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import { Typography } from '@material-ui/core';
 import { FormControl } from '@material-ui/core';
 import { useAuth } from './Auth'
 import { useStore } from "./Store";
+import { makeStyles } from "@material-ui/core/styles";
+import { VerticalAlignCenter } from "@material-ui/icons";
+import LockIcon from '@material-ui/icons/Lock';
+
+const useStyles = makeStyles((theme) => ({
+
+    iconStyle:{
+        border: "1px solid"
+    },
+    formPosition: {
+        textAlign: "center",
+        marginTop: "40%",
+    },
+
+    btnStyling: {
+        width: "60%",
+        padding: "2%",
+        textAlign: "center",
+    }
+
+
+}));
 
 export const Login = (props) => {
+
+    const classes = useStyles();
+
 
     const [phone, setPhone] = useState();
     const [password, setPassword] = useState();
@@ -55,7 +81,7 @@ export const Login = (props) => {
                     console.log('otp error', error)
                 })
         }
-        console.log(errors,'errors in handle otp')
+        console.log(errors, 'errors in handle otp')
 
     }
 
@@ -71,7 +97,7 @@ export const Login = (props) => {
             fetchUser()
             history.push('/')
         }
-        console.log(errors,'errors')
+        console.log(errors, 'errors')
     }
 
     const validatePhone = () => {
@@ -102,37 +128,39 @@ export const Login = (props) => {
 
     const fetchUser = () => {
 
-        fetch('https://localhost:44360/api/user?phoneNumber='+phone,
-          {
-            mode: 'cors'
-          })
-          .then(result => {
-            console.log(result)
-            if (result.status === 404) {
-              console.log('result is 404')
-            } else if (result.status !== 200) {
-              console.log(result)
-              console.log('result is not 200')
-            } else {
-              result.json().then(body => {
-                console.log(body, 'response')
-                console.log(body.address)
-                var user=body
-                setUserStore({user})
+        fetch('https://localhost:44360/api/user?phoneNumber=' + phone,
+            {
+                mode: 'cors'
+            })
+            .then(result => {
+                console.log(result)
+                if (result.status === 404) {
+                    console.log('result is 404')
+                } else if (result.status !== 200) {
+                    console.log(result)
+                    console.log('result is not 200')
+                } else {
+                    result.json().then(body => {
+                        console.log(body, 'response')
+                        console.log(body.address)
+                        var user = body
+                        setUserStore({ user })
 
-              });
-            }
-          })
-          .catch(error => {
-            console.log("error from server", JSON.stringify(error, Object.getOwnPropertyNames(error)));
-          });
-      }
+                    });
+                }
+            })
+            .catch(error => {
+                console.log("error from server", JSON.stringify(error, Object.getOwnPropertyNames(error)));
+            });
+    }
 
     return (
         <div>
             <Header title='Organic House' history={props.history} />
 
-            <form>
+            <form className={classes.formPosition}>
+                {/* <LockIcon/>
+                <Typography> Sign in </Typography> */}
                 <TextField
                     variant="outlined"
                     margin="normal"
@@ -140,7 +168,6 @@ export const Login = (props) => {
                     id="phone"
                     label="Phone number (10 digits)"
                     name="phone"
-                    autoFocus
                     onChange={handlePhoneNumberChange}
                     error={errors.phone}
                     helperText={errors.phone}
@@ -160,6 +187,7 @@ export const Login = (props) => {
                     helperText={errors.password}
                 />
                     <Button
+                        className={classes.btnStyling}
                         type="submit"
                         fullWidth
                         variant="contained"
@@ -171,8 +199,8 @@ export const Login = (props) => {
           </Button></React.Fragment> :
 
                     <Button
+                        className={classes.btnStyling}
                         type="submit"
-                        fullWidth
                         variant="contained"
                         color="primary"
                         onClick={handleRequestOTP}
