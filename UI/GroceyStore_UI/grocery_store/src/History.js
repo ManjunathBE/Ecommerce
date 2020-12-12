@@ -9,10 +9,10 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import { Dialog, DialogContent, DialogTitle } from '@material-ui/core';
+import { Dialog, DialogContent, DialogTitle, Switch, Typography, Grid } from '@material-ui/core';
 import Button from "@material-ui/core/Button"
 import { useStore } from "./Store";
-
+import { Label } from "@material-ui/icons";
 
 const columns = [
   { id: 'date', label: 'Date', minWidth: 130 },
@@ -42,12 +42,14 @@ export function History(props) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [transactions, setTransactions] = useState([]);
-  const userId = 1
   const [Dialogview, setDialogView] = useState(false)
   const [selectedRow, setSelectedRow] = useState([])
   const { cartStore, setCartStore, userStore } = useStore();
   const { history } = props;
-  const [warningDialog,setWarningDialog] = useState(false)
+  const [warningDialog, setWarningDialog] = useState(false)
+  const [showToggleSwitch, setShowToggleSwitch] = useState(false)
+  const [isToggleOn, setIsToggleOn] = useState(false)
+
 
 
   useEffect(() => {
@@ -103,26 +105,26 @@ export function History(props) {
       { id: 'Units', numeric: true, disablePadding: true, label: 'Units' },
     ]
 
-    const handleEditOrReorder = (e)=>{
+    const handleEditOrReorder = (e) => {
       e.preventDefault()
 
-      console.log(cartStore.cart.length,'cart in edit')
-      if(cartStore.cart.length!==0){
+      console.log(cartStore.cart.length, 'cart in edit')
+      if (cartStore.cart.length !== 0) {
         setWarningDialog(true)
       }
-      else{
-        orderedProducts.map((item)=>  setCartStore({item, type: 'AddFromHistory' }))     
+      else {
+        orderedProducts.map((item) => setCartStore({ item, type: 'AddFromHistory' }))
         history.push(`/cart`)
-      }     
+      }
     }
 
-    const handleWarningDialogClose =()=>{
+    const handleWarningDialogClose = () => {
       setWarningDialog(false)
     }
-  
-    const handleProceedToCart =()=>{
-      orderedProducts.map((item)=>  setCartStore({item, type: 'AddFromHistory' }))     
-       history.push(`/cart`)
+
+    const handleProceedToCart = () => {
+      orderedProducts.map((item) => setCartStore({ item, type: 'AddFromHistory' }))
+      history.push(`/cart`)
     }
 
     const handleClose = () => {
@@ -131,75 +133,107 @@ export function History(props) {
     console.log(tran, 'tran in order')
 
     const showActionButtons = () => {
-
       if (tran.status === 'Executed') {
+        setShowToggleSwitch(true)
         return (<Button onClick={handleEditOrReorder}>Reorder</Button>)
       }
       else if (tran.status === 'Ordered') {
+        setShowToggleSwitch(false)
         return (<Button onClick={handleEditOrReorder}>Edit</Button>)
       }
       else if (tran.status === 'Processed') {
+
+        setShowToggleSwitch(false)
         return (<React.Fragment><Button>Missing</Button>
           <Button>Return</Button>
           <Button>Confirm received products</Button></React.Fragment>)
       }
     }
 
+    const handleSwitchChange = (event) => {
+      setIsToggleOn(event.target.checked)
+    }
+
+    console.log(showToggleSwitch, 'switch')
     return (
       <div>
-      <Dialog onClose={handleClose} open={Dialogview}>
-        <DialogTitle>
 
-        </DialogTitle>
-        <DialogContent>
+        <Dialog onClose={handleClose} open={Dialogview}>
+          <DialogTitle>
 
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  {Headers.map((headCell) => (
-                    <TableCell
-                      key={headCell.id}
-                      align={headCell.numeric ? 'right' : 'left'}
-                      padding={headCell.disablePadding ? 'none' : 'default'}
-                    >
-                      {headCell.label}
-                    </TableCell>
-                  ))}
-                </TableRow>
+          </DialogTitle>
+          <DialogContent>
 
-              </TableHead>
-              <TableBody>
-                {tran.orderedProducts.map((p) => {
+            {showToggleSwitch ?
+              <Grid container direction='row' >
+                <Grid xs={3}>
+                  <Typography>Ordered</Typography></Grid>
+                <Grid xs={3}><Switch onChange={handleSwitchChange} checked={isToggleOn} /></Grid>
+                <Grid xs={3}><Typography>Supplied</Typography></Grid>
+              </Grid> : ""}
 
-                  return (
-                    <TableRow>
-                      <TableCell>{p.productName}</TableCell>
-                      <TableCell>{p.price}</TableCell>
-                      <TableCell>{p.quantity}</TableCell>
-                      <TableCell>{p.unit}</TableCell>
-                    </TableRow>
-                  )
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          {showActionButtons()}
-        </DialogContent>
-      </Dialog>
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    {Headers.map((headCell) => (
+                      <TableCell
+                        key={headCell.id}
+                        align={headCell.numeric ? 'right' : 'left'}
+                        padding={headCell.disablePadding ? 'none' : 'default'}
+                      >
+                        {headCell.label}
+                      </TableCell>
+                    ))}
+                  </TableRow>
 
-      
-      <Dialog onClose={handleWarningDialogClose} open={warningDialog}>
-       <DialogTitle>
+                </TableHead>
+                <TableBody>
+                  {isToggleOn ?
+                    tran.orderedProducts.map((p) => {
 
-       </DialogTitle>
-       <DialogContent>
-         The items in your cart will be deleted
+                      return (
+                        <TableRow>
+                          <TableCell>{p.productName}</TableCell>
+                          <TableCell>{p.processedPrice}</TableCell>
+                          <TableCell>{p.processedQuantity}</TableCell>
+                          <TableCell>{p.unit}</TableCell>
+                        </TableRow>
+                      )
+                    })
+
+                    :
+                    
+                    tran.orderedProducts.map((p) => {
+
+                      return (
+                        <TableRow>
+                          <TableCell>{p.productName}</TableCell>
+                          <TableCell>{p.price}</TableCell>
+                          <TableCell>{p.quantity}</TableCell>
+                          <TableCell>{p.unit}</TableCell>
+                        </TableRow>
+                      )
+                    })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            {showActionButtons()}
+          </DialogContent>
+        </Dialog>
+
+
+        <Dialog onClose={handleWarningDialogClose} open={warningDialog}>
+          <DialogTitle>
+
+          </DialogTitle>
+          <DialogContent>
+            The items in your cart will be deleted
          <Button varaint="contained" color="primary" onClick={handleProceedToCart}>Proceed</Button>
-       </DialogContent>
-      </Dialog>
+          </DialogContent>
+        </Dialog>
       </div>
-     
+
     )
   }
 
