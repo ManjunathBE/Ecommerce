@@ -127,7 +127,7 @@ export const AddUserProfile = (props) => {
                 if (result.status === 201) {
                     result.json().then(user => {
                         console.log(user, 'result from backend')
-                        setUserStore({user})
+                        setUserStore({user, type:'User'})
                     })
                     history.push('/')
                 }
@@ -135,11 +135,13 @@ export const AddUserProfile = (props) => {
         }
     }
 
+
     return (
         <div>
             <Header title={(props.location.pathname).substring(1)} history={props.history} />
             <form >
             <Button onClick={handleSubmit}>Update</Button>
+            
                 <TextField
                     margin="normal"
                     required
@@ -182,8 +184,6 @@ export const AddUserProfile = (props) => {
                 />
             </form>
             {address()}
-            
-
         </div>
     )
 }

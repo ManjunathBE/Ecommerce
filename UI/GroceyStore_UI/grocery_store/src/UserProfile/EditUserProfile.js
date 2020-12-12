@@ -54,12 +54,11 @@ export const EditUserProfile = (props) => {
                 body: JSON.stringify(updatedUserData)
             })
             .then(result =>{
-
                 var user = result
                 if(result.status ===201){
                     result.json().then(user => {
                         console.log(user, 'result from backend')
-                        setUserStore({user})
+                        setUserStore({user, type:'User'})
                     })
                     history.push('/UserProfile')
                 }

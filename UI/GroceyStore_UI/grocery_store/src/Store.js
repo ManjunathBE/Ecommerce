@@ -51,11 +51,26 @@ const viewReducer = (state, action) => {
     return { ...state, view: action.view }
 }
 
-const userReducer = (state, action) =>{
-
+const userReducer = (state, action) => {
     console.log('in user store', action)
-    return {...state, user: action.user}
+    switch (action.type) {
+        case 'Address': {
+            return {...state, address:[...state.user.address,{action}]}
+        }
+        case 'User':{
+            return { ...state, user: action.user }
+        }
+
+        default:
+            return state
+    }   
 }
+
+// const userReducer = (state, action) =>{
+
+//     console.log('in user store', action)
+//     return {...state, user: action.user}
+// }
 
 export const StoreProvider = ({ children }) => {
     const [cartStore, setCartStore] = useReducer(cartReducer, initialState);
