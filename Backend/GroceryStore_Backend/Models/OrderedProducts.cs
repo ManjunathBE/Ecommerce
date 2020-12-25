@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GroceryStore_Backend.Models
 {
-
     public class OrderedProducts
     {
         [Key]
@@ -15,15 +15,10 @@ namespace GroceryStore_Backend.Models
         public double Price { get; set; }
         public string Unit { get; set; }
         public double Quantity { get; set; }
-    }
-    public class TransactionHistory
-    {
-        [Key]
-        public int TransactionId { get; set; }
-        public DateTime TransactionDateTime { get; set; }
-        public string Status { get; set; }
-        public Guid UserId { get; set; }     
-        public List<OrderedProducts> OrderedProducts { get; set; }
-        
+        public double ProcessedQuantity { get; set; }
+        public double ProcessedPrice { get; set; }
+
+        [ForeignKey("OrderHistory")]
+        public Guid OrderId { get; set; }
     }
 }

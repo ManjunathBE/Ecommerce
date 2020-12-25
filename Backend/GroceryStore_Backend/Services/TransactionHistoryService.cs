@@ -7,22 +7,22 @@ using System.Threading.Tasks;
 
 namespace GroceryStore_Backend.Services
 {
-    public class TransactionHistoryService : ITransactionHistoryService
+    public class OrderHistoryService : IOrderHistoryService
     {
         private readonly IGroceryStoreRepository _groceryStoreRepository;
-        public TransactionHistoryService(IGroceryStoreRepository groceryStoreRepository)
+        public OrderHistoryService(IGroceryStoreRepository groceryStoreRepository)
         {
             _groceryStoreRepository = groceryStoreRepository;
         }
 
-        public async Task<TransactionHistory> AddTransactionsasync(TransactionHistory transaction)
+        public async Task<OrderHistory> AddTransactionsasync(OrderHistory transaction)
         {
              return await _groceryStoreRepository.AddTrnsaction(transaction);
         }
 
-        public Task<List<TransactionHistory>> GetTransactionsasync(Guid UserId)
+        public Task<List<OrderHistory>> GetTransactionsasync(Guid UserId)
         {
-            return _groceryStoreRepository.GetTransactionHistory(UserId);
+            return _groceryStoreRepository.GetOrderHistory(UserId);
         }
     }
 }
