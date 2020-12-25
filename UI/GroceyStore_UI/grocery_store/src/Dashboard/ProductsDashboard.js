@@ -9,6 +9,7 @@ import {
   CircularProgress,
   DialogTitle,
   DialogContent,
+  Table, TableContainer, TableBody, TableCell, TableHead, TableRow, Hidden
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { toFirstCharUppercase } from "../Healper";
@@ -17,6 +18,7 @@ import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import { useStore } from "../Store";
+import {MenuPane} from '../MenuPane'
 
 const useStyles = makeStyles((theme) => ({
   DashboardContainer: {
@@ -37,16 +39,16 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.grey[500],
   },
   root: {
+    display:'flex',
     margin: 0,
-    padding: theme.spacing(2),
   },
   addProductPopUpDimesnsion: {
     width: "350px",
   },
-  alignLeft:{
+  alignLeft: {
     textAlign: "left"
   },
-  alignRight:{
+  alignRight: {
     textAlign: "right"
   }
 }));
@@ -91,8 +93,8 @@ export const ProductsDashboard = (props) => {
     const { productName, price, imagePath, unitType } = products[
       `${id}`
     ];
-    var unitToDisplay=""
-    if(unitType==='Kg'){
+    var unitToDisplay = ""
+    if (unitType === 'Kg') {
       unitToDisplay = '1 Kg'
     }
 
@@ -109,10 +111,10 @@ export const ProductsDashboard = (props) => {
           <CardContent >
             <Typography className={classes.cardContent}>{`${toFirstCharUppercase(productName)}`}</Typography>
             <Grid container>
-            <Grid item >
-            <Typography className={classes.alignLeft}>{price}</Typography></Grid>
-           <Grid item ><Typography className={classes.alignRight}>{unitToDisplay}</Typography></Grid>
-           </Grid>
+              <Grid item >
+                <Typography className={classes.alignLeft}>{price}/{unitToDisplay}</Typography></Grid>
+             
+            </Grid>
           </CardContent>
         </Card>
       </Grid>
@@ -120,28 +122,58 @@ export const ProductsDashboard = (props) => {
     );
   };
 
-  const getListCard = (id) => {
-    const { productName, price, imagePath, unitType } = products[
-      `${id}`
+  const getListCard = () => {
+    const TableHeaders = [
+      { id: 'Product', numeric: false, disablePadding: true, label: 'Product Name' },
+      { id: 'Units', numeric: true, disablePadding: false, label: 'Units' },
+      { id: 'Price', numeric: true, disablePadding: false, label: 'Price' },
+      { id: 'Quantity', numeric: true, disablePadding: false, label: 'Quantity' },
     ];
-    const image = images(`./${imagePath}.jpg`);
+
+    console.log(products,'proooddducts')
     return (
-      <Card onClick={() => handleProductClick(price, productName, unitType)}>
-        <Grid container key={id}>
-          <Grid item xs={4} >
-            <CardMedia
-              className={classes.cardMedia}
-              image={image}
-              style={{ width: "130px", height: "130px" }}
-            />
-          </Grid>
-          <Grid item xs={8}>
-            <CardContent className={classes.cardContent}>
-              <Typography>{`${toFirstCharUppercase(productName)}`}</Typography>
-            </CardContent>
-          </Grid>
-        </Grid>
-      </Card>
+      <Table>
+        <TableHead>
+          <TableRow>
+            {TableHeaders.map((headCell) => (
+              <TableCell
+                key={headCell.id}
+                align={headCell.numeric ? 'right' : 'left'}
+                padding={headCell.disablePadding ? 'none' : 'default'}
+              >
+                {headCell.label}
+              </TableCell>
+            ))}
+
+
+          </TableRow>
+
+        </TableHead>
+        
+        <TableBody>
+          
+          {(products).map((id) =>
+            <TableRow onClick={() => handleProductClick(id.price, id.productName, id.unitType)}>
+              <TableCell align="right">{id.productName}</TableCell>
+              <TableCell align="right">{id.unitType}</TableCell>
+              <TableCell align="right">{id.price}</TableCell>
+        </TableRow>
+          )}
+
+
+        </TableBody>
+
+      </Table>
+      // <Card onClick={() => handleProductClick(price, productName, unitType)}>
+      //   <Grid container key={id}>
+
+      //     <Grid item xs={8}>
+      //       <CardContent className={classes.cardContent}>
+      //         <Typography>{`${toFirstCharUppercase(productName)}`}</Typography>
+      //       </CardContent>
+      //     </Grid>
+      //   </Grid>
+      // </Card>
 
     );
 
@@ -151,9 +183,9 @@ export const ProductsDashboard = (props) => {
     console.log(viewStore, 'fdfdfd')
     if (viewStore.view === "List") {
       console.log('in if')
-      return (<div>
-        {Object.keys(products).map((id) => getListCard(id))}
-      </div>)
+      return (
+getListCard()
+      )
     }
     else {
       return (<Grid container className={classes.DashboardContainer}>
@@ -180,6 +212,10 @@ export const ProductsDashboard = (props) => {
   return (
     <div>
       <Header title={(props.location.pathname).substring(1)} history={props.history} />
+      <div className={classes.root}>
+      <Hidden smDown>
+         <MenuPane history={history}/>
+        </Hidden> 
 
       {products ? (
         SetView()
@@ -198,6 +234,7 @@ export const ProductsDashboard = (props) => {
         </DialogContent>
       </Dialog>
 
+    </div>
     </div>
   );
 };

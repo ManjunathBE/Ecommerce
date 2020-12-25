@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { Header } from '../Header'
 import {
   Grid,
@@ -7,22 +7,54 @@ import {
   CardContent,
   Typography,
   CircularProgress,
+  Hidden,
+  Paper,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { toFirstCharUppercase } from "../Healper";
 import { useStore } from "../Store";
+import {ToolbarMenuItems, toolbarMenuItmes} from '../ToolbarMenuItems'
+import clsx from 'clsx';
+import Drawer from '@material-ui/core/Drawer';
+import List from '@material-ui/core/List';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Container from '@material-ui/core/Container';
+import {MenuPane} from '../MenuPane'
 
+
+const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   DashboardContainer: {
-    paddingTop: "20px",
-    paddingLeft: "50px",
-    paddingRight: "50px",
+    // paddingTop: "20px",
+    // paddingLeft: "50px",
+    // paddingRight: "50px",
+  },
+  root: {
+    display: 'flex',
   },
   cardMedia: {
     margin: "auto",
   },
   cardContent: {
     textAlign: "center",
+  },
+  content: {
+    flexGrow: 1,
+    height: '100vh',
+    overflow: 'auto',
+  },
+  container: {
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
+  },
+  paper: {
+    padding: theme.spacing(2),
+    display: 'flex',
+    overflow: 'auto',
+    flexDirection: 'column',
+  },
+  fixedHeight: {
+    height: 240,
   },
 }));
 
@@ -40,7 +72,7 @@ export const Dashboard = (props) => {
 
   const fetchCategory = () => {
 
-    fetch('https://grocerystoreapi.azurewebsites.net/Category',
+    fetch('https://localhost:44360/Category',
       {
         mode: 'cors'
       })
@@ -124,13 +156,29 @@ export const Dashboard = (props) => {
   }
 
   return (
-    <div>
-      <Header title="Organic House" history={props.history} />
+    <Fragment>
+    <Header title="Organic House" history={props.history} />
+    <CssBaseline />
+    <div className={classes.root}>
+
+     <Hidden smDown>
+         <MenuPane history={history}/>
+        </Hidden> 
+        
+      <main className={classes.content}>
+      
+      <Container maxWidth="lg" className={classes.container}>
+
       {category ? (
         SetView()
       ) : (
           <CircularProgress />
         )}
+       
+        </Container>
+        </main>
+
     </div>
+    </Fragment>
   );
 };
