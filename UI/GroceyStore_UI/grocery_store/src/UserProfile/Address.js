@@ -31,12 +31,11 @@ export const Address = (props) => {
         })
         .then(result => {
             if (result.status === 201) {
-                result.json().then(user => {
-                    console.log(user, 'result from backend')
-                    setUserStore({user, type:'Address'})
+                result.json().then(address => {
+                    console.log(address, 'result from backend')
+                    setUserStore({address, type:'Address'})
                 })
-                //change or pass history
-                history.push('/')
+                props.modelOpen("false")
             }
         })
         
