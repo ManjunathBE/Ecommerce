@@ -1,8 +1,11 @@
 import React, { useState } from "react"
 import { Header } from './Header'
 import { useStore } from "./Store";
-import { Table, TableContainer, TableBody, TableCell, TableHead, TableRow, Checkbox, Paper, Toolbar, Typography, 
-  Tooltip,  DialogTitle, DialogContent, Dialog } from '@material-ui/core'
+import {
+  Table, TableContainer, TableBody, TableCell, TableHead, TableRow, Checkbox, Paper, Toolbar, Typography,
+  Tooltip, DialogTitle, DialogContent, Dialog, Card, CardMedia,
+  CardContent
+} from '@material-ui/core'
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -14,7 +17,7 @@ import SuccessPage from './Success'
 import { Redirect } from "react-router-dom";
 import FlashMessage from 'react-flash-message'
 import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
-import {AddProduct} from './AddProduct'
+import { AddProduct } from './AddProduct'
 import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles((theme) => ({
@@ -35,8 +38,8 @@ const useStyles = makeStyles((theme) => ({
     top: 20,
     width: 1,
   },
-  addProductPopUpDimesnsion:{
-    width:"350px",
+  addProductPopUpDimesnsion: {
+    width: "350px",
   },
   closeButton: {
     position: 'absolute',
@@ -113,13 +116,16 @@ const useToolbarStyles = makeStyles((theme) => ({
 export const Cart = (props) => {
   const classes = useStyles();
   const [selected, setSelected] = useState([]);
-  const [dense, setDense] = useState(false);
   const { cartStore, setCartStore, userStore } = useStore();
-  const [disablePlaceOrderButton, setDisablePlaceOrderButton] = React.useState(true)
+  const [disablePlaceOrderButton, setDisablePlaceOrderButton] = useState(true)
   const { history } = props;
   const [isOrderPlaced, setIsOrderPlaced] = useState(false)
   const [editCart, setEditCart] = useState(false)
   const [productToEdit, setProductToEdit] = useState([]);
+  const [showAddressSelection, setShowAddressSelection] = useState(false)
+  const [showSelectedAddress, setShowhowSelectedAddress ] = useState(false)
+  const [selectedAddressForDelivery,setSelectedAddressForDelivery ] = useState()
+  const [selectedAddressId, setSelectedAddressId] = useState()
 
   const EnhancedTableToolbar = (props) => {
     const classes = useToolbarStyles();
@@ -187,45 +193,64 @@ export const Cart = (props) => {
     setSelected(newSelected);
   };
 
-  const handleEditClick =(event, cart)=>{
-    console.log(cart,'cart in edit')
+  const handleEditClick = (event, cart) => {
+    console.log(cart, 'cart in edit')
     setEditCart(true)
-    console.log(event,'event in edit')
- setProductToEdit(cart);
+    console.log(event, 'event in edit')
+    setProductToEdit(cart);
   }
 
   const handlePlaceOrder = () => {
 
-    console.log(userStore,'userStore')
+    console.log(userStore, 'userStore')
     const payload = {
       UserId: userStore.user.userId,
-      Status: 'Ordered',
+      AddressId: selectedAddressForDelivery.id,
+      Status: 'Executed',
       orderedProducts: cartStore.cart
     }
     console.log(payload, 'ordered products')
-    fetch('https://localhost:44360/transaction',{
+    fetch('https://localhost:44360/transaction', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body:JSON.stringify(payload)
+      body: JSON.stringify(payload)
     })
-    .then(result=>{
-      if(result.status===201){
-      console.log(result, 'result from backend')
-      var orderId = result.transactionId;
-      console.log(orderId, 'orderid')
-
-      setIsOrderPlaced(true)
-
-      }
-    })
+      .then(result => {
+        if (result.status === 201) {
+          console.log(result, 'result from backend')
+          var orderId = result.transactionId;
+          console.log(orderId, 'orderid')
+          setIsOrderPlaced(true)
+        }
+      })
 
   }
 
-  const handleDialogClose =()=>{
+  const handleEditOrderDialogClose = () => {
     setEditCart(false)
 
+  }
+
+  const handleSelectAddress = () => {
+
+    setShowAddressSelection(true)
+  }
+
+  const handleAddressCardClick = (address) => {
+    setShowAddressSelection(false)
+    setShowhowSelectedAddress(true)
+    setSelectedAddressForDelivery(address)
+
+  }
+
+  const splitAddress =() =>{
+    //setSelectedAddressId(selectedAddressForDelivery.id)
+    return (<Typography>{selectedAddressForDelivery.addressLine1}
+      {selectedAddressForDelivery.addressLine2}
+      {selectedAddressForDelivery.city}
+      {selectedAddressForDelivery.pinCode}</Typography>)
   }
   const isSelected = (name) => selected.indexOf(name) !== -1;
   const emptyRows = cartStore.cart
@@ -257,7 +282,7 @@ export const Cart = (props) => {
                 return (
                   <TableRow
                     hover
-                   
+
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
@@ -273,7 +298,7 @@ export const Cart = (props) => {
                     </TableCell>
                     <TableCell component="th" id={labelId} scope="row" padding="none">
                       {cart.productName}
-                      <EditTwoToneIcon onClick={(event)=> handleEditClick(event, cart)}/>
+                      <EditTwoToneIcon onClick={(event) => handleEditClick(event, cart)} />
                     </TableCell>
                     <TableCell align="right">{cart.quantity}</TableCell>
                     <TableCell align="right">{cart.unit}</TableCell>
@@ -288,34 +313,63 @@ export const Cart = (props) => {
               </TableRow>
             </TableBody>
           </Table>
-         
-          <Button onClick={()=>history.push("/")}>Continue Shopping</Button>
-        <Button onClick={handlePlaceOrder}>Place Order</Button>
+
+{showSelectedAddress?splitAddress():""}
+            <Button onClick={handleSelectAddress}>Add/Select Address</Button>
+
+            <Button onClick={() => history.push("/")}>Continue Shopping</Button>
+            <Button onClick={handlePlaceOrder}>Place Order</Button>
           </React.Fragment> : "Cart is empty"}
         </TableContainer>
-        
+
 
       </Paper>
 
-      <Dialog classes={{paper:classes.addProductPopUpDimesnsion}} onClose={handleDialogClose} open={editCart}>
+
+      <Dialog open={showAddressSelection}>
+        <DialogTitle>
+
+        </DialogTitle>
+        <DialogContent>
+
+          {userStore.user.address.map((address) =>
+            <Card onClick={() => handleAddressCardClick(address)}>
+              <CardContent>
+                <Typography>{address.addressLine1}
+                  {address.addressLine2}
+                  {address.city}
+                  {address.pinCode}</Typography>
+              </CardContent>
+
+            </Card>
+          )}
+
+
+
+        </DialogContent>
+
+      </Dialog>
+
+
+      <Dialog classes={{ paper: classes.addProductPopUpDimesnsion }} onClose={handleEditOrderDialogClose} open={editCart}>
         <DialogTitle className={classes.root}>
-        <IconButton  className={classes.closeButton} aria-label="close" onClick={handleDialogClose}>
-          <CloseIcon />
-        </IconButton>
-        {productToEdit.productName}
+          <IconButton className={classes.closeButton} aria-label="close" onClick={handleEditOrderDialogClose}>
+            <CloseIcon />
+          </IconButton>
+          {productToEdit.productName}
         </DialogTitle>
         <DialogContent dividers>
-        <AddProduct modelOpen={handleDialogClose} price={productToEdit.price} 
-            productName={productToEdit.productName} 
+          <AddProduct modelOpen={handleEditOrderDialogClose} price={productToEdit.price}
+            productName={productToEdit.productName}
             unitType={productToEdit.unit}
-            quantityToEdit={productToEdit.quantity}/>
+            quantityToEdit={productToEdit.quantity} />
         </DialogContent>
       </Dialog>
 
-      
-     {isOrderPlaced? <div  className='flashStyling'><FlashMessage duration={5000}>
-    Order placed
-  </FlashMessage> </div>:""} 
+
+      {isOrderPlaced ? <div className='flashStyling'><FlashMessage duration={5000}>
+        Order placed
+  </FlashMessage> </div> : ""}
     </div>
   )
 }
