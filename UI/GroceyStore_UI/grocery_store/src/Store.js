@@ -53,9 +53,10 @@ const viewReducer = (state, action) => {
 
 const userReducer = (state, action) => {
     console.log('in user store', action)
+    var address = action.address
     switch (action.type) {
         case 'Address': {
-            return {...state, address:[...state.user.address,{action}]}
+            return {...state, user:{...state.user, address:[...state.user.address,address]}}
         }
         case 'User':{
             return { ...state, user: action.user }
