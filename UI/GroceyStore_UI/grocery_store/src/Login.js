@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component, Fragment, useState } from "react";
 import { Header } from './Header'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -8,40 +8,61 @@ import { useAuth } from './Auth'
 import { useStore } from "./Store";
 import { makeStyles } from "@material-ui/core/styles";
 import { VerticalAlignCenter } from "@material-ui/icons";
-import LockIcon from '@material-ui/icons/Lock';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Avatar from '@material-ui/core/Avatar';
+import Image from "./Images/login_pic.jpeg"
+import Grid from '@material-ui/core/Grid';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Paper from '@material-ui/core/Paper';
+import { VerifyOtp } from './VerifyOtp'
 
 const useStyles = makeStyles((theme) => ({
-
-    iconStyle:{
+    root: {
+        height: '100vh',
+    },
+    image: {
+        backgroundImage: `url(${Image})`,
+        backgroundRepeat: 'no-repeat',
+        backgroundColor:
+            theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+    },
+    paper: {
+        margin: theme.spacing(20, 4),
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    avatar: {
+        margin: theme.spacing(1),
+        backgroundColor: theme.palette.secondary.main,
+        alignItems: 'center',
+    },
+    iconStyle: {
         border: "1px solid"
     },
     formPosition: {
-        textAlign: "center",
-        marginTop: "40%",
+        width: '65%', // Fix IE 11 issue.
+        marginTop: theme.spacing(1),
     },
 
     btnStyling: {
-        width: "60%",
-        padding: "2%",
-        textAlign: "center",
+        margin: theme.spacing(3, 0, 2),
+
     }
-
-
 }));
 
 export const Login = (props) => {
 
     const classes = useStyles();
 
-
+    const [showOtpInput, setShowOtpInput] = useState(false)
     const [phone, setPhone] = useState();
     const [password, setPassword] = useState();
-    const [passwordFromUser, setPasswordFromUser] = useState();
-    const [showOTPInputAndLogin, setShowOTPInputAndLogin] = useState(false)
     const [errors, setErrors] = useState({})
-    const { setLoginState } = useAuth()
     const { history } = props;
-    const { userStore, setUserStore } = useStore();
+
 
     const generateOtp = () => {
         var digits = '0123456789';
@@ -64,7 +85,7 @@ export const Login = (props) => {
             console.log('amhere')
             var otp = generateOtp()
             console.log(otp, 'otp')
-            setShowOTPInputAndLogin(true)
+
             var url = "https://api.msg91.com/api/v5/otp?authkey=346751ACJJ5GwM0os65fa953a2P1&template_id=5fa958027dd0a25d7340bf39&mobile=91" + phone + "&otp=" + otp
             fetch(url, {
                 mode: 'no-cors',
@@ -76,28 +97,18 @@ export const Login = (props) => {
                 }
             }).then(response => {
                 console.log('otp response', response)
+                // history.push({
+                //     pathname: '/verifyotp',
+                //     state: { phone: phone, password: otp }
+                // })
+                setShowOtpInput(true)
+
             })
                 .catch(error => {
                     console.log('otp error', error)
                 })
         }
         console.log(errors, 'errors in handle otp')
-
-    }
-
-    const handlePasswordChange = (event) => {
-        setPasswordFromUser(event.target.value)
-    }
-
-    const handleLogin = (event) => {
-        event.preventDefault()
-        if (validateForm()) {
-            console.log(password, 'password')
-            setLoginState(true)
-            fetchUser()
-            history.push('/')
-        }
-        console.log(errors, 'errors')
     }
 
     const validatePhone = () => {
@@ -107,114 +118,59 @@ export const Login = (props) => {
         if (!temp.phone) temp.phone = phone.length === 10 ? "" : "phone number should be 10 digits"
         setErrors({ ...temp })
 
-        // temp.password = password?"":"otp is required"
-        // if(password!==passwordFromUser)temp.password="otp doensn't match"
-        // setErrors({...temp})
-
         return Object.values(temp).every(param => param === "")
     }
 
-    const validateForm = () => {
-        var temp = []
-        temp.phone = phone ? "" : "phone is required"
-        if (!temp.phone) temp.phone = phone.length === 10 ? "" : "phone number should be 10 digits"
-
-        temp.password = password ? "" : "otp is required"
-        if (password !== passwordFromUser) temp.password = "otp doensn't match"
-        setErrors({ ...temp })
-
-        return Object.values(temp).every(param => param === "")
-    }
-
-    const fetchUser = () => {
-
-        fetch('https://localhost:44360/api/user?phoneNumber=' + phone,
-            {
-                mode: 'cors'
-            })
-            .then(result => {
-                console.log(result)
-                if (result.status === 404) {
-                    console.log('result is 404')
-                } else if (result.status !== 200) {
-                    console.log(result)
-                    console.log('result is not 200')
-                } else {
-                    result.json().then(body => {
-                        console.log(body, 'response')
-                        console.log(body.address)
-                        var user = body
-                        setUserStore({ user })
-
-                    });
-                }
-            })
-            .catch(error => {
-                console.log("error from server", JSON.stringify(error, Object.getOwnPropertyNames(error)));
-            });
+    const editPhoneFromVerifyOtp = () => {
+        setShowOtpInput(false)
     }
 
     return (
         <div>
-            <Header title='Organic House' history={props.history} />
 
-            <form className={classes.formPosition}>
-                {/* <LockIcon/>
-                <Typography> Sign in </Typography> */}
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    id="phone"
-                    label="Phone number (10 digits)"
-                    name="phone"
-                    onChange={handlePhoneNumberChange}
-                    error={errors.phone}
-                    helperText={errors.phone}
+            {/* <Header title='Organic House' history={props.history} /> */}
+            <Grid container component="main" className={classes.root}>
+                <CssBaseline />
+                <Grid item xs={false} sm={4} md={7} className={classes.image} />
+                <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
 
-                />
+                    <div className={classes.paper}>
+                        <Avatar className={classes.avatar}>
+                            <LockOutlinedIcon />
+                        </Avatar>
+                        <Typography component="h1" variant="h5"> Sign in </Typography>
 
-                {showOTPInputAndLogin ? <React.Fragment><TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    id="password"
-                    label="please enter otp"
-                    name="password"
-                    type="password"
-                    onChange={handlePasswordChange}
-                    error={errors.password}
-                    helperText={errors.password}
-                />
-                    <Button
-                        className={classes.btnStyling}
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        onClick={handleLogin}
+                        <form className={classes.formPosition}>
+                            {!showOtpInput ?
+                                <Fragment>
+                                    <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        margin="normal"
+                                        required
+                                        id="phone"
+                                        label="Phone number (10 digits)"
+                                        name="phone"
+                                        onChange={handlePhoneNumberChange}
+                                        error={errors.phone}
+                                        helperText={errors.phone}
+                                    />
 
-                    >
-                        Login
-          </Button></React.Fragment> :
+                                    <Button
+                                        className={classes.btnStyling}
+                                        fullWidth
+                                        type="submit"
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={handleRequestOTP}
+                                    >
+                                        Request OTP
+          </Button> </Fragment> : <VerifyOtp editPhone={editPhoneFromVerifyOtp} password={password} phone={phone} history={history} />}
 
-                    <Button
-                        className={classes.btnStyling}
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        onClick={handleRequestOTP}
-                    >
-                        Request OTP
-          </Button>}
-
-            </form>
-
-
-
-
-
-
+                        </form>
+                    </div>
+                </Grid>
+            </Grid>
         </div>
     )
 }
