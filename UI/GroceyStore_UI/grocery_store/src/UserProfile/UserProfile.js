@@ -9,8 +9,9 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  Grid,
 } from "@material-ui/core";
-import {Address} from './Address'
+import { Address } from './Address'
 
 const useStyles = makeStyles((theme) => ({
   formPosition: {
@@ -43,43 +44,47 @@ export const UserProfile = (props) => {
   const fetchUserDetails = () => {
 
     if (history.location.state)
-    console.log('inside if')
-      fetch('https://localhost:44360/api/user?phonenumber=' + userStore.user.phoneNumber,
-        {
-          mode: 'cors'
-        })
-        .then(result => {
-          console.log(result,'profile')
-          if (result.status === 404) {
-            console.log('result is 404')
-          } else if (result.status !== 200) {
-            console.log(result)
-            console.log('result is not 200')
-          } else {
-            result.json().then(body => {
-              console.log(body, 'response')
-              console.log(body.address)
-              var user = body
-              setUserStore({ user })
+      console.log('inside if')
+    fetch('https://localhost:44360/api/user?phonenumber=' + userStore.user.phoneNumber,
+      {
+        mode: 'cors'
+      })
+      .then(result => {
+        console.log(result, 'profile')
+        if (result.status === 404) {
+          console.log('result is 404')
+        } else if (result.status !== 200) {
+          console.log(result)
+          console.log('result is not 200')
+        } else {
+          result.json().then(body => {
+            console.log(body, 'response')
+            console.log(body.address)
+            var user = body
+            setUserStore({ user, type: 'User' })
 
-            });
-          }
-        })
-        .catch(error => {
-          console.log("error from server", JSON.stringify(error, Object.getOwnPropertyNames(error)));
-        });
+          });
+        }
+      })
+      .catch(error => {
+        console.log("error from server", JSON.stringify(error, Object.getOwnPropertyNames(error)));
+      });
   }
   console.log(userStore.user === null, 'user obj length')
   console.log(userStore.user, 'user obj')
   console.log(userStore, 'user store')
   console.log(userStore.user.length, 'user obj length')
 
-  const handleAddAddress=()=>{
+  const handleAddAddress = () => {
 
     setShowAddAddressDialog(true)
-}
+  }
 
-const handleDialogClose = () => {
+  const handleDialogClose = () => {
+    setShowAddAddressDialog(false)
+  }
+
+  const closeModal = () => {
     setShowAddAddressDialog(false)
   }
 
@@ -93,8 +98,14 @@ const handleDialogClose = () => {
         <Typography>Email :  {userStore.user.email}</Typography>
 
         {/* {isFetched? user.address.map((item)=><p>{item.AddressLine1}</p>):""} */}
-        { (userStore.user.address).map((id) => <Typography>Address : {id.addressLine1} <br />{id.addressLine2}<br />{id.city}<br />{id.pinCode}</Typography>)
-        }
+        <Grid container>
+        { (userStore.user.address).map((id) =>
+        
+          <Grid item xs={6}>
+            <Typography>Address : {id.addressLine1} <br />{id.addressLine2}<br />{id.city}<br />{id.pinCode}</Typography>
+          </Grid>
+        )}
+        </Grid>
 
         <Button color="primary" variant="contained"
           onClick={() => history.push({
@@ -103,13 +114,13 @@ const handleDialogClose = () => {
           })}>
           Edit Profile
 </Button>
-<Button onClick={handleAddAddress}>Add Address</Button>
+        <Button onClick={handleAddAddress}>Add Address</Button>
         <Dialog open={showAddAddressDialog} onClose={handleDialogClose}>
           <DialogTitle>
 
           </DialogTitle>
           <DialogContent>
-            <Address />
+            <Address modelOpen={closeModal} />
           </DialogContent>
 
 
