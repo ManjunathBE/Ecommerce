@@ -9,7 +9,8 @@ import {
   CircularProgress,
   DialogTitle,
   DialogContent,
-  Table, TableContainer, TableBody, TableCell, TableHead, TableRow, Hidden
+  Table, TableContainer, TableBody, TableCell, TableHead, TableRow, Hidden,
+  Container
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { toFirstCharUppercase } from "../Healper";
@@ -18,13 +19,14 @@ import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import { useStore } from "../Store";
-import {MenuPane} from '../MenuPane'
+import { MenuPane } from '../MenuPane'
+import Box from '@material-ui/core/Box';
 
 const useStyles = makeStyles((theme) => ({
   DashboardContainer: {
-    paddingTop: "20px",
-    paddingLeft: "50px",
-    paddingRight: "50px",
+    // paddingTop: "20px",
+    // paddingLeft: "50px",
+    // paddingRight: "50px",
   },
   cardMedia: {
     margin: "auto",
@@ -39,8 +41,17 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.grey[500],
   },
   root: {
-    display:'flex',
+    display: 'flex',
     margin: 0,
+  },
+  content: {
+    flexGrow: 1,
+    height: '100vh',
+    overflow: 'auto',
+  },
+  container: {
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
   },
   addProductPopUpDimesnsion: {
     width: "350px",
@@ -49,7 +60,9 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "left"
   },
   alignRight: {
-    textAlign: "right"
+    
+    justifyContent:"flex-end",
+    float:'right',
   }
 }));
 
@@ -101,7 +114,7 @@ export const ProductsDashboard = (props) => {
     const image = images(`./${imagePath}.jpg`);
     return (
 
-      <Grid item xs={6} sm={4} key={id}>
+      <Grid item xs={6} sm={3} key={id}>
         <Card onClick={() => handleProductClick(price, productName, unitType)}>
           <CardMedia
             className={classes.cardMedia}
@@ -110,11 +123,10 @@ export const ProductsDashboard = (props) => {
           />
           <CardContent >
             <Typography className={classes.cardContent}>{`${toFirstCharUppercase(productName)}`}</Typography>
-            <Grid container>
-              <Grid item >
-                <Typography className={classes.alignLeft}>{price}/{unitToDisplay}</Typography></Grid>
-             
-            </Grid>
+            <div>
+                <span>₹{price}</span>
+                <span className="positionRight">{unitToDisplay}</span>
+            </div>
           </CardContent>
         </Card>
       </Grid>
@@ -130,7 +142,7 @@ export const ProductsDashboard = (props) => {
       { id: 'Quantity', numeric: true, disablePadding: false, label: 'Quantity' },
     ];
 
-    console.log(products,'proooddducts')
+    console.log(products, 'proooddducts')
     return (
       <Table>
         <TableHead>
@@ -149,15 +161,15 @@ export const ProductsDashboard = (props) => {
           </TableRow>
 
         </TableHead>
-        
+
         <TableBody>
-          
+
           {(products).map((id) =>
             <TableRow onClick={() => handleProductClick(id.price, id.productName, id.unitType)}>
               <TableCell align="right">{id.productName}</TableCell>
               <TableCell align="right">{id.unitType}</TableCell>
               <TableCell align="right">{id.price}</TableCell>
-        </TableRow>
+            </TableRow>
           )}
 
 
@@ -184,11 +196,11 @@ export const ProductsDashboard = (props) => {
     if (viewStore.view === "List") {
       console.log('in if')
       return (
-getListCard()
+        getListCard()
       )
     }
     else {
-      return (<Grid container className={classes.DashboardContainer}>
+      return (<Grid container spacing={2} className={classes.DashboardContainer}>
         {Object.keys(products).map((id) => getGridCard(id))}
       </Grid>)
     }
@@ -213,28 +225,35 @@ getListCard()
     <div>
       <Header title={(props.location.pathname).substring(1)} history={props.history} />
       <div className={classes.root}>
-      <Hidden smDown>
-         <MenuPane history={history}/>
-        </Hidden> 
+        <Hidden smDown>
+          <MenuPane history={history} />
+        </Hidden>
 
-      {products ? (
-        SetView()
-      ) : (
-          <CircularProgress />
-        )}
-      <Dialog classes={{ paper: classes.addProductPopUpDimesnsion }} onClose={handleDialogClose} open={openAddProductDialog}>
-        <DialogTitle className={classes.root}>
-          <IconButton className={classes.closeButton} aria-label="close" onClick={handleDialogClose}>
-            <CloseIcon />
-          </IconButton>
-          {productName}
-        </DialogTitle>
-        <DialogContent dividers>
-          <AddProduct modelOpen={closeModal} price={productPrice} productName={productName} unitType={unitType} />
-        </DialogContent>
-      </Dialog>
+        <main className={classes.content}>
 
-    </div>
+          <Container maxWidth="lg" className={classes.container}>
+
+            {products ? (
+              SetView()
+            ) : (
+                <CircularProgress />
+              )}
+
+
+            <Dialog classes={{ paper: classes.addProductPopUpDimesnsion }} onClose={handleDialogClose} open={openAddProductDialog}>
+              <DialogTitle className={classes.root}>
+                <IconButton className={classes.closeButton} aria-label="close" onClick={handleDialogClose}>
+                  <CloseIcon />
+                </IconButton>
+                {productName}
+              </DialogTitle>
+              <DialogContent dividers>
+                <AddProduct modelOpen={closeModal} price={productPrice} productName={productName} unitType={unitType} />
+              </DialogContent>
+            </Dialog>
+          </Container>
+        </main>
+      </div>
     </div>
   );
 };

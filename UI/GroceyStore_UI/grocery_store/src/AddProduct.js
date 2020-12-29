@@ -1,6 +1,6 @@
 import React, { useState, useReducer } from "react"
 import Picker from 'react-scrollable-picker';
-import { TextField, Grid } from '@material-ui/core';
+import { TextField, Grid, Table, TableContainer, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button"
 import { useStore } from "./Store";
@@ -17,18 +17,24 @@ const useStyles = makeStyles((theme) => ({
     },
     PickerMargin: {
         marginTop: "-40%"
+    },
+    TableMargin: {
+        marginTop: theme.spacing(3),
+        padding: theme.spacing(0),
+        alignItems: "center"
     }
 
 }));
 
 
 export const AddProduct = (props) => {
-    console.log(props,'props in add')
+    console.log(props, 'props in add')
     const { cartStore, setCartStore } = useStore();
     const { productName, price, history, unitType, quantityToEdit } = props
     const [units, setUnits] = useState(1)
     const [isEnterWeightSetToManual, setIsEnterWeightSetToManual] = useState(false)
     const [quantityByManualEntry, setQuantityByManualEntry] = useState()
+    const [quantityToDisplay, setQuantityToDisplay] = useState()
 
 
     const [valueGroupsKG, setValueGroupsKG] = useState({
@@ -80,9 +86,11 @@ export const AddProduct = (props) => {
     var priceFormula;
     if (unitType === 'Kilograms') {
         priceFormula = (price * (valueGroupsKG.Weight + valueGroupsGrams.Weight))
+
     }
     else if (unitType === 'Numbers') {
         priceFormula = (price * valueGroupsNumbers.Weight)
+
     }
     const [calculatedPrice, setCalculatdPrice] = useState(priceFormula)
 
@@ -92,28 +100,86 @@ export const AddProduct = (props) => {
             return (
                 <Grid container spacing={3}>
                     <Grid xs={6}>
-
-                        <Picker id="KgPicker" className={classes.PickerMargin}
-                            optionGroups={optionGroupsKG}
-                            valueGroups={valueGroupsKG}
-                            onChange={handleKGChange} />
+                        <Table classname={classes.TableMargin}>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell
+                                        align='center'
+                                        paddingBottom='none'>
+                                        <span style={{ textAlign: "center" }}>Kg</span>
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell
+                                        align='center'
+                                        padding='none'>
+                                        <Picker id="KgPicker" className={classes.PickerMargin}
+                                            optionGroups={optionGroupsKG}
+                                            valueGroups={valueGroupsKG}
+                                            onChange={handleKGChange} />
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
                     </Grid>
 
                     <Grid xs={6}>
-                        <Picker id="GramsPicker" className={classes.PickerMargin}
-                            optionGroups={optionGroupsGrams}
-                            valueGroups={valueGroupsGrams}
-                            onChange={handleGramsChange} />
+                        <Table classname={classes.TableMargin}>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell
+                                        align='center'
+                                        padding='16px 16px 0px 16px'>
+                                        <span style={{ textAlign: "center" }}>grams</span>
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell
+                                        align='center'
+                                        padding='none'>
+                                        <Picker id="GramsPicker" className={classes.PickerMargin}
+                                            optionGroups={optionGroupsGrams}
+                                            valueGroups={valueGroupsGrams}
+                                            onChange={handleGramsChange} />
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
                     </Grid>
                 </Grid>
             )
         }
         else if (unitType === 'Numbers') {
             return (
-                <Picker id="GramsPicker" className={classes.PickerMargin}
-                    optionGroups={optionsGroupsNumbers}
-                    valueGroups={valueGroupsNumbers}
-                    onChange={handleNumbersChange} />
+                <div>
+                    <Table classname={classes.TableMargin}>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell
+                                    align='center'
+                                    padding='16px 16px 0px 16px'>
+                                    <span style={{ textAlign: "center" }}>Numbers</span>
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            <TableRow>
+                                <TableCell
+                                    align='center'
+                                    padding='none'>
+                                    <Picker id="NumberPicker" className={classes.PickerMargin}
+                                        optionGroups={optionsGroupsNumbers}
+                                        valueGroups={valueGroupsNumbers}
+                                        onChange={handleNumbersChange} />
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </div>
             )
         }
 
@@ -121,60 +187,65 @@ export const AddProduct = (props) => {
 
     const ManualQuantityInput = () => {
         if (unitType === "Kg") {
-        return (<FormControl>
-            <Input
-           
-                id="standard-adornment-weight"
-                value={quantityByManualEntry}
-                onChange={handleManualQuantityChange}
-                endAdornment={<InputAdornment position="end">Kg</InputAdornment>}
-                aria-describedby="standard-weight-helper-text"
-                inputProps={{
-                    'aria-label': 'weight',
-                }}
-            />
-            <FormHelperText id="standard-weight-helper-text">Weight</FormHelperText>
-        </FormControl>)
+            return (<FormControl>
+                <Input
+
+                    id="standard-adornment-weight"
+                    value={quantityByManualEntry}
+                    onChange={handleManualQuantityChange}
+                    endAdornment={<InputAdornment position="end">Kg</InputAdornment>}
+                    aria-describedby="standard-weight-helper-text"
+                    inputProps={{
+                        'aria-label': 'weight',
+                    }}
+                />
+                <FormHelperText id="standard-weight-helper-text">Weight</FormHelperText>
+            </FormControl>)
+        }
+        else if (unitType === 'Numbers') {
+            return (<FormControl>
+                <Input
+
+                    id="standard-adornment-weight"
+                    value={quantityByManualEntry}
+                    onChange={handleManualQuantityChange}
+                    endAdornment={<InputAdornment position="end">Num.</InputAdornment>}
+                    aria-describedby="standard-weight-helper-text"
+                    inputProps={{
+                        'aria-label': 'weight',
+                    }}
+                />
+                <FormHelperText id="standard-weight-helper-text">Numbers</FormHelperText>
+            </FormControl>)
+        }
     }
-    else if (unitType === 'Numbers'){
-        return (<FormControl>
-            <Input
-            
-                id="standard-adornment-weight"
-                value={quantityByManualEntry}
-                onChange={handleManualQuantityChange}
-                endAdornment={<InputAdornment position="end">Num.</InputAdornment>}
-                aria-describedby="standard-weight-helper-text"
-                inputProps={{
-                    'aria-label': 'weight',
-                }}
-            />
-            <FormHelperText id="standard-weight-helper-text">Numbers</FormHelperText>
-        </FormControl>)
-    }
-}
 
     const handleKGChange = (name, value) => {
         setValueGroupsKG({ Weight: value })
         console.log(valueGroupsKG.Weight, 'weight', value, 'val')
         setCalculatdPrice(price * (value + valueGroupsGrams.Weight))
+        setQuantityToDisplay(value + valueGroupsGrams.Weight)
     };
 
     const handleGramsChange = (name, value) => {
         setValueGroupsGrams({ Weight: value })
         setCalculatdPrice(price * (valueGroupsKG.Weight + value))
+        setQuantityToDisplay(valueGroupsKG.Weight + value)
+
     };
 
     const handleManualQuantityChange = (event) => {
         console.log(event.target.value, 'eventtt value')
         setQuantityByManualEntry(event.target.value)
-        setCalculatdPrice(price * event.target.value)       
-        
+        setCalculatdPrice(price * event.target.value)
+
+
     }
 
     const handleNumbersChange = (name, value) => {
         setValueGroupsNumbers({ Weight: value })
         setCalculatdPrice(price * value)
+        setQuantityToDisplay(value)
     }
 
     const handleWeightTextInput = (event) => {
@@ -188,20 +259,20 @@ export const AddProduct = (props) => {
         var quantity, unit
 
         if (unitType === 'Kg') {
-            if(isEnterWeightSetToManual){
+            if (isEnterWeightSetToManual) {
                 quantity = quantityByManualEntry
             }
-            else{
-            quantity = valueGroupsKG.Weight + valueGroupsGrams.Weight
+            else {
+                quantity = valueGroupsKG.Weight + valueGroupsGrams.Weight
             }
             unit = 'Kg'
         }
         else if (unitType === 'Numbers') {
-            if(isEnterWeightSetToManual){
+            if (isEnterWeightSetToManual) {
                 quantity = quantityByManualEntry
             }
-            else{
-            quantity = valueGroupsNumbers.Weight
+            else {
+                quantity = valueGroupsNumbers.Weight
             }
             unit = 'Numbers'
         }
@@ -233,7 +304,9 @@ export const AddProduct = (props) => {
         <div>
             <div>
                 <span> Price: {calculatedPrice}</span>
-                <span className="positionRight">MRP: {price}/kg</span>
+                <span className="positionRight">Quantity: {!isEnterWeightSetToManual ? quantityToDisplay : quantityByManualEntry} {unitType}</span>
+
+
             </div>
 
             {isEnterWeightSetToManual ? ManualQuantityInput() : QuantitySelector()}
@@ -252,7 +325,7 @@ export const AddProduct = (props) => {
             />
 
             <div className="text-center">
-                <Button onClick={addToCart}>Add to Cart</Button>
+                <Button color="primary" variant="contained" onClick={addToCart}>Add to Cart</Button>
             </div>
         </div>
     )

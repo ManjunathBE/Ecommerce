@@ -4,7 +4,7 @@ import { useStore } from "./Store";
 import {
   Table, TableContainer, TableBody, TableCell, TableHead, TableRow, Checkbox, Paper, Toolbar, Typography,
   Tooltip, DialogTitle, DialogContent, Dialog, Card, CardMedia,
-  CardContent
+  CardContent, Hidden, Container, Grid
 } from '@material-ui/core'
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
@@ -19,15 +19,27 @@ import FlashMessage from 'react-flash-message'
 import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
 import { AddProduct } from './AddProduct'
 import CloseIcon from '@material-ui/icons/Close';
+import { MenuPane } from './MenuPane'
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
+    display: 'flex',
+  },
+  content: {
+    flexGrow: 1,
+    height: '100vh',
+    overflow: 'auto',
+  },
+  container: {
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
   },
   paper: {
     width: '100%',
     marginBottom: theme.spacing(2),
-  }, visuallyHidden: {
+  },
+  visuallyHidden: {
     border: 0,
     clip: 'rect(0 0 0 0)',
     height: 1,
@@ -123,8 +135,8 @@ export const Cart = (props) => {
   const [editCart, setEditCart] = useState(false)
   const [productToEdit, setProductToEdit] = useState([]);
   const [showAddressSelection, setShowAddressSelection] = useState(false)
-  const [showSelectedAddress, setShowhowSelectedAddress ] = useState(false)
-  const [selectedAddressForDelivery,setSelectedAddressForDelivery ] = useState()
+  const [showSelectedAddress, setShowhowSelectedAddress] = useState(false)
+  const [selectedAddressForDelivery, setSelectedAddressForDelivery] = useState()
   const [selectedAddressId, setSelectedAddressId] = useState()
 
   const EnhancedTableToolbar = (props) => {
@@ -245,7 +257,7 @@ export const Cart = (props) => {
 
   }
 
-  const splitAddress =() =>{
+  const splitAddress = () => {
     //setSelectedAddressId(selectedAddressForDelivery.id)
     return (<Typography>{selectedAddressForDelivery.addressLine1}
       {selectedAddressForDelivery.addressLine2}
@@ -260,70 +272,94 @@ export const Cart = (props) => {
   return (
     <div>
       <Header title={(props.location.pathname).substring(1)} history={props.history} />
+      <div className={classes.root}>
+        <Hidden smDown>
+          <MenuPane history={history} />
+        </Hidden>
 
+        <main className={classes.content}>
 
-      <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} selectedItems={selected} />
-        <TableContainer>
-          {emptyRows.length ? <React.Fragment><Table>
-            <EnhancedTableHead
-              classes={classes}
-              numSelected={selected.length}
-              onSelectAllClick={handleSelectAllClick}
-              cartCount={cartStore.cart.length}
-            />
-            <TableBody>
-              {cartStore.cart.map((cart, index) => {
+          <Container maxWidth="lg" className={classes.container}>
 
-                const isItemSelected = isSelected(cart.productName);
-                const labelId = `enhanced-table-checkbox-${index}`;
-
-                totalPrice = totalPrice + cart.price
-                return (
-                  <TableRow
-                    hover
-
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={cart.productName}
-                    selected={isItemSelected}
-                  >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={isItemSelected}
-                        inputProps={{ 'aria-labelledby': labelId }}
-                        onClick={(event) => handleClick(event, cart.productName)}
+            <Paper className={classes.paper}>
+            <EnhancedTableToolbar numSelected={selected.length} selectedItems={selected} />
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={7}>               
+                  <TableContainer>
+                    {emptyRows.length ? <React.Fragment><Table>
+                      <EnhancedTableHead
+                        classes={classes}
+                        numSelected={selected.length}
+                        onSelectAllClick={handleSelectAllClick}
+                        cartCount={cartStore.cart.length}
                       />
-                    </TableCell>
-                    <TableCell component="th" id={labelId} scope="row" padding="none">
-                      {cart.productName}
-                      <EditTwoToneIcon onClick={(event) => handleEditClick(event, cart)} />
-                    </TableCell>
-                    <TableCell align="right">{cart.quantity}</TableCell>
-                    <TableCell align="right">{cart.unit}</TableCell>
-                    <TableCell align="right">{cart.price}</TableCell>
-                  </TableRow>
-                );
-              })}
-              <TableRow>
-                <TableCell colspan={5} align="right">total price:  {totalPrice} <br />
+                      <TableBody>
+                        {cartStore.cart.map((cart, index) => {
+
+                          const isItemSelected = isSelected(cart.productName);
+                          const labelId = `enhanced-table-checkbox-${index}`;
+
+                          totalPrice = totalPrice + cart.price
+                          return (
+                            <TableRow
+                              hover
+
+                              role="checkbox"
+                              aria-checked={isItemSelected}
+                              tabIndex={-1}
+                              key={cart.productName}
+                              selected={isItemSelected}
+                            >
+                              <TableCell padding="checkbox">
+                                <Checkbox
+                                  checked={isItemSelected}
+                                  inputProps={{ 'aria-labelledby': labelId }}
+                                  onClick={(event) => handleClick(event, cart.productName)}
+                                />
+                              </TableCell>
+                              <TableCell component="th" id={labelId} scope="row" padding="none">
+                                {cart.productName}
+                                <EditTwoToneIcon onClick={(event) => handleEditClick(event, cart)} />
+                              </TableCell>
+                              <TableCell align="right">{cart.quantity}</TableCell>
+                              <TableCell align="right">{cart.unit}</TableCell>
+                              <TableCell align="right">{cart.price}</TableCell>
+                            </TableRow>
+                          );
+                        })}
+                        <TableRow>
+                          <TableCell colspan={5} align="right">total price:  {totalPrice} <br />
                               total items :{cartStore.cart.length}</TableCell>
 
-              </TableRow>
-            </TableBody>
-          </Table>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
 
-{showSelectedAddress?splitAddress():""}
-            <Button onClick={handleSelectAddress}>Add/Select Address</Button>
+                      {showSelectedAddress ? splitAddress() : ""}
+                      <Button onClick={handleSelectAddress}>Add/Select Address</Button>
 
-            <Button onClick={() => history.push("/")}>Continue Shopping</Button>
-            <Button onClick={handlePlaceOrder}>Place Order</Button>
-          </React.Fragment> : "Cart is empty"}
-        </TableContainer>
+                      <Button onClick={() => history.push("/")}>Continue Shopping</Button>
+                      <Button onClick={handlePlaceOrder}>Place Order</Button>
+                    </React.Fragment> : "Cart is empty"}
+                  </TableContainer>
 
 
-      </Paper>
+
+                </Grid>
+                <Grid item xs={false} md={5}>
+<Card>
+<CardContent>
+  Total : {totalPrice}
+</CardContent>
+</Card>
+                </Grid>
+
+              </Grid>
+
+            </Paper>
+          </Container>
+        </main>
+      </div>
 
 
       <Dialog open={showAddressSelection}>
