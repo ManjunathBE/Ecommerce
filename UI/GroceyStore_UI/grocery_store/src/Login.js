@@ -1,13 +1,8 @@
-import React, { Component, Fragment, useState } from "react";
-import { Header } from './Header'
+import React, { Fragment, useState } from "react";
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Typography } from '@material-ui/core';
-import { FormControl } from '@material-ui/core';
-import { useAuth } from './Auth'
-import { useStore } from "./Store";
 import { makeStyles } from "@material-ui/core/styles";
-import { VerticalAlignCenter } from "@material-ui/icons";
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Avatar from '@material-ui/core/Avatar';
 import Image from "./Images/login_pic.jpeg"
@@ -15,6 +10,8 @@ import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
 import { VerifyOtp } from './VerifyOtp'
+import firebase from "@firebase/app";
+import "@firebase/auth";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -49,66 +46,45 @@ const useStyles = makeStyles((theme) => ({
 
     btnStyling: {
         margin: theme.spacing(3, 0, 2),
-
     }
 }));
 
 export const Login = (props) => {
 
     const classes = useStyles();
-
     const [showOtpInput, setShowOtpInput] = useState(false)
     const [phone, setPhone] = useState();
-    const [password, setPassword] = useState();
     const [errors, setErrors] = useState({})
     const { history } = props;
-
-
-    const generateOtp = () => {
-        var digits = '0123456789';
-        var otpLength = 4;
-        var otp = '';
-        for (let i = 1; i <= otpLength; i++) {
-            var index = Math.floor(Math.random() * (digits.length));
-            otp = otp + digits[index];
-        }
-        setPassword(otp)
-        return otp;
-    }
+    const [firebaseConfirmationResult, setFirebaseConfirmationResult] = useState()
 
     const handlePhoneNumberChange = (event) => {
         setPhone(event.target.value)
     }
+   
     const handleRequestOTP = (event) => {
         event.preventDefault()
-        if (validatePhone()) {
-            console.log('amhere')
-            var otp = generateOtp()
-            console.log(otp, 'otp')
 
-            var url = "https://api.msg91.com/api/v5/otp?authkey=346751ACJJ5GwM0os65fa953a2P1&template_id=5fa958027dd0a25d7340bf39&mobile=91" + phone + "&otp=" + otp
-            fetch(url, {
-                mode: 'no-cors',
-                headers: {
-                    "content-type": "application/json",
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "GET",
-                    "Access-Control-Allow-Headers": "Content-Type"
-                }
-            }).then(response => {
-                console.log('otp response', response)
-                // history.push({
-                //     pathname: '/verifyotp',
-                //     state: { phone: phone, password: otp }
-                // })
-                setShowOtpInput(true)
-
-            })
-                .catch(error => {
-                    console.log('otp error', error)
-                })
-        }
-        console.log(errors, 'errors in handle otp')
+        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('RequestOtpButton', {
+            'size': 'invisible',
+            'callback': (response) => {
+              // reCAPTCHA solved, allow signInWithPhoneNumber.
+            }
+        })
+            if (validatePhone()) {            
+                const appVerifier = window.recaptchaVerifier;
+                firebase.auth().signInWithPhoneNumber('+919677513661', appVerifier)
+                    .then((confirmationResult) => {
+                        // SMS sent. Prompt user to type the code from the message, then sign the
+                        // user in with confirmationResult.confirm(code).
+                        setShowOtpInput(true)
+                        window.confirmationResult = confirmationResult;
+                        setFirebaseConfirmationResult(confirmationResult)
+                    }).catch((error) => {
+                       console.log(error,'error in sending sms')
+                    });
+            }
+            console.log(errors, 'errors in handle otp')      
     }
 
     const validatePhone = () => {
@@ -156,7 +132,9 @@ export const Login = (props) => {
                                         helperText={errors.phone}
                                     />
 
+
                                     <Button
+                                        id='RequestOtpButton'
                                         className={classes.btnStyling}
                                         fullWidth
                                         type="submit"
@@ -165,8 +143,7 @@ export const Login = (props) => {
                                         onClick={handleRequestOTP}
                                     >
                                         Request OTP
-          </Button> </Fragment> : <VerifyOtp editPhone={editPhoneFromVerifyOtp} password={password} phone={phone} history={history} />}
-
+          </Button> </Fragment> : <VerifyOtp editPhone={editPhoneFromVerifyOtp} firebaseConfirmationResult = {firebaseConfirmationResult} phone={phone} history={history} />}
                         </form>
                     </div>
                 </Grid>

@@ -1,40 +1,28 @@
-import React, { Component, useState } from "react";
-import { Header } from './Header'
+import React, { useState } from "react";
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { Typography } from '@material-ui/core';
-import { FormControl } from '@material-ui/core';
 import { useAuth } from './Auth'
 import { useStore } from "./Store";
 import { makeStyles } from "@material-ui/core/styles";
-import { VerticalAlignCenter } from "@material-ui/icons";
-import LockIcon from '@material-ui/icons/Lock';
 
 const useStyles = makeStyles((theme) => ({
 
-    // paper: {
-    //     marginTop: theme.spacing(28),
-    //     display: 'flex',
-    //     flexDirection: 'column',
-    //     alignItems: 'center',
-    // },
-
-    // btnStyling: {
-    //     width: "55%",
-    //     padding: "2%",
-    //     textAlign: "center",
-    // }
+    btnStyling: {
+        margin: theme.spacing(2, 0, 1),
+    }
 }));
 
 export const VerifyOtp = (props) => {
-    
+
     const classes = useStyles();
     const [passwordFromUser, setPasswordFromUser] = useState();
-    const { history, password, phone } = props
+    const { history, phone, firebaseConfirmationResult } = props
     //const [password, setPassword] = useState(props.location.state.password);
     const [errors, setErrors] = useState({})
     const { setLoginState } = useAuth()
     const { userStore, setUserStore } = useStore();
+    const { tokenStore, setTokenStore } = useStore();
+
     //var phone = props.location.state.phone
 
 
@@ -45,32 +33,44 @@ export const VerifyOtp = (props) => {
 
     const validateForm = () => {
         var temp = []
-        console.log(password, passwordFromUser)
         console.log(props)
-
-        temp.password = password ? "" : "otp is required"
-        if (password !== passwordFromUser) temp.password = "otp doensn't match"
+        temp.password = passwordFromUser ? "" : "otp is required"        
         setErrors({ ...temp })
-
         return Object.values(temp).every(param => param === "")
     }
 
-    const handleLogin = (event) => {
+    const handleLogin = async (event) => {
         event.preventDefault()
         if (validateForm()) {
-            console.log(password, 'password')
-            setLoginState(true)
-            fetchUser()
-            history.push('/')
+            firebaseConfirmationResult.confirm(passwordFromUser).then((result) => {
+                setLoginState(true)
+                fetchUser()
+                history.push('/')
+            }).catch((error) => {
+                console.log(error,'otp mismatch')
+                alert('Otp doesnt match, try again')
+            });
         }
         console.log(errors, 'errors')
     }
 
-    const fetchUser = () => {
+    const fetchUser = async () => {
 
-        fetch('https://localhost:44360/api/user?phoneNumber=' + phone,
+        const payload = {
+            "mobilenumber": phone,
+            "logintype": "social",
+            "device_token": ""
+        }
+        console.log(payload, 'payload')
+
+        await fetch('http://167.71.235.9:3024/auth/login',
             {
-                mode: 'cors'
+                mode: 'cors',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
             })
             .then(result => {
                 console.log(result, 'fetch in login')
@@ -81,10 +81,19 @@ export const VerifyOtp = (props) => {
                     console.log('result is not 200')
                 } else {
                     result.json().then(body => {
-                        console.log(body, 'response')
-                        console.log(body.address)
-                        var user = body
-                        setUserStore({ user, type: 'User' })
+                        if (body.success !== true) {
+                            console.log('request failed', body)
+                        }
+                        else {
+                            console.log(body, 'response')
+                            var user = body.data[0]
+                            var address = body.address
+                            console.log('address from backend', address)
+                            window.localStorage.setItem('token', body.token)
+                            setUserStore({ user, type: 'User' })
+                        }
+                        setUserStore({ address, type: 'Address' })
+                        setTokenStore({ token: body.token })
                     });
                 }
             })
@@ -93,10 +102,9 @@ export const VerifyOtp = (props) => {
             });
     }
 
-    const handleEditPhone =()=>{
+    const handleEditPhone = () => {
         props.editPhone()
     }
-
 
     return (
         <div>
@@ -114,7 +122,7 @@ export const VerifyOtp = (props) => {
                     error={errors.password}
                     helperText={errors.password}
                 />
-                
+
                 <Button
                     className={classes.btnStyling}
                     // type="submit"
@@ -139,5 +147,4 @@ export const VerifyOtp = (props) => {
             </div>
         </div>
     )
-
 }
