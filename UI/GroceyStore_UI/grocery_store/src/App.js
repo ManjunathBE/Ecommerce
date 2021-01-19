@@ -5,6 +5,8 @@ import { AuthContext } from "./Auth";
 import Footer from './Footer'
 import { Hidden } from '@material-ui/core';
 import {MenuPane} from './MenuPane'
+import firebaseConfig from './firebaseConfig';
+import firebase from "@firebase/app";
 
 
 
@@ -13,6 +15,11 @@ function App() {
 
   const [loginState, setLoginState] = useState(false)
   console.log(loginState, 'login state')
+ if (!firebase.apps.length) {
+   firebase.initializeApp(firebaseConfig);
+}else {
+   firebase.app(); // if already initialized, use that one
+}
   return (
     <AuthContext.Provider value={{ loginState, setLoginState }}>
       {/* <AuthContext.Provider value={true}> */}
