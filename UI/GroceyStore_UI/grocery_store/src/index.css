@@ -47,7 +47,15 @@ code {
 }
 
 .flashStyling{
-  background-color: aqua;
+  background-color: rgba(76, 33, 230, 0.623);
+  width: 40vw;
+  height: 50px;
+  border-radius: 0%;
+  color:white;
+  position:absolute;
+  font-size: larger;
+  text-align: center;
+  margin-left: 30%;
 }
 
 
