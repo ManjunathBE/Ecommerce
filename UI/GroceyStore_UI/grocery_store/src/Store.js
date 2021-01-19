@@ -3,7 +3,7 @@ import { InsertInvitation, Store } from '@material-ui/icons';
 import React, { createContext, useContext, useReducer } from 'react';
 
 const StoreContext = createContext();
-const initialState = { view: "", cart: [], user:{} };
+const initialState = { view: "", cart: [], user: {}, token:"" };
 
 const cartReducer = (state = initialState, action) => {
 
@@ -18,14 +18,17 @@ const cartReducer = (state = initialState, action) => {
                     productName: action.productName,
                     quantity: action.quantity,
                     unit: action.unit,
-                    price: action.price
+                    price: action.price,
+                    productId: action.productId
                 }]
             }
         case 'Update':
             return {
                 ...state, cart: state.cart.map((item) => (item.productName === action.productName ?
-                    { ...item, quantity: action.quantity,
-                        unit: action.unit, price: action.price } : item))
+                    {
+                        ...item, quantity: action.quantity,
+                        unit: action.unit, price: action.price, productId: action.productId
+                    } : item))
             }
 
         case 'Delete':
@@ -33,7 +36,7 @@ const cartReducer = (state = initialState, action) => {
                 ...state, cart: state.cart.filter(item => item.productName !== action.item)
             }
 
-        case 'AddFromHistory':       
+        case 'AddFromHistory':
             return {
                 ...state, cart: [{
                     productName: action.item.productName,
@@ -56,29 +59,33 @@ const userReducer = (state, action) => {
     var address = action.address
     switch (action.type) {
         case 'Address': {
-            return {...state, user:{...state.user, address:[...state.user.address,address]}}
+            return { ...state, user: { ...state.user, address:  address } }
         }
-        case 'User':{
+        case 'User': {
             return { ...state, user: action.user }
         }
 
         default:
             return state
-    }   
+    }
 }
 
-// const userReducer = (state, action) =>{
+const tokenReducer = (state, action) => {
+    console.log('in token reducer', action)
+    return { ...state, token: action.token }
 
-//     console.log('in user store', action)
-//     return {...state, user: action.user}
-// }
+}
 
 export const StoreProvider = ({ children }) => {
     const [cartStore, setCartStore] = useReducer(cartReducer, initialState);
     const [viewStore, setviewStore] = useReducer(viewReducer, initialState)
     const [userStore, setUserStore] = useReducer(userReducer, initialState)
+    const [tokenStore, setTokenStore] = useReducer(tokenReducer, initialState)
     return (
-        <StoreContext.Provider value={{ cartStore, setCartStore, viewStore, setviewStore, userStore, setUserStore }}>
+        <StoreContext.Provider value={{
+            cartStore, setCartStore, viewStore, setviewStore, userStore, setUserStore,
+            tokenStore, setTokenStore
+        }}>
             {children}
         </StoreContext.Provider>
     )

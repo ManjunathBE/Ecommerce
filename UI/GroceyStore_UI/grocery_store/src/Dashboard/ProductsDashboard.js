@@ -13,7 +13,7 @@ import {
   Container
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { toFirstCharUppercase } from "../Healper";
+import { toFirstCharUppercase, unitMapper } from "../Healper";
 import { AddProduct } from '../AddProduct'
 import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
@@ -21,6 +21,9 @@ import CloseIcon from '@material-ui/icons/Close';
 import { useStore } from "../Store";
 import { MenuPane } from '../MenuPane'
 import Box from '@material-ui/core/Box';
+import FlashMessage from 'react-flash-message'
+import Loader from "react-loader-spinner";
+import {Spinner} from '../Spinner'
 
 const useStyles = makeStyles((theme) => ({
   DashboardContainer: {
@@ -60,9 +63,9 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "left"
   },
   alignRight: {
-    
-    justifyContent:"flex-end",
-    float:'right',
+
+    justifyContent: "flex-end",
+    float: 'right',
   }
 }));
 
@@ -77,14 +80,33 @@ export const ProductsDashboard = (props) => {
   const [unitType, setUnitType] = useState("")
   const images = require.context('../assets/products', true);
   const { viewStore } = useStore();
+  const [addedToCart, setAddedToCart] = useState(false)
+  const [productId, setProductId] = useState()
+  const [showSpinner, setShowSpinner] = useState(true)
 
   useEffect(() => {
     fetchProducts()
   }, [])
-  const categoryName = (props.location.pathname).substring(1)
-  const fetchProducts = () => {
 
-    fetch('https://localhost:44360/Product?category=' + categoryName,)
+  const categoryId = (props.location.pathname).substring(1)
+  console.log('product id from pros', categoryId)
+
+  const fetchProducts = () => {
+    const payload = {
+      "branch_id": "1",
+      "categoryid": categoryId
+    }
+
+    fetch('http://167.71.235.9:3024/category/getallItemsByCateId',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': window.localStorage.token
+        },
+        body: JSON.stringify(payload)
+      }
+    )
       .then(result => {
         if (result.status === 404) {
           console.log('result is 404')
@@ -92,8 +114,13 @@ export const ProductsDashboard = (props) => {
           console.log('result is not 200')
         } else {
           result.json().then(body => {
-            console.log(body)
-            setProducts(body.slice(0, 4))
+            if (body.success !== true) {
+              console.log('request failed', body)
+            } else {
+              console.log(body)
+              setShowSpinner(false)
+              setProducts(body.data)
+            }
           });
         }
       })
@@ -102,30 +129,59 @@ export const ProductsDashboard = (props) => {
       });
   }
 
+  const getDiscountPrecentage = (MRP_Price, SellIngPrice) => {
+    if (SellIngPrice !== null) {
+      var discount = MRP_Price - SellIngPrice
+      return discount * (100 / MRP_Price).toFixed(0)
+    }
+  }
+
   const getGridCard = (id) => {
-    const { productName, price, imagePath, unitType } = products[
+    const { Id, ItemName, ItemImage, UnitTypeId, MRP_Price, SellIngPrice } = products[
       `${id}`
     ];
+    var isDiscount = false;
     var unitToDisplay = ""
-    if (unitType === 'Kg') {
+
+    if (UnitTypeId === 1) {
       unitToDisplay = '1 Kg'
     }
 
-    const image = images(`./${imagePath}.jpg`);
+    var discountPercentage;
+    var price;
+
+
+    if (SellIngPrice !== null) {
+      var discount = MRP_Price - SellIngPrice
+      discountPercentage = discount * (100 / MRP_Price).toFixed(0)
+      if (discountPercentage !== 0) {
+        isDiscount = true
+        price = SellIngPrice
+      }
+      else {
+        price = MRP_Price
+      }
+    }
+
+    // const image = images(`./${imagePath}.jpg`);
     return (
 
       <Grid item xs={6} sm={3} key={id}>
-        <Card onClick={() => handleProductClick(price, productName, unitType)}>
+        <Card onClick={() => handleProductClick(price, ItemName, unitMapper(UnitTypeId), Id)}>
+          {isDiscount ?
+            <div>
+              {discountPercentage}
+            </div> : ""}
           <CardMedia
             className={classes.cardMedia}
-            image={image}
+            image={ItemImage}
             style={{ width: "130px", height: "130px" }}
           />
           <CardContent >
-            <Typography className={classes.cardContent}>{`${toFirstCharUppercase(productName)}`}</Typography>
+            <Typography className={classes.cardContent}>{`${toFirstCharUppercase(ItemName)}`}</Typography>
             <div>
-                <span>₹{price}</span>
-                <span className="positionRight">{unitToDisplay}</span>
+              <span>₹{MRP_Price}</span>
+              <span className="positionRight">{unitToDisplay}</span>
             </div>
           </CardContent>
         </Card>
@@ -139,7 +195,6 @@ export const ProductsDashboard = (props) => {
       { id: 'Product', numeric: false, disablePadding: true, label: 'Product Name' },
       { id: 'Units', numeric: true, disablePadding: false, label: 'Units' },
       { id: 'Price', numeric: true, disablePadding: false, label: 'Price' },
-      { id: 'Quantity', numeric: true, disablePadding: false, label: 'Quantity' },
     ];
 
     console.log(products, 'proooddducts')
@@ -156,19 +211,15 @@ export const ProductsDashboard = (props) => {
                 {headCell.label}
               </TableCell>
             ))}
-
-
           </TableRow>
-
         </TableHead>
-
         <TableBody>
 
           {(products).map((id) =>
-            <TableRow onClick={() => handleProductClick(id.price, id.productName, id.unitType)}>
-              <TableCell align="right">{id.productName}</TableCell>
-              <TableCell align="right">{id.unitType}</TableCell>
-              <TableCell align="right">{id.price}</TableCell>
+            <TableRow onClick={() => handleProductClick(id.SellIngPrice, id.ItemName, unitMapper(id.UnitTypeId), id.Id)}>
+              <TableCell align="right">{id.ItemName}</TableCell>
+              <TableCell align="right">{unitMapper(id.UnitTypeId)}</TableCell>
+              <TableCell align="right">{id.SellIngPrice}</TableCell>
             </TableRow>
           )}
 
@@ -206,11 +257,13 @@ export const ProductsDashboard = (props) => {
     }
   }
 
-  const handleProductClick = (price, productName, unitType) => {
+  const handleProductClick = (price, productName, unitType, productId) => {
+    setProductId(productId)
     setProductPrice(price)
     setproductName(productName)
     setUnitType(unitType)
     setOpenAddProductDialogState(true)
+    setAddedToCart(false)
   }
 
   const handleDialogClose = () => {
@@ -221,10 +274,16 @@ export const ProductsDashboard = (props) => {
     setOpenAddProductDialogState(false)
   }
 
+  const FlashAddedToCart = () => {
+    setAddedToCart(true)
+    console.log('switched to true')
+  }
+
   return (
     <div>
       <Header title={(props.location.pathname).substring(1)} history={props.history} />
       <div className={classes.root}>
+
         <Hidden smDown>
           <MenuPane history={history} />
         </Hidden>
@@ -232,6 +291,16 @@ export const ProductsDashboard = (props) => {
         <main className={classes.content}>
 
           <Container maxWidth="lg" className={classes.container}>
+
+            {addedToCart ?
+              <React.Fragment>
+                <div >
+                  <FlashMessage duration={5000} >
+                    <div className='flashStyling text-center'>
+                      Added to Cart
+                        </div>
+                  </FlashMessage>
+                </div> </React.Fragment> : ""}
 
             {products ? (
               SetView()
@@ -248,11 +317,14 @@ export const ProductsDashboard = (props) => {
                 {productName}
               </DialogTitle>
               <DialogContent dividers>
-                <AddProduct modelOpen={closeModal} price={productPrice} productName={productName} unitType={unitType} />
+                <AddProduct modelOpen={closeModal} price={productPrice} productName={productName}
+                  unitType={unitType} addToCart={FlashAddedToCart} productId={productId} />
               </DialogContent>
             </Dialog>
           </Container>
         </main>
+
+        <Spinner showSpinner={showSpinner}/>
       </div>
     </div>
   );

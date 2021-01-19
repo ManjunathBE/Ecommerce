@@ -58,8 +58,21 @@ export function History(props) {
 
   const fetchTransactions = () => {
     console.log(userStore)
+ const userId = userStore.user.UserId
+    console.log( JSON.stringify( {
+      uniqueid: userId
+    }),'herfe herer')
 
-    fetch('https://localhost:44360/Transaction?userId=' + userStore.user.userId)
+    fetch('http://167.71.235.9:3024/cart/getOrderDetailsByUserId',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': window.localStorage.token
+      },
+      body: JSON.stringify( {
+        uniqueid: userId
+      })
+    })
       .then(result => {
         if (result.status === 404) {
           console.log('result is 404')
@@ -67,8 +80,11 @@ export function History(props) {
           console.log('result is not 200')
         } else {
           result.json().then(body => {
-            console.log(body, 'trans')
-            setTransactions(body)
+            if (body.success !== true) {
+              console.log('request failed', body)
+            } else {
+            setTransactions(body.data)
+            }
           });
         }
       })
@@ -79,8 +95,10 @@ export function History(props) {
 
   const handleClick = (tran) => {
     console.log('in method')
-    setSelectedRow(tran)
-    setDialogView(true)
+
+    //uncomment after changes from backend
+    // setSelectedRow(tran)
+    // setDialogView(true)
   }
 
 
@@ -260,7 +278,7 @@ export function History(props) {
           <TableBody>
             {/* {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => { */}
             {transactions.map((column) => {
-              var transactionDateTime = new Date(column.transactionDateTime)
+              var transactionDateTime = new Date(column.OrderDateAndTime)
               var transactionDate = transactionDateTime.toLocaleDateString()
               var transactionTime = transactionDateTime.toLocaleTimeString()
 
@@ -286,7 +304,7 @@ export function History(props) {
                       // onClick={historicOrder(column)}
                       align={column.align}>
                       {/* {column.format && typeof value === 'number' ? column.format(value) : value} */}
-                      {column.status}
+                      {column.OrderStatus}
                     </TableCell>
                   </React.Fragment>
 

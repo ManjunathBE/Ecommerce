@@ -59,6 +59,20 @@ const useStyles = makeStyles((theme) => ({
     top: theme.spacing(1),
     color: theme.palette.grey[500],
   },
+  border: {
+    border: '0.5px solid grey'
+  },
+  margins: {
+    [theme.breakpoints.up('md')]: {
+      marginLeft: theme.spacing(2),
+      marginRight: theme.spacing(2)
+    },
+
+  },
+  btnnMargins: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1)
+  }
 }));
 
 const TableHeaders = [
@@ -122,6 +136,7 @@ const useToolbarStyles = makeStyles((theme) => ({
   title: {
     flex: '1 1 100%',
   },
+
 }));
 
 
@@ -135,7 +150,7 @@ export const Cart = (props) => {
   const [editCart, setEditCart] = useState(false)
   const [productToEdit, setProductToEdit] = useState([]);
   const [showAddressSelection, setShowAddressSelection] = useState(false)
-  const [showSelectedAddress, setShowhowSelectedAddress] = useState(false)
+  const [showSelectedAddress, setShowSelectedAddress] = useState(false)
   const [selectedAddressForDelivery, setSelectedAddressForDelivery] = useState()
   const [selectedAddressId, setSelectedAddressId] = useState()
 
@@ -214,28 +229,38 @@ export const Cart = (props) => {
 
   const handlePlaceOrder = () => {
 
+    var cartItemList =[]
+    console.log(cartStore.cart, 'cart')
+    console.log(cartStore, 'cartStore')
+    cartStore.cart.forEach((item)=> 
+      cartItemList.push({Itemid:item.productId, Qty:item.quantity, ItemCost:item.price})
+    )
+
     console.log(userStore, 'userStore')
     const payload = {
-      UserId: userStore.user.userId,
-      AddressId: selectedAddressForDelivery.id,
-      Status: 'Executed',
-      orderedProducts: cartStore.cart
+      OrderCost:totalPrice,
+      OrderAddressId: selectedAddressForDelivery.AddressId,
+      OrderItemList: cartItemList
     }
     console.log(payload, 'ordered products')
-    fetch('https://localhost:44360/transaction', {
+    fetch('http://167.71.235.9:3024/cart/CheckoutOrderByCart', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'x-access-token': window.localStorage.token
       },
       body: JSON.stringify(payload)
     })
       .then(result => {
-        if (result.status === 201) {
-          console.log(result, 'result from backend')
-          var orderId = result.transactionId;
-          console.log(orderId, 'orderid')
+        result.json().then(body => {
+          console.log(body, 'result from backend')
+          //var orderId = result.transactionId;
+         // console.log(orderId, 'orderid')
           setIsOrderPlaced(true)
-        }
+          //delete cart here
+        })
+        
+      
       })
 
   }
@@ -252,17 +277,27 @@ export const Cart = (props) => {
 
   const handleAddressCardClick = (address) => {
     setShowAddressSelection(false)
-    setShowhowSelectedAddress(true)
+    setShowSelectedAddress(true)
     setSelectedAddressForDelivery(address)
 
   }
 
+  const handleSuccessDialogClose = ()=> {
+
+
+  }
+
   const splitAddress = () => {
-    //setSelectedAddressId(selectedAddressForDelivery.id)
-    return (<Typography>{selectedAddressForDelivery.addressLine1}
-      {selectedAddressForDelivery.addressLine2}
-      {selectedAddressForDelivery.city}
-      {selectedAddressForDelivery.pinCode}</Typography>)
+   // setSelectedAddressId(selectedAddressForDelivery.id)
+    return (<Card>
+      <CardContent>
+        <Typography>Selected delivery address</Typography><br/>
+        <Typography>{selectedAddressForDelivery.StreetDetails}
+          {/* {selectedAddressForDelivery.city} */}
+          {selectedAddressForDelivery.pincode}
+        </Typography>
+      </CardContent>
+    </Card>)
   }
   const isSelected = (name) => selected.indexOf(name) !== -1;
   const emptyRows = cartStore.cart
@@ -276,16 +311,26 @@ export const Cart = (props) => {
         <Hidden smDown>
           <MenuPane history={history} />
         </Hidden>
-
+        {isOrderPlaced ? <FlashMessage duration={5000}>
+      <div className='flashStyling'>
+        Order placed
+        </div>
+  </FlashMessage> : ""}
         <main className={classes.content}>
 
-          <Container maxWidth="lg" className={classes.container}>
 
-            <Paper className={classes.paper}>
-            <EnhancedTableToolbar numSelected={selected.length} selectedItems={selected} />
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={7}>               
-                  <TableContainer>
+
+
+          <EnhancedTableToolbar numSelected={selected.length} selectedItems={selected} />
+        
+          <Grid container spacing={2}>
+
+            <Grid item xs={12} md={7} className={classes.margins}>
+              <Card>
+                <CardContent style={{ padding: '0px' }}>
+
+
+                  <TableContainer >
                     {emptyRows.length ? <React.Fragment><Table>
                       <EnhancedTableHead
                         classes={classes}
@@ -327,63 +372,65 @@ export const Cart = (props) => {
                             </TableRow>
                           );
                         })}
-                        <TableRow>
-                          <TableCell colspan={5} align="right">total price:  {totalPrice} <br />
+                        <Hidden mdUp>
+                          <TableRow>
+                            <TableCell colspan={5} align="right">total price:  {totalPrice} <br />
                               total items :{cartStore.cart.length}</TableCell>
 
-                        </TableRow>
+                          </TableRow>
+                        </Hidden>
                       </TableBody>
                     </Table>
 
                       {showSelectedAddress ? splitAddress() : ""}
-                      <Button onClick={handleSelectAddress}>Add/Select Address</Button>
 
-                      <Button onClick={() => history.push("/")}>Continue Shopping</Button>
-                      <Button onClick={handlePlaceOrder}>Place Order</Button>
+                      <Button className={classes.btnnMargins} variant='outlined' color='primary' onClick={() => history.push("/")}>Continue Shopping</Button>
+
+                      <Hidden mdUp>
+                        <Button className={classes.btnnMargins} variant='contained' color='golden' onClick={handleSelectAddress}>Add/Select Address</Button>
+                        <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
+                      </Hidden>
+
                     </React.Fragment> : "Cart is empty"}
                   </TableContainer>
+                </CardContent>
+              </Card>
 
 
 
-                </Grid>
-                <Grid item xs={false} md={5}>
-<Card>
-<CardContent>
-  Total : {totalPrice}
-</CardContent>
-</Card>
-                </Grid>
-
-              </Grid>
-
-            </Paper>
-          </Container>
+            </Grid>
+            <Grid item xs={false} md={4} className={classes.margins}>
+              <Hidden smDown>
+                <Card>
+                  <CardContent>
+                    <Typography style={{fontSize:'32px'}}>Total : {totalPrice}</Typography> <br />
+                    <Button className={classes.btnnMargins} onClick={handleSelectAddress}>Add/Select Address</Button> <br />
+                    <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
+                  </CardContent>
+                </Card>
+              </Hidden>
+            </Grid>
+          </Grid>
         </main>
       </div>
 
 
       <Dialog open={showAddressSelection}>
         <DialogTitle>
-
         </DialogTitle>
         <DialogContent>
 
           {userStore.user.address.map((address) =>
-            <Card onClick={() => handleAddressCardClick(address)}>
+            <Card style={{marginTop:'16px'}}onClick={() => handleAddressCardClick(address)} spacing={2}>
               <CardContent>
-                <Typography>{address.addressLine1}
-                  {address.addressLine2}
-                  {address.city}
-                  {address.pinCode}</Typography>
+                <Typography>{address.AddressNickName}
+                  {address.StreetDetails}
+                  {/* {address.city} */}
+                  {address.pincode}</Typography>
               </CardContent>
-
             </Card>
           )}
-
-
-
         </DialogContent>
-
       </Dialog>
 
 
@@ -403,9 +450,18 @@ export const Cart = (props) => {
       </Dialog>
 
 
-      {isOrderPlaced ? <div className='flashStyling'><FlashMessage duration={5000}>
-        Order placed
-  </FlashMessage> </div> : ""}
+      <Dialog classes={{ paper: classes.addProductPopUpDimesnsion }} onClose={handleSuccessDialogClose} open={isOrderPlaced}>
+        <DialogTitle className={classes.root}>
+          <Typography>Order has been placed successfuly</Typography>
+        </DialogTitle>
+        <DialogContent dividers>
+          <Typography>Order would be delivered tomorrow. </Typography>
+          <Button color='primary' variant='contained' onClick={()=> history.push('/')}>Ok</Button>
+        </DialogContent>
+      </Dialog>
+
+
+
     </div>
   )
 }

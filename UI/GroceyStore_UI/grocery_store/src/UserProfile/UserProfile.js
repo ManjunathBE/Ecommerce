@@ -21,6 +21,7 @@ import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import { shadows } from '@material-ui/system';
 import { toFirstCharUppercase } from "../Healper";
 import NoProfilePic from '../Images/no-profile-picture.jpg'
+import {Spinner} from '../Spinner'
 
 const useStyles = makeStyles((theme) => ({
 
@@ -87,6 +88,9 @@ export const UserProfile = (props) => {
   const classes = useStyles();
   console.log(props, 'user profile props')
   useEffect(() => {
+    if (!history.location.state){
+      setShowSpinner(false)
+    }
     fetchUserDetails()
   }, [])
   const [user, setUser] = useState({})
@@ -94,6 +98,7 @@ export const UserProfile = (props) => {
   const { history } = props;
   const { userStore, setUserStore } = useStore();
   const [showAddAddressDialog, setShowAddAddressDialog] = useState(false)
+  const [showSpinner, setShowSpinner] = useState(true)
 
   const fetchUserDetails = () => {
 
@@ -107,15 +112,18 @@ export const UserProfile = (props) => {
         console.log(result, 'profile')
         if (result.status === 404) {
           console.log('result is 404')
+          setShowSpinner(false)
         } else if (result.status !== 200) {
           console.log(result)
           console.log('result is not 200')
+          setShowSpinner(false)
         } else {
           result.json().then(body => {
             console.log(body, 'response')
             console.log(body.address)
             var user = body
             setUserStore({ user, type: 'User' })
+            setShowSpinner(false)
 
           });
         }
@@ -141,7 +149,6 @@ export const UserProfile = (props) => {
   const closeModal = () => {
     setShowAddAddressDialog(false)
   }
-  var counter = 0
 
   return (
 
@@ -167,20 +174,22 @@ export const UserProfile = (props) => {
 
                 </Grid>
                 <Grid className={classes.userDetailsDiv} item xs={12} md={8} lg={8}>
-                  <Typography variant="h5"> {userStore.user.firstName} {userStore.user.lastName}</Typography>
-                  <Typography variant="h6"><PhoneIphoneOutlinedIcon style={{ color: "blue" }} />   {userStore.user.phoneNumber}</Typography>
-                  <Typography variant="h6"><EmailOutlinedIcon style={{ color: "blue" }} />   {userStore.user.email}</Typography>
+                  <Typography variant="h5"> {userStore.user.FirstName} {userStore.user.LastName}</Typography>
+                  <Typography variant="h6"><PhoneIphoneOutlinedIcon style={{ color: "blue" }} />   {userStore.user.Phone}</Typography>
+                  <Typography variant="h6"><EmailOutlinedIcon style={{ color: "blue" }} />   {userStore.user.Email}</Typography>
                 </Grid>
               </Grid>
               {/* {isFetched? user.address.map((item)=><p>{item.AddressLine1}</p>):""} */}
               
               <Grid container>
                
+               
                 {(userStore.user.address).map((id, index) =>
 
                   <Grid className={classes.AddressDiv} item xs={12} md={4} >
                     <Card className={classes.AddressDiv} >
-                      <Typography> Address : {index+1} <br/> {id.addressLine1}, {id.addressLine2}<br />{`${toFirstCharUppercase(id.city)}`}<br /> Pin: {id.pinCode}</Typography>
+                      {/* <Typography> Address : {index+1} <br/> {id.addressLine1}, {id.addressLine2}<br />{`${toFirstCharUppercase(id.city)}`}<br /> Pin: {id.pinCode}</Typography> */}
+                      <Typography> Address : {id.AddressNickName}<br/>{id.StreetDetails}<br /> Pin: {id.pincode} </Typography>
                     </Card>
                   </Grid>
                 )}
@@ -206,6 +215,7 @@ export const UserProfile = (props) => {
 
             </Dialog></div>)
           : <Redirect to="/AddUserProfile" />}
+           <Spinner showSpinner={showSpinner}/>
       </div>
     </div>
 

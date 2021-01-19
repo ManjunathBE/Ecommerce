@@ -11,6 +11,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 
+
 const useStyles = makeStyles((theme) => ({
     TextFieldMargin: {
         marginTop: "40%"
@@ -30,11 +31,13 @@ const useStyles = makeStyles((theme) => ({
 export const AddProduct = (props) => {
     console.log(props, 'props in add')
     const { cartStore, setCartStore } = useStore();
-    const { productName, price, history, unitType, quantityToEdit } = props
+    const { productName, price, history, unitType, quantityToEdit, productId } = props
     const [units, setUnits] = useState(1)
     const [isEnterWeightSetToManual, setIsEnterWeightSetToManual] = useState(false)
     const [quantityByManualEntry, setQuantityByManualEntry] = useState()
     const [quantityToDisplay, setQuantityToDisplay] = useState()
+    const [showPriceAndQuantity, setShowPriceAndQuantity] = useState(false)
+    
 
 
     const [valueGroupsKG, setValueGroupsKG] = useState({
@@ -222,36 +225,36 @@ export const AddProduct = (props) => {
 
     const handleKGChange = (name, value) => {
         setValueGroupsKG({ Weight: value })
-        console.log(valueGroupsKG.Weight, 'weight', value, 'val')
         setCalculatdPrice(price * (value + valueGroupsGrams.Weight))
         setQuantityToDisplay(value + valueGroupsGrams.Weight)
+        setShowPriceAndQuantity(true)
     };
 
     const handleGramsChange = (name, value) => {
         setValueGroupsGrams({ Weight: value })
         setCalculatdPrice(price * (valueGroupsKG.Weight + value))
         setQuantityToDisplay(valueGroupsKG.Weight + value)
-
+        setShowPriceAndQuantity(true)
     };
 
     const handleManualQuantityChange = (event) => {
         console.log(event.target.value, 'eventtt value')
         setQuantityByManualEntry(event.target.value)
         setCalculatdPrice(price * event.target.value)
-
-
+        setShowPriceAndQuantity(true)
     }
 
     const handleNumbersChange = (name, value) => {
         setValueGroupsNumbers({ Weight: value })
         setCalculatdPrice(price * value)
         setQuantityToDisplay(value)
+        setShowPriceAndQuantity(true)
     }
 
     const handleWeightTextInput = (event) => {
-
         setIsEnterWeightSetToManual(event.target.checked)
         setCalculatdPrice(0)
+        setShowPriceAndQuantity(false)
     }
 
     const addToCart = () => {
@@ -278,40 +281,37 @@ export const AddProduct = (props) => {
         }
         console.log(typeof (quantity), 'typeee')
 
-
         cartStore.cart.forEach(item => {
-
             if (item.productName === productName) {
                 isUpdate = true
             }
-
         });
 
         if (isUpdate) {
-            setCartStore({ productName, quantity, unit, price: price * (quantity), type: 'Update' })
+            setCartStore({ productId, productName, quantity, unit, price: price * (quantity), type: 'Update' })
             props.modelOpen("false")
         }
         else {
-            setCartStore({ productName, quantity, unit, price: price * (quantity), type: 'Add' })
+            setCartStore({ productId, productName, quantity, unit, price: price * (quantity), type: 'Add' })
             props.modelOpen("false")
         }
         setIsEnterWeightSetToManual(false)
+        props.addToCart("true")
+
+
 
     }
 
     const classes = useStyles()
     return (
         <div>
-            <div>
-                <span> Price: {calculatedPrice}</span>
-                <span className="positionRight">Quantity: {!isEnterWeightSetToManual ? quantityToDisplay : quantityByManualEntry} {unitType}</span>
-
-
-            </div>
+            {showPriceAndQuantity ?
+                <div>
+                    <span> Price: {calculatedPrice}</span>
+                    <span className="positionRight">Quantity: {!isEnterWeightSetToManual ? quantityToDisplay : quantityByManualEntry} {unitType}</span>
+                </div> : ""}
 
             {isEnterWeightSetToManual ? ManualQuantityInput() : QuantitySelector()}
-
-
             <FormControlLabel
                 control={
                     <Checkbox
@@ -327,6 +327,8 @@ export const AddProduct = (props) => {
             <div className="text-center">
                 <Button color="primary" variant="contained" onClick={addToCart}>Add to Cart</Button>
             </div>
+
+
         </div>
     )
 

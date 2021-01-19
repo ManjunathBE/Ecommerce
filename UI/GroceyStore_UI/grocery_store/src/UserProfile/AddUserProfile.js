@@ -4,9 +4,6 @@ import Button from '@material-ui/core/Button';
 import { Header } from '../Header'
 import { useStore } from "../Store"
 
-
-
-
 export const AddUserProfile = (props) => {
     const { history } = props
 
