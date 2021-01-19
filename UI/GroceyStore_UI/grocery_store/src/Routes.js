@@ -11,6 +11,7 @@ import { Dashboard } from "./Dashboard/Dashboard";
 import { ProductsDashboard } from "./Dashboard/ProductsDashboard";
 import {Login} from './Login';
 import PrivateRoute from './PrivateRoute';
+import {VerifyOtp} from './VerifyOtp'
 
 
 export const Routes = () => (
@@ -26,9 +27,11 @@ export const Routes = () => (
       <PrivateRoute path="/UserProfile" component={UserProfile} />
       <PrivateRoute path="/Edit User Profile" component={EditUserProfile} />
       <PrivateRoute path="/AddUserProfile" component={AddUserProfile} />
+      <Route path="/verifyotp" component={VerifyOtp} />
+      
       <Route path="/login" component={Login} />
       <PrivateRoute        
-        path="/:productName"
+        path="/:productId"
         component={(props) => <ProductsDashboard {...props} />}
       />
     </Switch>
