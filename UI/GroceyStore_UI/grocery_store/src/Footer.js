@@ -1,26 +1,34 @@
 import React, { Component } from "react"
-import { Router, Link } from 'react-router-dom'
+import { List, Grid, Typography } from '@material-ui/core';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 
 
-export const Footer=(props)=>{
-    const {history} = props
+export const Footer = (props) => {
+    const { history } = props
+    
 
-    const getContent=()=>{
-        
-        if(window.location.pathname==='/login') return null
-        else{
-            return ( <div id="footer">
-            <Link className="footerLink icon col-2" to="/UserProfile"> User Profile</Link>
-            <Link className="footerLink icon col-2" to="/History"> History</Link>
-            <Link className="footerLink icon col-2" to="/Cart"> Cart</Link>
-            <Link className="footerLink icon col-3" to="/Select View"> Select View</Link>
-            <Link className="footerLink icon col-3" to="/Notification"> Notifaction</Link>
-        </div>)
-        }
-    }
-        
-return getContent()
-    }
+    return (
+        <Grid id='footer' container spacing={2} style={{textAlign: "center"}}>
+            <Grid item xs={3} onClick={()=>history.push('/userprofile')}>
+                <DashboardIcon /><br />
+                <Typography>Profile</Typography>
+            </Grid>
+            <Grid item xs={3} onClick={()=>history.push('/History')}>
+                <ShoppingCartIcon/><br />
+                    <Typography>History</Typography>
+            </Grid>
+                <Grid item xs={3} onClick={()=>history.push('/Cart')}>
+                    <DashboardIcon /><br />
+                    <Typography>Cart</Typography>
+                </Grid>
+                <Grid item xs={3} onClick={()=>history.push('/Select View')}>
+                    <DashboardIcon /><br />
+                    <Typography>View</Typography>
+                </Grid>
+            </Grid>
+    )
+}
 
 
 export default Footer
