@@ -41,7 +41,7 @@ export const AddProduct = (props) => {
 
 
     const [valueGroupsKG, setValueGroupsKG] = useState({
-        Weight: 2
+        Weight: 0
     })
     const [optionGroupsKG, setOptionGroupsKG] = useState({
         Weight: [
@@ -57,7 +57,7 @@ export const AddProduct = (props) => {
         ],
     })
     const [valueGroupsGrams, setValueGroupsGrams] = useState({
-        Weight: .250
+        Weight: 0
     })
     const [optionGroupsGrams, setOptionGroupsGrams] = useState({
         Weight: [
@@ -77,25 +77,25 @@ export const AddProduct = (props) => {
 
 
     var numberOptions = [];
-    for (var i = 1; i <= 100; i++) {
+    for (var i = 0; i <= 100; i++) {
         numberOptions.push({ value: i, label: i })
     }
     const [valueGroupsNumbers, setValueGroupsNumbers] = useState({
-        Weight: 5
+        Weight: 0
     })
     const [optionsGroupsNumbers, setOptionGroupsNumbers] = useState({
         Weight: numberOptions
     })
-    var priceFormula;
-    if (unitType === 'Kilograms') {
-        priceFormula = (price * (valueGroupsKG.Weight + valueGroupsGrams.Weight))
+    // var priceFormula;
+    // if (unitType === 'Kilograms') {
+    //     priceFormula = +price * (valueGroupsKG.Weight + valueGroupsGrams.Weight).toFixed(2)
 
-    }
-    else if (unitType === 'Numbers') {
-        priceFormula = (price * valueGroupsNumbers.Weight)
+    // }
+    // else if (unitType === 'Numbers') {
+    //     priceFormula = +price * valueGroupsNumbers.Weight.toFixed(2)
 
-    }
-    const [calculatedPrice, setCalculatdPrice] = useState(priceFormula)
+    // }
+    const [calculatedPrice, setCalculatdPrice] = useState()
 
     const QuantitySelector = () => {
 
@@ -225,14 +225,14 @@ export const AddProduct = (props) => {
 
     const handleKGChange = (name, value) => {
         setValueGroupsKG({ Weight: value })
-        setCalculatdPrice(price * (value + valueGroupsGrams.Weight))
+        setCalculatdPrice((price * (value + valueGroupsGrams.Weight)).toFixed(2))
         setQuantityToDisplay(value + valueGroupsGrams.Weight)
         setShowPriceAndQuantity(true)
     };
 
     const handleGramsChange = (name, value) => {
         setValueGroupsGrams({ Weight: value })
-        setCalculatdPrice(price * (valueGroupsKG.Weight + value))
+        setCalculatdPrice((price * (valueGroupsKG.Weight + value)).toFixed(2))
         setQuantityToDisplay(valueGroupsKG.Weight + value)
         setShowPriceAndQuantity(true)
     };
@@ -240,13 +240,13 @@ export const AddProduct = (props) => {
     const handleManualQuantityChange = (event) => {
         console.log(event.target.value, 'eventtt value')
         setQuantityByManualEntry(event.target.value)
-        setCalculatdPrice(price * event.target.value)
+        setCalculatdPrice((price * event.target.value).toFixed(2))
         setShowPriceAndQuantity(true)
     }
 
     const handleNumbersChange = (name, value) => {
         setValueGroupsNumbers({ Weight: value })
-        setCalculatdPrice(price * value)
+        setCalculatdPrice((price * value).toFixed(2))
         setQuantityToDisplay(value)
         setShowPriceAndQuantity(true)
     }
