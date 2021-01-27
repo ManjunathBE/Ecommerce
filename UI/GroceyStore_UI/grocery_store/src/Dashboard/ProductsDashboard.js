@@ -24,6 +24,7 @@ import Box from '@material-ui/core/Box';
 import FlashMessage from 'react-flash-message'
 import Loader from "react-loader-spinner";
 import {Spinner} from '../Spinner'
+import Footer from '../Footer'
 
 const useStyles = makeStyles((theme) => ({
   DashboardContainer: {
@@ -323,6 +324,10 @@ export const ProductsDashboard = (props) => {
             </Dialog>
           </Container>
         </main>
+
+        <Hidden mdUp >
+              <Footer history={history}/>
+            </Hidden>
 
         <Spinner showSpinner={showSpinner}/>
       </div>

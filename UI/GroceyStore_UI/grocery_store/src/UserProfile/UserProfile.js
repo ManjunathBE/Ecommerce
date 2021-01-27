@@ -22,6 +22,7 @@ import { shadows } from '@material-ui/system';
 import { toFirstCharUppercase } from "../Healper";
 import NoProfilePic from '../Images/no-profile-picture.jpg'
 import {Spinner} from '../Spinner'
+import Footer from '../Footer'
 
 const useStyles = makeStyles((theme) => ({
 
@@ -215,6 +216,10 @@ export const UserProfile = (props) => {
 
             </Dialog></div>)
           : <Redirect to="/AddUserProfile" />}
+
+<Hidden mdUp >
+              <Footer history={history}/>
+            </Hidden>
            <Spinner showSpinner={showSpinner}/>
       </div>
     </div>

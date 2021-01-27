@@ -9,7 +9,7 @@ import {
   CircularProgress,
   Hidden,
   Paper,
-  Dialog,DialogContent,
+  Dialog, DialogContent,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { toFirstCharUppercase } from "../Healper";
@@ -19,7 +19,8 @@ import clsx from 'clsx';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import { MenuPane } from '../MenuPane'
-import {Spinner} from '../Spinner'
+import { Spinner } from '../Spinner'
+import Footer from '../Footer'
 
 
 const drawerWidth = 240;
@@ -31,6 +32,8 @@ const useStyles = makeStyles((theme) => ({
   },
   root: {
     display: 'flex',
+    // flexDirection: 'column',
+    // minHeight: '100vh',
   },
   cardMedia: {
     margin: "auto",
@@ -71,7 +74,7 @@ export const Dashboard = (props) => {
 
   const fetchCategory = () => {
     console.log('token from store', tokenStore)
-    console.log(window.localStorage,'local storage')
+    console.log(window.localStorage, 'local storage')
     var token = window.localStorage.token
 
     const payload = {
@@ -125,8 +128,8 @@ export const Dashboard = (props) => {
           <CardMedia
             className={classes.cardMedia}
             // image ='https://storage.googleapis.com/dudaily.appspot.com/prod%2Fmilk-packing.jpg'
-            image ={CategoryPic}
-             style={{ width: "180px", height: "130px", paddingTop: "90px" }}
+            image={CategoryPic}
+            style={{ width: "180px", height: "130px", paddingTop: "90px" }}
           />
           <CardContent className={classes.cardContent}>
             <Typography>{`${toFirstCharUppercase(CategoryName)}`}</Typography>
@@ -170,9 +173,9 @@ export const Dashboard = (props) => {
     //   </div>)
     // }
     // else {
-      return (<Grid container spacing={2} className={classes.DashboardContainer}>
-        {Object.keys(category).map((Id) => getGridCard(Id))}
-      </Grid>)
+    return (<Grid container spacing={2} className={classes.DashboardContainer}>
+      {Object.keys(category).map((Id) => getGridCard(Id))}
+    </Grid>)
     // }
   }
 
@@ -196,10 +199,15 @@ export const Dashboard = (props) => {
                 <CircularProgress />
               )}
 
+          
+
           </Container>
         </main>
+        <Hidden mdUp >
+              <Footer history={history}/>
+            </Hidden>
 
-       <Spinner showSpinner={showSpinner}/>
+        <Spinner showSpinner={showSpinner} />
 
       </div>
     </Fragment>
