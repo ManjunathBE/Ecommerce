@@ -20,6 +20,7 @@ import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
 import { AddProduct } from './AddProduct'
 import CloseIcon from '@material-ui/icons/Close';
 import { MenuPane } from './MenuPane'
+import Footer from './Footer'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -229,6 +230,14 @@ export const Cart = (props) => {
 
   const handlePlaceOrder = () => {
 
+
+    if(!showSelectedAddress){
+      alert('please select a delivery address')
+    }
+
+    else{
+
+  
     var cartItemList =[]
     console.log(cartStore.cart, 'cart')
     console.log(cartStore, 'cartStore')
@@ -262,6 +271,7 @@ export const Cart = (props) => {
         
       
       })
+    }
 
   }
 
@@ -318,9 +328,6 @@ export const Cart = (props) => {
   </FlashMessage> : ""}
         <main className={classes.content}>
 
-
-
-
           <EnhancedTableToolbar numSelected={selected.length} selectedItems={selected} />
         
           <Grid container spacing={2}>
@@ -363,10 +370,11 @@ export const Cart = (props) => {
                                 />
                               </TableCell>
                               <TableCell component="th" id={labelId} scope="row" padding="none">
-                                {cart.productName}
-                                <EditTwoToneIcon onClick={(event) => handleEditClick(event, cart)} />
+                                {cart.productName}                               
                               </TableCell>
-                              <TableCell align="right">{cart.quantity}</TableCell>
+                              <TableCell align="right">{cart.quantity}
+                              <EditTwoToneIcon onClick={(event) => handleEditClick(event, cart)} />
+                              </TableCell>
                               <TableCell align="right">{cart.unit}</TableCell>
                               <TableCell align="right">{cart.price}</TableCell>
                             </TableRow>
@@ -384,10 +392,10 @@ export const Cart = (props) => {
 
                       {showSelectedAddress ? splitAddress() : ""}
 
-                      <Button className={classes.btnnMargins} variant='outlined' color='primary' onClick={() => history.push("/")}>Continue Shopping</Button>
+                      <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={() => history.push("/")}>Continue Shopping</Button>
 
                       <Hidden mdUp>
-                        <Button className={classes.btnnMargins} variant='contained' color='golden' onClick={handleSelectAddress}>Add/Select Address</Button>
+                        <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={handleSelectAddress}>Add/Select Address</Button>
                         <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
                       </Hidden>
 
@@ -404,7 +412,7 @@ export const Cart = (props) => {
                 <Card>
                   <CardContent>
                     <Typography style={{fontSize:'32px'}}>Total : {totalPrice}</Typography> <br />
-                    <Button className={classes.btnnMargins} onClick={handleSelectAddress}>Add/Select Address</Button> <br />
+                    <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={handleSelectAddress}>Add/Select Address</Button> <br />
                     <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
                   </CardContent>
                 </Card>
@@ -412,6 +420,9 @@ export const Cart = (props) => {
             </Grid>
           </Grid>
         </main>
+        <Hidden mdUp >
+              <Footer history={history}/>
+            </Hidden>
       </div>
 
 
