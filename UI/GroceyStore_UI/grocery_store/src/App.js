@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './App.css';
 import { Routes } from './Routes'
 import { AuthContext } from "./Auth";
-import Footer from './Footer'
+
 import { Hidden } from '@material-ui/core';
 import {MenuPane} from './MenuPane'
 import firebaseConfig from './firebaseConfig';
@@ -25,9 +25,7 @@ function App() {
       {/* <AuthContext.Provider value={true}> */}
       <div >
         <Routes />
-        <Hidden mdUp >
-          <Footer />
-        </Hidden>
+       
       </div>
     </AuthContext.Provider>
   );
