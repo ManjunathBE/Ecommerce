@@ -18,12 +18,11 @@ code {
 
 #footer {
   position: fixed;
-  bottom: 0;
-  height: 2.5rem; 
-  width: 100%; 
+  bottom: 1.5%;
+  height: 3.5rem; 
   overflow: hidden;
-  background-color: black;
-  
+  background-color: lightgray;
+
 }
 
 .footerLink:hover{
