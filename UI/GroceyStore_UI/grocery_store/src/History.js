@@ -1,4 +1,4 @@
-import React, { Component, Link, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Header } from './Header'
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -9,10 +9,13 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import { Dialog, DialogContent, DialogTitle, Switch, Typography, Grid } from '@material-ui/core';
+import { Dialog, DialogContent, DialogTitle, Switch, Typography, Grid, Hidden } from '@material-ui/core';
 import Button from "@material-ui/core/Button"
 import { useStore } from "./Store";
 import { Label } from "@material-ui/icons";
+import { HistoricOrderDetails } from './HistoricOrderDetails'
+import Footer from './Footer'
+import { MenuPane } from './MenuPane'
 
 const columns = [
   { id: 'date', label: 'Date', minWidth: 130 },
@@ -26,14 +29,23 @@ const columns = [
   },
 ];
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme)=>({
   root: {
+    display: 'flex',
     width: '100%',
+    
+  },
+  content: {
+    flexGrow: 1,
+    height: '100vh',
+    overflow: 'auto',
   },
   container: {
-    maxHeight: 440,
+    [theme.breakpoints.up('md')]: {
+      padding: theme.spacing(9),
+    },
   },
-});
+}));
 
 
 
@@ -43,12 +55,12 @@ export function History(props) {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [transactions, setTransactions] = useState([]);
   const [Dialogview, setDialogView] = useState(false)
-  const [selectedRow, setSelectedRow] = useState([])
+  const [selectedRowId, setSelectedRowId] = useState([])
   const { cartStore, setCartStore, userStore } = useStore();
   const { history } = props;
   const [warningDialog, setWarningDialog] = useState(false)
   const [showToggleSwitch, setShowToggleSwitch] = useState(false)
-  const [isToggleOn, setIsToggleOn] = useState(false)
+
 
 
 
@@ -58,18 +70,18 @@ export function History(props) {
 
   const fetchTransactions = () => {
     console.log(userStore)
- const userId = userStore.user.UserId
-    console.log( JSON.stringify( {
+    const userId = userStore.user.UserId
+    console.log(JSON.stringify({
       uniqueid: userId
-    }),'herfe herer')
+    }), 'herfe herer')
 
-    fetch('http://167.71.235.9:3024/cart/getOrderDetailsByUserId',{
+    fetch('http://167.71.235.9:3024/cart/getOrderDetailsByUserId', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'x-access-token': window.localStorage.token
       },
-      body: JSON.stringify( {
+      body: JSON.stringify({
         uniqueid: userId
       })
     })
@@ -83,7 +95,7 @@ export function History(props) {
             if (body.success !== true) {
               console.log('request failed', body)
             } else {
-            setTransactions(body.data)
+              setTransactions(body.data)
             }
           });
         }
@@ -93,12 +105,14 @@ export function History(props) {
       });
   }
 
-  const handleClick = (tran) => {
-    console.log('in method')
-
-    //uncomment after changes from backend
-    // setSelectedRow(tran)
-    // setDialogView(true)
+  const handleOrderClick = (tran) => {
+    console.log(tran.OrderStatus,'order status in history')
+    setSelectedRowId(tran.Id)
+    setDialogView(true)
+    history.push({
+      pathname: "/OrderDetails",
+      state: {orderId:tran.Id, orderStatus:tran.OrderStatus}
+    })
   }
 
 
@@ -113,153 +127,152 @@ export function History(props) {
 
 
 
-  const HistoricOrder = (props) => {
-    var tran = props.transaction
-    var orderedProducts = tran.orderedProducts
-    const Headers = [
-      { id: 'Product', numeric: false, disablePadding: true, label: 'Product Name' },
-      { id: 'Price', numeric: true, disablePadding: true, label: 'Price' },
-      { id: 'Quantity', numeric: true, disablePadding: true, label: 'Quantity' },
-      { id: 'Units', numeric: true, disablePadding: true, label: 'Units' },
-    ]
+  // const HistoricOrder = (props) => {
+  //   var tranId = props.orderId
+  //   var orderedProducts = tran.orderedProducts
+  //   const Headers = [
+  //     { id: 'Product', numeric: false, disablePadding: true, label: 'Product Name' },
+  //     { id: 'Price', numeric: true, disablePadding: true, label: 'Price' },
+  //     { id: 'Quantity', numeric: true, disablePadding: true, label: 'Quantity' },
+  //     { id: 'Units', numeric: true, disablePadding: true, label: 'Units' },
+  //   ]
 
-    const handleEditOrReorder = (e) => {
-      e.preventDefault()
+  //   const handleEditOrReorder = (e) => {
+  //     e.preventDefault()
 
-      console.log(cartStore.cart.length, 'cart in edit')
-      if (cartStore.cart.length !== 0) {
-        setWarningDialog(true)
-      }
-      else {
-        orderedProducts.map((item) => setCartStore({ item, type: 'AddFromHistory' }))
-        history.push(`/cart`)
-      }
-    }
+  //     console.log(cartStore.cart.length, 'cart in edit')
+  //     if (cartStore.cart.length !== 0) {
+  //       setWarningDialog(true)
+  //     }
+  //     else {
+  //       orderedProducts.map((item) => setCartStore({ item, type: 'AddFromHistory' }))
+  //       history.push(`/cart`)
+  //     }
+  //   }
 
-    const handleWarningDialogClose = () => {
-      setWarningDialog(false)
-    }
+  //   const handleWarningDialogClose = () => {
+  //     setWarningDialog(false)
+  //   }
 
-    const handleProceedToCart = () => {
-      orderedProducts.map((item) => setCartStore({ item, type: 'AddFromHistory' }))
-      history.push(`/cart`)
-    }
+  //   const handleProceedToCart = () => {
+  //     orderedProducts.map((item) => setCartStore({ item, type: 'AddFromHistory' }))
+  //     history.push(`/cart`)
+  //   }
 
-    const handleClose = () => {
-      setDialogView(false)
-    }
-    console.log(tran, 'tran in order')
-
-    const showActionButtons = () => {
-      if (tran.status === 'Executed') {
-        setShowToggleSwitch(true)
-        return (<Button onClick={handleEditOrReorder}>Reorder</Button>)
-      }
-      else if (tran.status === 'Ordered') {
-        setShowToggleSwitch(false)
-        return (<Button onClick={handleEditOrReorder}>Edit</Button>)
-      }
-      else if (tran.status === 'Processed') {
-
-        setShowToggleSwitch(false)
-        return (<React.Fragment><Button>Missing</Button>
-          <Button>Return</Button>
-          <Button>Confirm received products</Button></React.Fragment>)
-      }
-    }
-
-    const handleSwitchChange = (event) => {
-      setIsToggleOn(event.target.checked)
-    }
-
-    console.log(showToggleSwitch, 'switch')
-    return (
-      <div>
-
-        <Dialog onClose={handleClose} open={Dialogview}>
-          <DialogTitle>
-
-          </DialogTitle>
-          <DialogContent>
-
-            {showToggleSwitch ?
-              <Grid container direction='row' >
-                <Grid xs={3}>
-                  <Typography>Ordered</Typography></Grid>
-                <Grid xs={3}><Switch onChange={handleSwitchChange} checked={isToggleOn} /></Grid>
-                <Grid xs={3}><Typography>Supplied</Typography></Grid>
-              </Grid> : ""}
-
-            <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    {Headers.map((headCell) => (
-                      <TableCell
-                        key={headCell.id}
-                        align={headCell.numeric ? 'right' : 'left'}
-                        padding={headCell.disablePadding ? 'none' : 'default'}
-                      >
-                        {headCell.label}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-
-                </TableHead>
-                <TableBody>
-                  {isToggleOn ?
-                    tran.orderedProducts.map((p) => {
-
-                      return (
-                        <TableRow>
-                          <TableCell>{p.productName}</TableCell>
-                          <TableCell>{p.processedPrice}</TableCell>
-                          <TableCell>{p.processedQuantity}</TableCell>
-                          <TableCell>{p.unit}</TableCell>
-                        </TableRow>
-                      )
-                    })
-
-                    :
-                    
-                    tran.orderedProducts.map((p) => {
-
-                      return (
-                        <TableRow>
-                          <TableCell>{p.productName}</TableCell>
-                          <TableCell>{p.price}</TableCell>
-                          <TableCell>{p.quantity}</TableCell>
-                          <TableCell>{p.unit}</TableCell>
-                        </TableRow>
-                      )
-                    })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            {showActionButtons()}
-          </DialogContent>
-        </Dialog>
+  //   const handleClose = () => {
+  //     setDialogView(false)
+  //   }
 
 
-        <Dialog onClose={handleWarningDialogClose} open={warningDialog}>
-          <DialogTitle>
+  //   const showActionButtons = () => {
+  //     if (tran.status === 'Executed') {
+  //       setShowToggleSwitch(true)
+  //       return (<Button onClick={handleEditOrReorder}>Reorder</Button>)
+  //     }
+  //     else if (tran.status === 'Ordered') {
+  //       setShowToggleSwitch(false)
+  //       return (<Button onClick={handleEditOrReorder}>Edit</Button>)
+  //     }
+  //     else if (tran.status === 'Processed') {
 
-          </DialogTitle>
-          <DialogContent>
-            The items in your cart will be deleted
-         <Button varaint="contained" color="primary" onClick={handleProceedToCart}>Proceed</Button>
-          </DialogContent>
-        </Dialog>
-      </div>
+  //       setShowToggleSwitch(false)
+  //       return (<React.Fragment><Button>Missing</Button>
+  //         <Button>Return</Button>
+  //         <Button>Confirm received products</Button></React.Fragment>)
+  //     }
+  //   }
 
-    )
-  }
+
+
+  //   console.log(showToggleSwitch, 'switch')
+  //   return (
+  //     <div>
+
+  //       <Dialog onClose={handleClose} open={Dialogview}>
+  //         <DialogTitle>
+
+  //         </DialogTitle>
+  //         <DialogContent>
+
+
+
+  //           <TableContainer>
+  //             <Table>
+  //               <TableHead>
+  //                 <TableRow>
+  //                   {Headers.map((headCell) => (
+  //                     <TableCell
+  //                       key={headCell.id}
+  //                       align={headCell.numeric ? 'right' : 'left'}
+  //                       padding={headCell.disablePadding ? 'none' : 'default'}
+  //                     >
+  //                       {headCell.label}
+  //                     </TableCell>
+  //                   ))}
+  //                 </TableRow>
+
+  //               </TableHead>
+  //               <TableBody>
+  //                 {isToggleOn ?
+  //                   tran.orderedProducts.map((p) => {
+
+  //                     return (
+  //                       <TableRow>
+  //                         <TableCell>{p.productName}</TableCell>
+  //                         <TableCell>{p.processedPrice}</TableCell>
+  //                         <TableCell>{p.processedQuantity}</TableCell>
+  //                         <TableCell>{p.unit}</TableCell>
+  //                       </TableRow>
+  //                     )
+  //                   })
+
+  //                   :
+
+  //                   tran.orderedProducts.map((p) => {
+
+  //                     return (
+  //                       <TableRow>
+  //                         <TableCell>{p.productName}</TableCell>
+  //                         <TableCell>{p.price}</TableCell>
+  //                         <TableCell>{p.quantity}</TableCell>
+  //                         <TableCell>{p.unit}</TableCell>
+  //                       </TableRow>
+  //                     )
+  //                   })}
+  //               </TableBody>
+  //             </Table>
+  //           </TableContainer>
+  //           {showActionButtons()}
+  //         </DialogContent>
+  //       </Dialog>
+
+
+  //       <Dialog onClose={handleWarningDialogClose} open={warningDialog}>
+  //         <DialogTitle>
+
+  //         </DialogTitle>
+  //         <DialogContent>
+  //           The items in your cart will be deleted
+  //        <Button varaint="contained" color="primary" onClick={handleProceedToCart}>Proceed</Button>
+  //         </DialogContent>
+  //       </Dialog>
+  //     </div>
+
+  //   )
+  // }
 
 
 
   return (<div>
+          <Header title={(props.location.pathname).substring(1)} history={props.history} />
     <Paper className={classes.root}>
-      <Header title={(props.location.pathname).substring(1)} history={props.history} />
+
+      <Hidden smDown>
+          <MenuPane history={history} />
+        </Hidden>
+        <main className={classes.content}>
+          <div></div>
+
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -283,7 +296,7 @@ export function History(props) {
               var transactionTime = transactionDateTime.toLocaleTimeString()
 
               return (
-                <TableRow hover role="checkbox" tabIndex={-1} onClick={() => handleClick(column)}>
+                <TableRow hover role="checkbox" tabIndex={-1} onClick={() => handleOrderClick(column)}>
 
                   {/* const value = row[column.transactionId]; */}
 
@@ -327,8 +340,12 @@ export function History(props) {
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
       />
+      </main>
+      <Hidden mdUp >
+              <Footer history={history}/>
+            </Hidden>
     </Paper>
-    {Dialogview ? <HistoricOrder transaction={selectedRow} /> : null}
+    {Dialogview ? <HistoricOrderDetails orderId={selectedRowId} /> : null}
 
 
   </div>
