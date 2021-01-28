@@ -84,6 +84,7 @@ export const ProductsDashboard = (props) => {
   const [addedToCart, setAddedToCart] = useState(false)
   const [productId, setProductId] = useState()
   const [showSpinner, setShowSpinner] = useState(true)
+  const [showFallback, setShowFallback] = useState(false)
 
   useEffect(() => {
     fetchProducts()
@@ -117,6 +118,9 @@ export const ProductsDashboard = (props) => {
           result.json().then(body => {
             if (body.success !== true) {
               console.log('request failed', body)
+              setShowFallback(true)
+              setShowSpinner(false)
+
             } else {
               console.log(body)
               setShowSpinner(false)
@@ -283,6 +287,15 @@ export const ProductsDashboard = (props) => {
   return (
     <div>
       <Header title={(props.location.pathname).substring(1)} history={props.history} />
+      {addedToCart ?
+                <div >
+                  <FlashMessage duration={5000} >
+                    <div className='flashStyling text-center'>
+                      Added to Cart
+                        </div>
+                  </FlashMessage>
+                </div>: ""}
+
       <div className={classes.root}>
 
         <Hidden smDown>
@@ -293,21 +306,12 @@ export const ProductsDashboard = (props) => {
 
           <Container maxWidth="lg" className={classes.container}>
 
-            {addedToCart ?
-              <React.Fragment>
-                <div >
-                  <FlashMessage duration={5000} >
-                    <div className='flashStyling text-center'>
-                      Added to Cart
-                        </div>
-                  </FlashMessage>
-                </div> </React.Fragment> : ""}
+
+                {showFallback? <Typography>Items coming soon ... !</Typography>:""}
 
             {products ? (
               SetView()
-            ) : (
-                <CircularProgress />
-              )}
+            ) : ""}
 
 
             <Dialog classes={{ paper: classes.addProductPopUpDimesnsion }} onClose={handleDialogClose} open={openAddProductDialog}>
