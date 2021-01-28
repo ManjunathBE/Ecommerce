@@ -23,6 +23,7 @@ import { toFirstCharUppercase } from "../Healper";
 import NoProfilePic from '../Images/no-profile-picture.jpg'
 import {Spinner} from '../Spinner'
 import Footer from '../Footer'
+import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
 
 const useStyles = makeStyles((theme) => ({
 
@@ -175,7 +176,11 @@ export const UserProfile = (props) => {
 
                 </Grid>
                 <Grid className={classes.userDetailsDiv} item xs={12} md={8} lg={8}>
-                  <Typography variant="h5"> {userStore.user.FirstName} {userStore.user.LastName}</Typography>
+                  
+                  <Typography variant="h5"> {userStore.user.FirstName} {userStore.user.LastName}
+                  <span className="positionRight"><EditTwoToneIcon/></span>
+                  </Typography>
+
                   <Typography variant="h6"><PhoneIphoneOutlinedIcon style={{ color: "blue" }} />   {userStore.user.Phone}</Typography>
                   <Typography variant="h6"><EmailOutlinedIcon style={{ color: "blue" }} />   {userStore.user.Email}</Typography>
                 </Grid>
@@ -190,7 +195,9 @@ export const UserProfile = (props) => {
                   <Grid className={classes.AddressDiv} item xs={12} md={4} >
                     <Card className={classes.AddressDiv} >
                       {/* <Typography> Address : {index+1} <br/> {id.addressLine1}, {id.addressLine2}<br />{`${toFirstCharUppercase(id.city)}`}<br /> Pin: {id.pinCode}</Typography> */}
-                      <Typography> Address : {id.AddressNickName}<br/>{id.StreetDetails}<br /> Pin: {id.pincode} </Typography>
+                      <Typography> Address : {id.AddressNickName}  
+                      <span className="positionRight"><EditTwoToneIcon/></span>
+                      <br/>{id.StreetDetails}<br /> Pin: {id.pincode} </Typography>
                     </Card>
                   </Grid>
                 )}
