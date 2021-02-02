@@ -12,18 +12,23 @@ import {
   Grid, Hidden, Avatar,
   Card, CardMedia, CardContent,
 } from "@material-ui/core";
-import { Address } from './Address'
+import { EditAddress } from './EditAddress'
 import { MenuPane } from '../MenuPane'
 import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined';
 import { blue } from '@material-ui/core/colors';
 import PhoneIphoneOutlinedIcon from '@material-ui/icons/PhoneIphoneOutlined';
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import { shadows } from '@material-ui/system';
-import { toFirstCharUppercase } from "../Healper";
+import { toFirstCharUppercase } from "../Helper";
 import NoProfilePic from '../Images/no-profile-picture.jpg'
 import {Spinner} from '../Spinner'
 import Footer from '../Footer'
 import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
+import {EditUserDetails} from './EditUserDetails'
+import FlashMessage from 'react-flash-message'
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+
 
 const useStyles = makeStyles((theme) => ({
 
@@ -89,62 +94,91 @@ const useStyles = makeStyles((theme) => ({
 export const UserProfile = (props) => {
   const classes = useStyles();
   console.log(props, 'user profile props')
+
   useEffect(() => {
     if (!history.location.state){
       setShowSpinner(false)
     }
-    fetchUserDetails()
+   // fetchUserDetails()
   }, [])
+
   const [user, setUser] = useState({})
   const [isFetched, setIsFetched] = useState(false)
   const { history } = props;
   const { userStore, setUserStore } = useStore();
   const [showAddAddressDialog, setShowAddAddressDialog] = useState(false)
   const [showSpinner, setShowSpinner] = useState(true)
+  const [showUserDetailsEditDialog, setShowUserDetailsEditDialog] = useState(false)
+  const [showAddressEditDialog, setShowAddressEditDialog] = useState(false)
+  const [showUserDetailsFlash, setShowUserDetailsFlash] = useState(false)
+  const [showAddressFlash, setShowAddressFlash] = useState(false)
+  const [AddressToEdit,setAddressToEdit] = useState({ FirstAddress: "", StreetDetails: "", City: "", Phone:"", pincode: "" })
+  const { tokenStore, setTokenStore } = useStore();
+  const {addressStore, setAddressStore} = useStore()
 
-  const fetchUserDetails = () => {
-
-    if (history.location.state)
-      console.log('inside if')
-    fetch('https://localhost:44360/api/user?phonenumber=' + userStore.user.phoneNumber,
-      {
-        mode: 'cors'
-      })
-      .then(result => {
-        console.log(result, 'profile')
-        if (result.status === 404) {
+   const fetchUserDetails = (UpdateType) => {
+    const payload = {
+      "mobilenumber": window.localStorage.phone,
+      "logintype": "social",
+      "device_token": ""
+  }
+  console.log(payload, 'payload')
+  
+   fetch('https://testapi.slrorganicfarms.com/auth/login',
+  {
+      mode: 'cors',
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+  })
+  .then(result => {
+      console.log(result, 'fetch in login')
+      if (result.status === 404) {
           console.log('result is 404')
-          setShowSpinner(false)
-        } else if (result.status !== 200) {
+      } else if (result.status !== 200) {
           console.log(result)
           console.log('result is not 200')
-          setShowSpinner(false)
-        } else {
+      } else {
           result.json().then(body => {
-            console.log(body, 'response')
-            console.log(body.address)
-            var user = body
-            setUserStore({ user, type: 'User' })
-            setShowSpinner(false)
+              if (body.success !== true) {
+                  console.log('request failed', body)
+              }
+              else {
+                  console.log(body, 'response')
+                  var user = body.data[0]
+                  var address = body.address
+                  console.log('address from backend', address)
+                  
+                  window.localStorage.setItem('token', body.token)
+                  window.localStorage.setItem('phone',user.Phone)
 
+                   setAddressStore({ address, type: 'Address' })
+                   setUserStore({ user, type: 'User' })
+                
+                  setTokenStore({ token: user.token })
+              }
           });
-        }
-      })
-      .catch(error => {
-        console.log("error from server", JSON.stringify(error, Object.getOwnPropertyNames(error)));
-      });
-  }
-  console.log(userStore.user === null, 'user obj length')
+      }
+  })
+  .catch(error => {
+      console.log("error from server", JSON.stringify(error, Object.getOwnPropertyNames(error)));
+  });  
+   }
+
+  console.log(userStore.user === null, 'user obj length equals')
   console.log(userStore.user, 'user obj')
   console.log(userStore, 'user store')
   console.log(userStore.user.length, 'user obj length')
+  
 
   const handleAddAddress = () => {
 
     setShowAddAddressDialog(true)
   }
 
-  const handleDialogClose = () => {
+  const handleAddAddressDialogClose = () => {
     setShowAddAddressDialog(false)
   }
 
@@ -152,17 +186,64 @@ export const UserProfile = (props) => {
     setShowAddAddressDialog(false)
   }
 
+  const handleUserDetailsEdit =()=>{
+   setShowUserDetailsEditDialog(true)
+  }
+
+  const handleAddressEdit=(Address)=>{
+    console.log(Address, 'address to edit')
+    setAddressToEdit(Address)
+    setShowAddressEditDialog(true)
+  }
+
+  const handleEditUserDialogClose=()=>{
+    setShowUserDetailsEditDialog(false)
+  }
+
+  const handleEditAddressDialogClose=()=>{
+    setShowAddressEditDialog(false)
+  }
+  
+  const handleUserDetailsUpdated=()=>{
+    fetchUserDetails('User')
+    setShowUserDetailsFlash(true)
+    setShowUserDetailsEditDialog(false)
+  }
+  const handleAddressUpdated=()=>{
+    fetchUserDetails('Address')
+    setShowAddressEditDialog(false)
+    setShowAddressFlash(true)
+   
+  }
+
   return (
 
     <div >
       <Header title={(props.location.pathname).substring(1)} history={props.history} />
+      {showUserDetailsFlash ?
+                <div >
+                  <FlashMessage duration={5000} >
+                    <div className='flashStyling text-center'>
+                      Profile Updated
+                        </div>
+                  </FlashMessage>
+                </div>: ""}
+
+                {showAddressFlash ?
+                <div >
+                  <FlashMessage duration={5000} >
+                    <div className='flashStyling text-center'>
+                      Address Updated
+                        </div>
+                  </FlashMessage>
+                </div>: ""}
       <div className={classes.root}>
 
         <Hidden smDown>
           <MenuPane history={history} />
         </Hidden>
 
-        {Object.keys(userStore.user).length !== 0 ? (
+        {(Object.keys(userStore.user).length !== 0) ? (
           <div className={classes.formPosition}>
             <Card>
               <Grid container>
@@ -176,9 +257,9 @@ export const UserProfile = (props) => {
 
                 </Grid>
                 <Grid className={classes.userDetailsDiv} item xs={12} md={8} lg={8}>
-                  
+                  {/* FIX THE STORE STRUCTURE FOR USERSTORE.USER.USER */}
                   <Typography variant="h5"> {userStore.user.FirstName} {userStore.user.LastName}
-                  <span className="positionRight"><EditTwoToneIcon/></span>
+                  <span className="positionRight"><EditTwoToneIcon onClick={()=>handleUserDetailsEdit()}/></span>
                   </Typography>
 
                   <Typography variant="h6"><PhoneIphoneOutlinedIcon style={{ color: "blue" }} />   {userStore.user.Phone}</Typography>
@@ -190,14 +271,17 @@ export const UserProfile = (props) => {
               <Grid container>
                
                
-                {(userStore.user.address).map((id, index) =>
+                {(addressStore.address).map((add, index) =>
 
                   <Grid className={classes.AddressDiv} item xs={12} md={4} >
                     <Card className={classes.AddressDiv} >
                       {/* <Typography> Address : {index+1} <br/> {id.addressLine1}, {id.addressLine2}<br />{`${toFirstCharUppercase(id.city)}`}<br /> Pin: {id.pinCode}</Typography> */}
-                      <Typography> Address : {id.AddressNickName}  
-                      <span className="positionRight"><EditTwoToneIcon/></span>
-                      <br/>{id.StreetDetails}<br /> Pin: {id.pincode} </Typography>
+                      <Typography> Address Name : {add.AddressNickName}  
+                      <span className="positionRight"><EditTwoToneIcon onClick={()=>handleAddressEdit(add)}/></span>
+                      <br/>{add.FirstAddress}
+                      <br/>{add.StreetDetails}
+                      <br/>{add.City} Pin: {add.pincode} 
+                      <br/>{add.Phone[0]}</Typography>
                     </Card>
                   </Grid>
                 )}
@@ -212,12 +296,12 @@ export const UserProfile = (props) => {
 </Button>
               <Button onClick={handleAddAddress}>Add Address</Button>
             </Card>
-            <Dialog open={showAddAddressDialog} onClose={handleDialogClose}>
+            <Dialog open={showAddAddressDialog} onClose={handleAddAddressDialogClose}>
               <DialogTitle>
 
               </DialogTitle>
               <DialogContent>
-                <Address modelOpen={closeModal} />
+                <EditAddress modelOpen={closeModal} />
               </DialogContent>
 
 
@@ -229,6 +313,24 @@ export const UserProfile = (props) => {
             </Hidden>
            <Spinner showSpinner={showSpinner}/>
       </div>
+
+<Dialog open={showUserDetailsEditDialog} onClose={handleEditUserDialogClose}>
+  <EditUserDetails userId={userStore.user.UserId} firstName={userStore.user.FirstName} lastName={userStore.user.LastName} email={userStore.user.Email}
+                phoneNumber={userStore.user.Phone} branchId={userStore.user.branchid} ProfileUpdated={handleUserDetailsUpdated}/>
+</Dialog>
+
+<Dialog open={showAddressEditDialog} onClose={handleEditAddressDialogClose}>
+<DialogTitle className={classes.root}>
+                <IconButton className={classes.closeButton} aria-label="close" onClick={handleEditAddressDialogClose}>
+                  <CloseIcon />
+                </IconButton>
+                Edit Address
+              </DialogTitle>
+  <EditAddress addressName={AddressToEdit.AddressNickName} addressLine1={AddressToEdit.FirstAddress} addressLine2={AddressToEdit.StreetDetails} phone={AddressToEdit.Phone[0]} 
+          city={AddressToEdit.City} pinCode={AddressToEdit.pincode} AddressUpdated={handleAddressUpdated}/>
+</Dialog>
+
+
     </div>
 
   )

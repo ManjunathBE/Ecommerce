@@ -3,7 +3,7 @@ import { InsertInvitation, Store } from '@material-ui/icons';
 import React, { createContext, useContext, useReducer } from 'react';
 
 const StoreContext = createContext();
-const initialState = { view: "", cart: [], user: {}, token:"" };
+const initialState = { view: "", cart: [], user: {}, token:"", address:{}};
 
 const cartReducer = (state = initialState, action) => {
 
@@ -57,6 +57,7 @@ const viewReducer = (state, action) => {
 const userReducer = (state, action) => {
     console.log('in user store', action)
     var address = action.address
+    
     switch (action.type) {
         case 'Address': {
             return { ...state, user: { ...state.user, address:  address } }
@@ -64,10 +65,14 @@ const userReducer = (state, action) => {
         case 'User': {
             return { ...state, user: action.user }
         }
-
         default:
             return state
     }
+}
+
+const addressReducer =(state,action) =>{
+    console.log(action,'address reducer')
+    return {...state, address:action.address}
 }
 
 const tokenReducer = (state, action) => {
@@ -81,10 +86,11 @@ export const StoreProvider = ({ children }) => {
     const [viewStore, setviewStore] = useReducer(viewReducer, initialState)
     const [userStore, setUserStore] = useReducer(userReducer, initialState)
     const [tokenStore, setTokenStore] = useReducer(tokenReducer, initialState)
+    const [addressStore, setAddressStore] = useReducer(addressReducer, initialState)
     return (
         <StoreContext.Provider value={{
             cartStore, setCartStore, viewStore, setviewStore, userStore, setUserStore,
-            tokenStore, setTokenStore
+            tokenStore, setTokenStore, addressStore, setAddressStore
         }}>
             {children}
         </StoreContext.Provider>
