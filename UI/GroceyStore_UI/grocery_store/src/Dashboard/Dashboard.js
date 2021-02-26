@@ -12,7 +12,7 @@ import {
   Dialog, DialogContent,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { toFirstCharUppercase } from "../Healper";
+import { toFirstCharUppercase } from "../Helper";
 import { useStore } from "../Store";
 import { ToolbarMenuItems, toolbarMenuItmes } from '../ToolbarMenuItems'
 import clsx from 'clsx';
@@ -21,6 +21,7 @@ import Container from '@material-ui/core/Container';
 import { MenuPane } from '../MenuPane'
 import { Spinner } from '../Spinner'
 import Footer from '../Footer'
+import {CarouselElement} from '../CarouselElement'
 
 
 const drawerWidth = 240;
@@ -47,7 +48,6 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
   },
   container: {
-    paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4),
   },
   paper: {
@@ -77,11 +77,15 @@ export const Dashboard = (props) => {
     console.log(window.localStorage, 'local storage')
     var token = window.localStorage.token
 
+    console.log(props, 'props in dashboard')
+    // var token = props.location.state.token
+    // console.log(token,'token in dashboard')
+
     const payload = {
       "branch_id": "1"
     }
 
-    fetch('http://167.71.235.9:3024/category/getCategoryByBranchid',
+    fetch('https://testapi.slrorganicfarms.com/category/getCategoryByBranchid',
       {
         method: 'POST',
         headers: {
@@ -127,12 +131,12 @@ export const Dashboard = (props) => {
         <Card onClick={() => history.push(`/${Id}`)}>
           <CardMedia
             className={classes.cardMedia}
-            // image ='https://storage.googleapis.com/dudaily.appspot.com/prod%2Fmilk-packing.jpg'
             image={CategoryPic}
             style={{ width: "180px", height: "130px", paddingTop: "90px" }}
           />
           <CardContent className={classes.cardContent}>
-            <Typography>{`${toFirstCharUppercase(CategoryName)}`}</Typography>
+            {CategoryName?
+            <Typography>{`${toFirstCharUppercase(CategoryName)}`}</Typography>:""}
           </CardContent>
         </Card>
       </Grid>
@@ -181,17 +185,20 @@ export const Dashboard = (props) => {
 
   return (
     <Fragment>
-      <Header title="Organic House" history={props.history} />
+       <div className={classes.root}>
+       <main className={classes.content}>
+
+<Container maxWidth="lg" className={classes.container}>
+      {/* <Header title="Organic House" history={props.history} /> */}
+      <CarouselElement/>
       <CssBaseline />
-      <div className={classes.root}>
+     
 
-        <Hidden smDown>
+        {/* <Hidden smDown>
           <MenuPane history={history} />
-        </Hidden>
+        </Hidden> */}
 
-        <main className={classes.content}>
-
-          <Container maxWidth="lg" className={classes.container}>
+      
 
             {category ? (
               SetView()

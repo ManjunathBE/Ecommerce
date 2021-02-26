@@ -19,7 +19,8 @@ const cartReducer = (state = initialState, action) => {
                     quantity: action.quantity,
                     unit: action.unit,
                     price: action.price,
-                    productId: action.productId
+                    productId: action.productId,
+                    itemPrice: action.itemPrice
                 }]
             }
         case 'Update':
@@ -27,13 +28,18 @@ const cartReducer = (state = initialState, action) => {
                 ...state, cart: state.cart.map((item) => (item.productName === action.productName ?
                     {
                         ...item, quantity: action.quantity,
-                        unit: action.unit, price: action.price, productId: action.productId
+                        unit: action.unit, price: action.price, productId: action.productId, itemPrice: action.itemPrice
                     } : item))
             }
 
         case 'Delete':
             return {
                 ...state, cart: state.cart.filter(item => item.productName !== action.item)
+            }
+        
+        case 'DeleteAll':
+            return{
+                cart:[]
             }
 
         case 'AddFromHistory':

@@ -14,7 +14,10 @@ code {
 
 #header{
   background-color: lightgray;
+  position: sticky;
+  top: 0;
 }
+
 
 #footer {
   position: fixed;
@@ -46,15 +49,22 @@ code {
 }
 
 .flashStyling{
-  background-color: rgba(76, 33, 230, 0.623);
+  color: #4F8A10;
+  background-color: #DFF2BF;
   width: 40vw;
   height: 50px;
-  border-radius: 0%;
   color:white;
   position:absolute;
   font-size: larger;
   text-align: center;
-  margin-left: 30%;
+  padding: 10px;
+  text-align: center;
+  margin: 0 auto;
+	top:1%;
+	bottom: 0;
+	left: 0;
+  right: 0;
+  border-radius: 25px;
 }
 
 

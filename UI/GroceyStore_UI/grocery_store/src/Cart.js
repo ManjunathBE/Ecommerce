@@ -21,6 +21,8 @@ import { AddProduct } from './AddProduct'
 import CloseIcon from '@material-ui/icons/Close';
 import { MenuPane } from './MenuPane'
 import Footer from './Footer'
+import EmptyCartImage from './Images/empty-cart.png'
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
   },
   container: {
-    paddingTop: theme.spacing(4),
+   
     paddingBottom: theme.spacing(4),
   },
   paper: {
@@ -64,10 +66,10 @@ const useStyles = makeStyles((theme) => ({
     border: '0.5px solid grey'
   },
   margins: {
-    [theme.breakpoints.up('md')]: {
-      marginLeft: theme.spacing(2),
-      marginRight: theme.spacing(2)
-    },
+    // [theme.breakpoints.up('md')]: {
+    //   marginLeft: theme.spacing(2),
+    //   marginRight: theme.spacing(2)
+    // },
 
   },
   btnnMargins: {
@@ -80,7 +82,7 @@ const TableHeaders = [
   { id: 'Product', numeric: false, disablePadding: true, label: 'Product' },
   { id: 'Quantity', numeric: true, disablePadding: false, label: 'Quantity' },
   { id: 'Untis', numeric: true, disablePadding: false, label: 'Units' },
-  { id: 'Price', numeric: true, disablePadding: false, label: 'Price' },
+  { id: 'Price', numeric: true, disablePadding: false, label: 'Price (₹)' },
 ];
 
 function EnhancedTableHead(props) {
@@ -137,6 +139,12 @@ const useToolbarStyles = makeStyles((theme) => ({
   title: {
     flex: '1 1 100%',
   },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
 
 }));
 
@@ -154,6 +162,8 @@ export const Cart = (props) => {
   const [showSelectedAddress, setShowSelectedAddress] = useState(false)
   const [selectedAddressForDelivery, setSelectedAddressForDelivery] = useState()
   const [selectedAddressId, setSelectedAddressId] = useState()
+  const {addressStore, setAddressStore} = useStore()
+  const [itemUpdated, setItemUpdated] = useState(false)
 
   const EnhancedTableToolbar = (props) => {
     const classes = useToolbarStyles();
@@ -231,48 +241,47 @@ export const Cart = (props) => {
   const handlePlaceOrder = () => {
 
 
-    if(!showSelectedAddress){
+    if (!showSelectedAddress) {
       alert('please select a delivery address')
     }
 
-    else{
+    else {
+      var cartItemList = []
+      console.log(cartStore.cart, 'cart')
+      console.log(cartStore, 'cartStore')
+      cartStore.cart.forEach((item) =>
+        cartItemList.push({ Itemid: item.productId, Qty: item.quantity, ItemCost: item.price })
+      )
 
-  
-    var cartItemList =[]
-    console.log(cartStore.cart, 'cart')
-    console.log(cartStore, 'cartStore')
-    cartStore.cart.forEach((item)=> 
-      cartItemList.push({Itemid:item.productId, Qty:item.quantity, ItemCost:item.price})
-    )
-
-    console.log(userStore, 'userStore')
-    const payload = {
-      OrderCost:totalPrice,
-      OrderAddressId: selectedAddressForDelivery.AddressId,
-      OrderItemList: cartItemList
-    }
-    console.log(payload, 'ordered products')
-    fetch('http://167.71.235.9:3024/cart/CheckoutOrderByCart', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-access-token': window.localStorage.token
-      },
-      body: JSON.stringify(payload)
-    })
-      .then(result => {
-        result.json().then(body => {
-          console.log(body, 'result from backend')
-          //var orderId = result.transactionId;
-         // console.log(orderId, 'orderid')
-          setIsOrderPlaced(true)
-          //delete cart here
-        })
-        
-      
+      console.log(userStore, 'userStore')
+      const payload = {
+        OrderCost: totalPrice,
+        OrderAddressId: selectedAddressForDelivery.AddressId,
+        OrderItemList: cartItemList
+      }
+      console.log(payload, 'ordered products')
+      fetch('https://testapi.slrorganicfarms.com/cart/CheckoutOrderByCart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': window.localStorage.token
+        },
+        body: JSON.stringify(payload)
       })
+        .then(result => {
+          if(result.status===200)
+          result.json().then(body => {
+            if (body.success === true) {
+            console.log(body, 'result from backend')
+            setIsOrderPlaced(true)
+            setCartStore({ type: 'DeleteAll' })
+            }
+            else{
+             //TODO: handle some error occured
+            }
+          })
+        })
     }
-
   }
 
   const handleEditOrderDialogClose = () => {
@@ -292,23 +301,33 @@ export const Cart = (props) => {
 
   }
 
-  const handleSuccessDialogClose = ()=> {
+  const handleSuccessDialogClose = () => {
 
+  }
 
+  const handleSelectAddressDialogClose = ()=>{
+    setShowAddressSelection(false)
   }
 
   const splitAddress = () => {
-   // setSelectedAddressId(selectedAddressForDelivery.id)
+    // setSelectedAddressId(selectedAddressForDelivery.id)
     return (<Card>
       <CardContent>
-        <Typography>Selected delivery address</Typography><br/>
-        <Typography>{selectedAddressForDelivery.StreetDetails}
-          {/* {selectedAddressForDelivery.city} */}
-          {selectedAddressForDelivery.pincode}
-        </Typography>
-      </CardContent>
+        <Typography>Selected delivery address</Typography><br />
+        <Typography>{selectedAddressForDelivery.AddressNickName}<br/>
+                {selectedAddressForDelivery.FirstAddress }
+                  {selectedAddressForDelivery.StreetDetails }
+                   {selectedAddressForDelivery.City } 
+                  {selectedAddressForDelivery.pincode }<br/>
+                  Phone: {selectedAddressForDelivery.Phone[0] }</Typography>
+              </CardContent>    
     </Card>)
   }
+
+  const FlashItemUpdated=()=>{
+    setItemUpdated(true)
+  }
+
   const isSelected = (name) => selected.indexOf(name) !== -1;
   const emptyRows = cartStore.cart
   console.log(emptyRows, 'empt')
@@ -316,20 +335,35 @@ export const Cart = (props) => {
 
   return (
     <div>
-      <Header title={(props.location.pathname).substring(1)} history={props.history} />
-      <div className={classes.root}>
-        <Hidden smDown>
-          <MenuPane history={history} />
-        </Hidden>
-        {isOrderPlaced ? <FlashMessage duration={5000}>
-      <div className='flashStyling'>
-        Order placed
+       <div className={classes.root}>
+       <main className={classes.content}>
+         <Container maxWidth="lg">
+      {/* <Header title={(props.location.pathname).substring(1)} history={props.history} />\ */}
+
+      {itemUpdated ?
+                <div >
+                  <FlashMessage duration={5000} >
+                    <div className='flashStyling text-center'>
+                      Item Updated
+                        </div>
+                  </FlashMessage>
+                </div>: ""}
+
+      {isOrderPlaced ? <FlashMessage duration={5000}>
+        <div className='flashStyling'>
+          Order placed
         </div>
-  </FlashMessage> : ""}
-        <main className={classes.content}>
+      </FlashMessage> : ""}
+
+     
+        {/* <Hidden smDown>
+          <MenuPane history={history} />
+        </Hidden> */}
+
+       
 
           <EnhancedTableToolbar numSelected={selected.length} selectedItems={selected} />
-        
+
           <Grid container spacing={2}>
 
             <Grid item xs={12} md={7} className={classes.margins}>
@@ -347,11 +381,13 @@ export const Cart = (props) => {
                       />
                       <TableBody>
                         {cartStore.cart.map((cart, index) => {
+                          console.log(cart, 'item in cart')
+
 
                           const isItemSelected = isSelected(cart.productName);
                           const labelId = `enhanced-table-checkbox-${index}`;
 
-                          totalPrice = totalPrice + cart.price
+                          totalPrice =  totalPrice + cart.price
                           return (
                             <TableRow
                               hover
@@ -370,19 +406,19 @@ export const Cart = (props) => {
                                 />
                               </TableCell>
                               <TableCell component="th" id={labelId} scope="row" padding="none">
-                                {cart.productName}                               
+                                {cart.productName}
                               </TableCell>
                               <TableCell align="right">{cart.quantity}
-                              <EditTwoToneIcon onClick={(event) => handleEditClick(event, cart)} />
+                                <EditTwoToneIcon onClick={(event) => handleEditClick(event, cart)} />
                               </TableCell>
                               <TableCell align="right">{cart.unit}</TableCell>
-                              <TableCell align="right">{cart.price}</TableCell>
+                              <TableCell align="right">{(cart.price).toFixed(2)}</TableCell>
                             </TableRow>
                           );
                         })}
                         <Hidden mdUp>
                           <TableRow>
-                            <TableCell colspan={5} align="right">total price:  {totalPrice} <br />
+                            <TableCell colspan={5} align="right">total price: ₹ {(totalPrice.toFixed(2))} <br />
                               total items :{cartStore.cart.length}</TableCell>
 
                           </TableRow>
@@ -395,8 +431,8 @@ export const Cart = (props) => {
                       <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={() => history.push("/")}>Continue Shopping</Button>
 
                       <Hidden mdUp>
-                        <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={handleSelectAddress}>Add/Select Address</Button>
-                        <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
+                        <Button disabled={cartStore.cart.length===0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handleSelectAddress}>Add/Select Address</Button>
+                        <Button disabled={cartStore.cart.length===0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
                       </Hidden>
 
                     </React.Fragment> : "Cart is empty"}
@@ -411,33 +447,40 @@ export const Cart = (props) => {
               <Hidden smDown>
                 <Card>
                   <CardContent>
-                    <Typography style={{fontSize:'32px'}}>Total : {totalPrice}</Typography> <br />
-                    <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={handleSelectAddress}>Add/Select Address</Button> <br />
-                    <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
+                    <Typography style={{ fontSize: '32px' }}>Total : ₹ {(totalPrice).toFixed(2)}</Typography> <br />
+                    <Button disabled={cartStore.cart.length===0}className={classes.btnnMargins} variant='contained' color='primary' onClick={handleSelectAddress}>Add/Select Address</Button> <br />
+                    <Button  disabled={cartStore.cart.length===0}className={classes.btnnMargins} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
                   </CardContent>
                 </Card>
               </Hidden>
             </Grid>
           </Grid>
+          </Container>
         </main>
         <Hidden mdUp >
-              <Footer history={history}/>
-            </Hidden>
+          <Footer history={history} />
+        </Hidden>
       </div>
 
 
-      <Dialog open={showAddressSelection}>
+      <Dialog open={showAddressSelection} onClose={handleSelectAddressDialogClose}>
         <DialogTitle>
+        <IconButton className={classes.closeButton} aria-label="close" onClick={handleSelectAddressDialogClose}>
+                  <CloseIcon />
+                </IconButton>
+          <Typography>Select Delivery address</Typography>
         </DialogTitle>
         <DialogContent>
 
-          {userStore.user.address.map((address) =>
-            <Card style={{marginTop:'16px'}}onClick={() => handleAddressCardClick(address)} spacing={2}>
+          {addressStore.address.map((address) =>
+            <Card style={{ marginTop: '16px' }} onClick={() => handleAddressCardClick(address)} spacing={2}>
               <CardContent>
-                <Typography>{address.AddressNickName}
-                  {address.StreetDetails}
-                  {/* {address.city} */}
-                  {address.pincode}</Typography>
+                <Typography>{address.AddressNickName}<br/>
+                {address.FirstAddress }
+                  {address.StreetDetails }
+                   {address.City } 
+                  {address.pincode }<br/>
+                  Phone: {address.Phone[0] }</Typography>
               </CardContent>
             </Card>
           )}
@@ -453,10 +496,11 @@ export const Cart = (props) => {
           {productToEdit.productName}
         </DialogTitle>
         <DialogContent dividers>
-          <AddProduct modelOpen={handleEditOrderDialogClose} price={productToEdit.price}
+          <AddProduct modelOpen={handleEditOrderDialogClose} price={productToEdit.itemPrice}
             productName={productToEdit.productName}
             unitType={productToEdit.unit}
-            quantityToEdit={productToEdit.quantity} />
+            quantityToEdit={productToEdit.quantity} 
+            addToCart={FlashItemUpdated}/>
         </DialogContent>
       </Dialog>
 
@@ -467,7 +511,7 @@ export const Cart = (props) => {
         </DialogTitle>
         <DialogContent dividers>
           <Typography>Order would be delivered tomorrow. </Typography>
-          <Button color='primary' variant='contained' onClick={()=> history.push('/')}>Ok</Button>
+          <Button color='primary' variant='contained' onClick={() => history.push('/')}>Ok</Button>
         </DialogContent>
       </Dialog>
 

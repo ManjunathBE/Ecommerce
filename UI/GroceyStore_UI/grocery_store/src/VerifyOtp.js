@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button';
 import { useAuth } from './Auth'
 import { useStore } from "./Store";
 import { makeStyles } from "@material-ui/core/styles";
+import { fetchUser } from './Helper'
 
 const useStyles = makeStyles((theme) => ({
 
@@ -22,6 +23,7 @@ export const VerifyOtp = (props) => {
     const { setLoginState } = useAuth()
     const { userStore, setUserStore } = useStore();
     const { tokenStore, setTokenStore } = useStore();
+    const { addresStore, setAddressStore } = useStore()
 
     //var phone = props.location.state.phone
 
@@ -34,73 +36,97 @@ export const VerifyOtp = (props) => {
     const validateForm = () => {
         var temp = []
         console.log(props)
-        temp.password = passwordFromUser ? "" : "otp is required"        
+        temp.password = passwordFromUser ? "" : "otp is required"
         setErrors({ ...temp })
         return Object.values(temp).every(param => param === "")
     }
 
     const handleLogin = async (event) => {
         event.preventDefault()
+
         if (validateForm()) {
-            firebaseConfirmationResult.confirm(passwordFromUser).then((result) => {
-                setLoginState(true)
-                fetchUser()
-                history.push('/')
-            }).catch((error) => {
-                console.log(error,'otp mismatch')
-                alert('Otp doesnt match, try again')
-            });
+            setLoginState(true)
+
+            const payload = {
+                "mobilenumber": phone,
+                "logintype": "social",
+                "device_token": ""
+            }
+
+            await fetch('https://testapi.slrorganicfarms.com/auth/login',
+                {
+                    mode: 'cors',
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                })
+                .then(result => {
+                    console.log(result, 'fetch in login')
+                    if (result.status === 404) {
+                        console.log('result is 404')
+                    } else if (result.status !== 200) {
+                        console.log(result)
+                        console.log('result is not 200')
+                    } else {
+                        result.json().then(body => {
+                            if (body.success !== true) {
+                                console.log('request failed', body)
+                                history.push('/noauth')
+                            }
+                            else {
+                                console.log(body, 'response')
+                                var user = body.data[0]
+                                var address = body.address
+                                console.log('address from backend', address)
+                                window.localStorage.setItem('token', body.token)
+                                window.localStorage.setItem('phone', user.Phone)
+                                window.localStorage.setItem('loginState',true)
+
+                                setUserStore({ user, type: 'User' })
+                                setAddressStore({ address, type: 'Address' })
+                            setTokenStore({ token: body.token })
+
+                            history.push({
+                                pathname: "/",
+                                state: { token: body.token }
+                            })
+                            }
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.log("error from server", JSON.stringify(error, Object.getOwnPropertyNames(error)));
+                });
+
+
+
+
+
+
+
+            // 
+            //     firebaseConfirmationResult.confirm(passwordFromUser).then((result) => {
+            //         setLoginState(true)
+            //         fetchUser()
+            //         history.push('/')
+            //     }).catch((error) => {
+            //         console.log(error,'otp mismatch')
+            //         alert('Otp doesnt match, try again')
+            //     });
         }
-        console.log(errors, 'errors')
+        // console.log(errors, 'errors')
     }
 
     const fetchUser = async () => {
 
-        const payload = {
-            "mobilenumber": phone,
-            "logintype": "social",
-            "device_token": ""
-        }
-        console.log(payload, 'payload')
 
-        await fetch('http://167.71.235.9:3024/auth/login',
-            {
-                mode: 'cors',
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            })
-            .then(result => {
-                console.log(result, 'fetch in login')
-                if (result.status === 404) {
-                    console.log('result is 404')
-                } else if (result.status !== 200) {
-                    console.log(result)
-                    console.log('result is not 200')
-                } else {
-                    result.json().then(body => {
-                        if (body.success !== true) {
-                            console.log('request failed', body)
-                        }
-                        else {
-                            console.log(body, 'response')
-                            var user = body.data[0]
-                            var address = body.address
-                            console.log('address from backend', address)
-                            window.localStorage.setItem('token', body.token)
-                            setUserStore({ user, type: 'User' })
-                        }
-                        setUserStore({ address, type: 'Address' })
-                        setTokenStore({ token: body.token })
-                    });
-                }
-            })
-            .catch(error => {
-                console.log("error from server", JSON.stringify(error, Object.getOwnPropertyNames(error)));
-            });
+
+
     }
+
+
 
     const handleEditPhone = () => {
         props.editPhone()
@@ -109,6 +135,19 @@ export const VerifyOtp = (props) => {
     return (
         <div>
             <div>
+                <TextField
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    required
+                    id="phone"
+                    label="Phone"
+                    name="phone"
+                    defaultValue={phone}
+                    disabled
+
+                />
+
                 <TextField
                     variant="outlined"
                     fullWidth

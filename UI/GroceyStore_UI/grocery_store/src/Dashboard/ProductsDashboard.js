@@ -13,7 +13,7 @@ import {
   Container
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { toFirstCharUppercase, unitMapper } from "../Healper";
+import { toFirstCharUppercase, unitMapper } from "../Helper";
 import { AddProduct } from '../AddProduct'
 import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
@@ -54,7 +54,6 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
   },
   container: {
-    paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4),
   },
   addProductPopUpDimesnsion: {
@@ -99,7 +98,7 @@ export const ProductsDashboard = (props) => {
       "categoryid": categoryId
     }
 
-    fetch('http://167.71.235.9:3024/category/getallItemsByCateId',
+    fetch('https://testapi.slrorganicfarms.com/category/getallItemsByCateId',
       {
         method: 'POST',
         headers: {
@@ -149,7 +148,10 @@ export const ProductsDashboard = (props) => {
     var unitToDisplay = ""
 
     if (UnitTypeId === 1) {
-      unitToDisplay = '1 Kg'
+      unitToDisplay = 'Kg'
+    }
+    else{
+      unitToDisplay = 'Piece'
     }
 
     var discountPercentage;
@@ -184,9 +186,8 @@ export const ProductsDashboard = (props) => {
           />
           <CardContent >
             <Typography className={classes.cardContent}>{`${toFirstCharUppercase(ItemName)}`}</Typography>
-            <div>
-              <span>₹{MRP_Price}</span>
-              <span className="positionRight">{unitToDisplay}</span>
+            <div className="text-center">
+              ₹{MRP_Price} / {unitToDisplay}
             </div>
           </CardContent>
         </Card>
@@ -281,12 +282,15 @@ export const ProductsDashboard = (props) => {
 
   const FlashAddedToCart = () => {
     setAddedToCart(true)
-    console.log('switched to true')
   }
 
   return (
     <div>
-      <Header title={(props.location.pathname).substring(1)} history={props.history} />
+       <div className={classes.root}>
+       <main className={classes.content}>
+
+<Container maxWidth="lg" className={classes.container}>
+      {/* <Header title={(props.location.pathname).substring(1)} history={props.history} /> */}
       {addedToCart ?
                 <div >
                   <FlashMessage duration={5000} >
@@ -296,15 +300,13 @@ export const ProductsDashboard = (props) => {
                   </FlashMessage>
                 </div>: ""}
 
-      <div className={classes.root}>
+     
 
-        <Hidden smDown>
+        {/* <Hidden smDown>
           <MenuPane history={history} />
-        </Hidden>
+        </Hidden> */}
 
-        <main className={classes.content}>
-
-          <Container maxWidth="lg" className={classes.container}>
+       
 
 
                 {showFallback? <Typography>Items coming soon ... !</Typography>:""}

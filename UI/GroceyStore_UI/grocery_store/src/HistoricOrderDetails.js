@@ -3,15 +3,16 @@ import { useStore } from "./Store";
 import {
     Table, TableBody, TableCell, TableContainer,
     TableHead, TableRow, Typography, Grid, Switch, Button,
-    Paper, Hidden
+    Paper, Hidden, Container, Dialog, DialogContent, DialogTitle, TextField
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Footer from './Footer'
 import { MenuPane } from './MenuPane'
 import { Header } from './Header'
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
-
-
+import {MissingReturnItems} from './MissingReturnItems'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -29,6 +30,12 @@ const useStyles = makeStyles((theme) => ({
             padding: theme.spacing(9),
         },
     },
+    closeButton: {
+        position: 'absolute',
+        right: theme.spacing(1),
+        top: theme.spacing(1),
+        color: theme.palette.grey[500],
+    },
 }));
 
 
@@ -40,6 +47,12 @@ export const HistoricOrderDetails = (props) => {
     //const [showToggleSwitch, setShowToggleSwitch] = useState(false)
     const classes = useStyles();
     const { history } = props
+    const [showMissingReturnOption, setShowMissingReturnOption] = useState(false)
+    const [selectedItemForMissingReturn, setSelectedItemForMissingReturn] = useState()
+    const [missingReturnValue, setMissingReturnValue] = useState()
+    
+    var MissingReturnItemsList = []
+
 
     const Headers = [
         { id: 'Product', numeric: false, disablePadding: true, label: 'Product Name' },
@@ -54,8 +67,9 @@ export const HistoricOrderDetails = (props) => {
     }, [])
 
     const fetchOrderDetails = () => {
+        console.log(props, 'props in historic items')
 
-        fetch('http://167.71.235.9:3024/cart/getOrderItemDetails', {
+        fetch('https://testapi.slrorganicfarms.com/cart/getOrderItemDetails', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -76,6 +90,7 @@ export const HistoricOrderDetails = (props) => {
                         if (body.success !== true) {
                             console.log('request failed', body)
                         } else {
+                            console.log(body.data, 'data of order')
                             setOrderDetails(body.data)
                         }
                     });
@@ -90,20 +105,19 @@ export const HistoricOrderDetails = (props) => {
     const showActionButtons = () => {
         console.log(props.location.state.orderStatus, 'order status')
         if (props.location.state.orderStatus === 'Order Booked') {
-            return (<Button onClick={handleEditOrReorder}>Reorder</Button>)
+            return (<Button variant="contained" color="primary" onClick={handleEditOrReorder}>Edit</Button>)
         }
-        else if (props.location.state.orderStatus === 'Ready to Pick') {
-            return (<Button onClick={handleEditOrReorder}>Edit</Button>)
+        else if (props.location.state.orderStatus === 'Completed') {
+            return (<Button variant="contained" color="primary" onClick={handleEditOrReorder}>Reorder</Button>)
         }
         else if (props.location.state.orderStatus === 'Out for Delivery') {
-            return (<React.Fragment><Button>Missing</Button>
-                <Button>Return</Button>
-                <Button>Confirm received products</Button></React.Fragment>)
+            return (<React.Fragment>
+                <Button variant="contained" color="primary" onClick={handleFinishOrder}>Finish</Button></React.Fragment>)
         }
     }
 
     const showToggleSwitch = () => {
-        if (props.location.state.orderStatus === 'Order Booked') {
+        if (props.location.state.orderStatus === 'Out for Delivery') {
             return (
                 <Grid container direction='row' align="center">
                     <Grid xs={3}>
@@ -111,9 +125,9 @@ export const HistoricOrderDetails = (props) => {
                     <Grid xs={1} align="center"><Switch onChange={handleSwitchChange} checked={isToggleOn} /></Grid>
                     <Grid xs={3}><Typography align="left">Supplied</Typography></Grid>
                 </Grid>
-
             )
         }
+
         else {
             return ""
         }
@@ -123,68 +137,120 @@ export const HistoricOrderDetails = (props) => {
 
     }
 
+    const handleItemClick = (item) => {
+        console.log(item)
+        
+        if (props.location.state.orderStatus === 'Out for Delivery') {
+             setShowMissingReturnOption(true)
+             setSelectedItemForMissingReturn(item)
+            
+        }
+    }
+
 
     const handleSwitchChange = (event) => {
         setIsToggleOn(event.target.checked)
     }
 
+    const handleDialogClose = () => {
+        setShowMissingReturnOption(false)
+    }
+
+    const handleMissingReturnQuantityChange = (event) => {
+        setMissingReturnValue(event.target.value)
+    }
+
+    const handleMissingClick = () => {
+
+        MissingReturnItemsList.push({
+            OrderId:selectedItemForMissingReturn.OrderId,
+            Itemid:selectedItemForMissingReturn.Itemid,
+            qty:selectedItemForMissingReturn.qty,
+            ItemCost:selectedItemForMissingReturn.ItemCost,
+            SuppliedQty:{missingReturnValue},
+            FinalAmount:selectedItemForMissingReturn.MRP_Price*(selectedItemForMissingReturn.qty-selectedItemForMissingReturn.SuppliedQty),
+            MissingOrReturn:"Missing"
+        })
+        setShowMissingReturnOption(false)
+
+    }
+
+    const handleReturnClick = () => {
+        MissingReturnItemsList.push({
+            OrderId:selectedItemForMissingReturn.OrderId,
+            Itemid:selectedItemForMissingReturn.Itemid,
+            qty:selectedItemForMissingReturn.qty,
+            ItemCost:selectedItemForMissingReturn.ItemCost,
+            SuppliedQty:{missingReturnValue},
+            FinalAmount:selectedItemForMissingReturn.MRP_Price*(selectedItemForMissingReturn.qty-selectedItemForMissingReturn.SuppliedQty),
+            MissingOrReturn:"Return"
+        })
+        setShowMissingReturnOption(false)
+
+    }
+
+    const handleFinishOrder=()=>{
+        
+    }
     return (
         <div>
-            <Header title={(props.location.pathname).substring(1)} history={props.history} />
+            {/* <Header title={(props.location.pathname).substring(1)} history={props.history} /> */}
             <Paper className={classes.root}>
-                <Hidden smDown>
+                {/* <Hidden smDown>
                     <MenuPane history={history} />
-                </Hidden>
+                </Hidden> */}
                 <main className={classes.content}>
-                
+                    <Container maxWidth="lg">
 
-<div className={classes.container}>
-{showToggleSwitch()}
 
-                <TableContainer>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                {Headers.map((headCell) => (
-                                    <TableCell
-                                        key={headCell.id}
-                                        align='center'
-                                        padding={headCell.disablePadding ? 'none' : 'default'}
-                                    >
-                                        {headCell.label}
-                                    </TableCell>
-                                ))}
-                            </TableRow>
+                        <div className={classes.container}>
+                            {showToggleSwitch()}
 
-                        </TableHead>
-                        <TableBody>
-                            {!isToggleOn ?
-                                orderDetails.map((p) => {
-                                    return (
+                            <TableContainer>
+                                <Table>
+                                    <TableHead>
                                         <TableRow>
-                                            <TableCell align='center'>{p.ItemName}</TableCell>
-                                            <TableCell align='center'>{p.ItemCost}</TableCell>
-                                            <TableCell align='center'>{p.qty}</TableCell>
-                                            {/* <TableCell>{p.unit}</TableCell> */}
+                                            {Headers.map((headCell) => (
+                                                <TableCell
+                                                    key={headCell.id}
+                                                    align='center'
+                                                    padding={headCell.disablePadding ? 'none' : 'default'}
+                                                >
+                                                    {headCell.label}
+                                                </TableCell>
+                                            ))}
                                         </TableRow>
-                                    )
-                                })
-                                :
-                                orderDetails.map((p) => {
-                                    return (
-                                        <TableRow>
-                                            <TableCell align='center'>{p.ItemName}</TableCell>
-                                            <TableCell align='center'>{p.FinalAmount}</TableCell>
-                                            <TableCell align='center'>{p.SuppliedQty}</TableCell>
-                                            {/* <TableCell>{p.unit}</TableCell> */}
-                                        </TableRow>
-                                    )
-                                })}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                </div>
-                {showActionButtons()}
+
+                                    </TableHead>
+                                    <TableBody>
+                                        {!isToggleOn ?
+                                            orderDetails.map((p) => {
+                                                return (
+                                                    <TableRow onClick={()=>handleItemClick(p)}>
+                                                        <TableCell align='center'>{p.ItemName}</TableCell>
+                                                        <TableCell align='center'>{p.ItemCost}</TableCell>
+                                                        <TableCell align='center'>{p.qty}</TableCell>
+                                                        {/* <TableCell>{p.unit}</TableCell> */}
+                                                    </TableRow>
+                                                )
+                                            })
+                                            :
+                                            orderDetails.map((p) => {
+                                                return (
+                                                    <TableRow>
+                                                        <TableCell align='center'>{p.ItemName}</TableCell>
+                                                        <TableCell align='center'>{p.FinalAmount}</TableCell>
+                                                        <TableCell align='center'>{p.SuppliedQty}</TableCell>
+                                                        {/* <TableCell>{p.unit}</TableCell> */}
+                                                    </TableRow>
+                                                )
+                                            })}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </div>
+                        {showActionButtons()}
+                    </Container>
                 </main>
 
                 <Hidden mdUp >
@@ -192,7 +258,24 @@ export const HistoricOrderDetails = (props) => {
                 </Hidden>
             </Paper>
 
+            <Dialog onClose={handleDialogClose} open={showMissingReturnOption}>
+        <DialogTitle className={classes.root}>
+            <IconButton className={classes.closeButton} aria-label="close" onClick={handleDialogClose}>
+                <CloseIcon />
+            </IconButton>
+        Missing/Return
+      </DialogTitle>
+        <DialogContent dividers>
+            {/* <MissingReturnItems selectedItem={selectedItemForMissingReturn}/> */}
+            <TextField onchange={handleMissingReturnQuantityChange} /> <br />
+        <Button variant="contained" color="primary" onClick={handleMissingClick}>Missing</Button>
+        <Button variant="contained" color="primary" onClick={handleReturnClick}>Return</Button>
+        </DialogContent>
+    </Dialog>
+           
         </div>
+
+
 
     )
 }

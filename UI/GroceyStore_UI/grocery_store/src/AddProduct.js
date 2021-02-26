@@ -10,7 +10,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
-
+import FlashMessage from 'react-flash-message'
 
 const useStyles = makeStyles((theme) => ({
     TextFieldMargin: {
@@ -37,7 +37,9 @@ export const AddProduct = (props) => {
     const [quantityByManualEntry, setQuantityByManualEntry] = useState()
     const [quantityToDisplay, setQuantityToDisplay] = useState()
     const [showPriceAndQuantity, setShowPriceAndQuantity] = useState(false)
-    
+    const [errors, setErrors] = useState({})
+    const [zeroQuantityFlashWarning, setZeroQuantityFlashWarning] = useState(false)
+
 
 
     const [valueGroupsKG, setValueGroupsKG] = useState({
@@ -189,9 +191,21 @@ export const AddProduct = (props) => {
     }
 
     const ManualQuantityInput = () => {
-        if (unitType === "Kg") {
-            return (<FormControl>
-                <Input
+        // if (unitType === "Kg") {
+            return (
+
+                <TextField
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    required
+                    id="manualWeight"
+                    label={unitType === "Kg"?"Kg":"Numbers"}
+                    name="manualWeight"
+                    onChange={handleManualQuantityChange}
+                    error={errors.quantity}
+                    helperText={errors.quantity}/>)
+                /*{ <Input
 
                     id="standard-adornment-weight"
                     value={quantityByManualEntry}
@@ -199,28 +213,31 @@ export const AddProduct = (props) => {
                     endAdornment={<InputAdornment position="end">Kg</InputAdornment>}
                     aria-describedby="standard-weight-helper-text"
                     inputProps={{
-                        'aria-label': 'weight',
-                    }}
+                    'aria-label': 'weight',
+                }}
+                    error={errors.quantity ? true : false}
                 />
                 <FormHelperText id="standard-weight-helper-text">Weight</FormHelperText>
-            </FormControl>)
-        }
-        else if (unitType === 'Numbers') {
-            return (<FormControl>
-                <Input
+                <FormHelperText id="standard-weight-helper-text">{errors.quantity}</FormHelperText>} */
+            
 
-                    id="standard-adornment-weight"
-                    value={quantityByManualEntry}
-                    onChange={handleManualQuantityChange}
-                    endAdornment={<InputAdornment position="end">Num.</InputAdornment>}
-                    aria-describedby="standard-weight-helper-text"
-                    inputProps={{
-                        'aria-label': 'weight',
-                    }}
-                />
-                <FormHelperText id="standard-weight-helper-text">Numbers</FormHelperText>
-            </FormControl>)
-        }
+        // }
+        // else if (unitType === 'Numbers') {
+        //     return (<FormControl>
+        //         <Input
+
+        //             id="standard-adornment-weight"
+        //             value={quantityByManualEntry}
+        //             onChange={handleManualQuantityChange}
+        //             endAdornment={<InputAdornment position="end">Num.</InputAdornment>}
+        //             aria-describedby="standard-weight-helper-text"
+        //             inputProps={{
+        //                 'aria-label': 'weight',
+        //             }}
+        //         />
+        //         <FormHelperText id="standard-weight-helper-text">Numbers</FormHelperText>
+        //     </FormControl>)
+        // }
     }
 
     const handleKGChange = (name, value) => {
@@ -257,6 +274,17 @@ export const AddProduct = (props) => {
         setShowPriceAndQuantity(false)
     }
 
+    const ValidateManualWeightInput = () => {
+        console.log('here in validate')
+        var temp = []
+        if (isEnterWeightSetToManual) {
+            console.log(props)
+            temp.quantity = quantityByManualEntry ? "" : "Quantity is required "
+            setErrors({ ...temp })
+        }
+        return Object.values(temp).every(param => param === "")
+    }
+
     const addToCart = () => {
         var isUpdate = false
         var quantity, unit
@@ -271,7 +299,7 @@ export const AddProduct = (props) => {
             unit = 'Kg'
         }
         else if (unitType === 'Numbers') {
-            if (isEnterWeightSetToManual) {
+            if (isEnterWeightSetToManual && ValidateManualWeightInput()) {
                 quantity = quantityByManualEntry
             }
             else {
@@ -287,16 +315,27 @@ export const AddProduct = (props) => {
             }
         });
 
-        if (isUpdate) {
-            setCartStore({ productId, productName, quantity, unit, price: price * (quantity), type: 'Update' })
-            props.modelOpen("false")
-        }
+
+        
+            if (quantity === 0) {
+                alert('please select desired quantity')
+                setZeroQuantityFlashWarning(true)
+            }
         else {
-            setCartStore({ productId, productName, quantity, unit, price: price * (quantity), type: 'Add' })
-            props.modelOpen("false")
+
+            if (isUpdate) {
+                console.log('am here in update cart')
+                setCartStore({ productId, productName, quantity, unit, price: price * (quantity), itemPrice:price, type: 'Update' })
+                props.modelOpen("false")
+            }
+            else {
+                console.log('am here in add cart')
+                setCartStore({ productId, productName, quantity, unit, price: price * (quantity), itemPrice:price, type: 'Add' })
+                props.modelOpen("false")
+            }
+            setIsEnterWeightSetToManual(false)
+            props.addToCart("true")
         }
-        setIsEnterWeightSetToManual(false)
-        props.addToCart("true")
 
 
 
@@ -305,6 +344,12 @@ export const AddProduct = (props) => {
     const classes = useStyles()
     return (
         <div>
+            {zeroQuantityFlashWarning?
+            <FlashMessage duration={5000} >
+            <div className='flashStyling text-center'>
+              Profile Updated
+                      </div>
+          </FlashMessage>:""}
             {showPriceAndQuantity ?
                 <div>
                     <span> Price: {calculatedPrice}</span>

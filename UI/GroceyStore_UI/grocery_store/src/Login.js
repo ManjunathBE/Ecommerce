@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Typography } from '@material-ui/core';
@@ -12,6 +12,12 @@ import Paper from '@material-ui/core/Paper';
 import { VerifyOtp } from './VerifyOtp'
 import firebase from "@firebase/app";
 import "@firebase/auth";
+import { useAuth } from './Auth'
+import { fetchUser } from './Helper'
+import { useStore } from "./Store";
+import { useHistory } from 'react-router-dom';
+
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -26,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
         backgroundPosition: 'center',
     },
     paper: {
-        margin: theme.spacing(20, 4),
+        margin: theme.spacing(18, 4),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -57,6 +63,68 @@ export const Login = (props) => {
     const [errors, setErrors] = useState({})
     const { history } = props;
     const [firebaseConfirmationResult, setFirebaseConfirmationResult] = useState()
+    const { setLoginState } = useAuth()
+    const { userStore, setUserStore } = useStore();
+    const { tokenStore, setTokenStore } = useStore();
+    const {addresStore, setAddressStore} = useStore()
+
+    const userHistory = useHistory()
+    
+
+    useEffect(() => {
+        if (window.localStorage.token){
+              const payload = {
+                "mobilenumber": window.localStorage.phone,
+                "logintype": "social",
+                "device_token": ""
+            }
+            console.log(payload, 'payload')
+
+             fetch('https://testapi.slrorganicfarms.com/auth/login',
+            {
+                mode: 'cors',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(result => {
+                console.log(result, 'fetch in login')
+                if (result.status === 404) {
+                    console.log('result is 404')
+                } else if (result.status !== 200) {
+                    console.log(result)
+                    console.log('result is not 200')
+                } else {
+                    result.json().then(body => {
+                        if (body.success !== true) {
+                            console.log('request failed', body)
+                        }
+                        else {
+                            console.log(body, 'response')
+                            var user = body.data[0]
+                            var address = body.address
+                            console.log('address from backend', address)
+                            setLoginState(true)
+                            window.localStorage.setItem('token', body.token)
+                            window.localStorage.setItem('phone',user.Phone)
+                            setUserStore({ user, type: 'User' })
+                            setAddressStore({ address, type: 'Address' })
+                            setTokenStore({ token: user.token })
+                            console.log(history,'history object')
+                            history.push('/')
+                            
+                        }
+                    });
+                }
+            })
+            .catch(error => {
+                console.log("error from server", JSON.stringify(error, Object.getOwnPropertyNames(error)));
+            });   
+        }
+        
+      }, [])
 
     const handlePhoneNumberChange = (event) => {
         setPhone(event.target.value)
@@ -65,26 +133,31 @@ export const Login = (props) => {
     const handleRequestOTP = (event) => {
         event.preventDefault()
 
-        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('RequestOtpButton', {
-            'size': 'invisible',
-            'callback': (response) => {
-              // reCAPTCHA solved, allow signInWithPhoneNumber.
-            }
-        })
-            if (validatePhone()) {            
-                const appVerifier = window.recaptchaVerifier;
-                firebase.auth().signInWithPhoneNumber('+919677513661', appVerifier)
-                    .then((confirmationResult) => {
-                        // SMS sent. Prompt user to type the code from the message, then sign the
-                        // user in with confirmationResult.confirm(code).
-                        setShowOtpInput(true)
-                        window.confirmationResult = confirmationResult;
-                        setFirebaseConfirmationResult(confirmationResult)
-                    }).catch((error) => {
-                       console.log(error,'error in sending sms')
-                    });
-            }
-            console.log(errors, 'errors in handle otp')      
+        setShowOtpInput(true)
+
+
+
+        // if (validatePhone()) {  
+        // window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('RequestOtpButton', {
+        //     'size': 'invisible',
+        //     'callback': (response) => {
+        //       // reCAPTCHA solved, allow signInWithPhoneNumber.
+        //     }
+        // })
+                     
+        //         const appVerifier = window.recaptchaVerifier;
+        //         firebase.auth().signInWithPhoneNumber('+91'+ phone, appVerifier)
+        //             .then((confirmationResult) => {
+        //                 // SMS sent. Prompt user to type the code from the message, then sign the
+        //                 // user in with confirmationResult.confirm(code).
+        //                 setShowOtpInput(true)
+        //                 window.confirmationResult = confirmationResult;
+        //                 setFirebaseConfirmationResult(confirmationResult)
+        //             }).catch((error) => {
+        //                console.log(error,'error in sending sms')
+        //             });
+        //     }
+        //     console.log(errors, 'errors in handle otp')      
     }
 
     const validatePhone = () => {
@@ -99,6 +172,7 @@ export const Login = (props) => {
 
     const editPhoneFromVerifyOtp = () => {
         setShowOtpInput(false)
+        
     }
 
     return (
@@ -130,6 +204,7 @@ export const Login = (props) => {
                                         onChange={handlePhoneNumberChange}
                                         error={errors.phone}
                                         helperText={errors.phone}
+                                        defaultValue={phone}
                                     />
 
 

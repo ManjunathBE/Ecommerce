@@ -9,7 +9,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import { Dialog, DialogContent, DialogTitle, Switch, Typography, Grid, Hidden } from '@material-ui/core';
+import { Dialog, DialogContent, DialogTitle, Switch, Typography, Grid, Hidden, Container } from '@material-ui/core';
 import Button from "@material-ui/core/Button"
 import { useStore } from "./Store";
 import { Label } from "@material-ui/icons";
@@ -18,6 +18,7 @@ import Footer from './Footer'
 import { MenuPane } from './MenuPane'
 
 const columns = [
+  { id: 'orderId', label: 'Order Id', minWidth: 130 },
   { id: 'date', label: 'Date', minWidth: 130 },
   { id: 'time', label: 'Time', minWidth: 130 },
   {
@@ -75,7 +76,7 @@ export function History(props) {
       uniqueid: userId
     }), 'herfe herer')
 
-    fetch('http://167.71.235.9:3024/cart/getOrderDetailsByUserId', {
+    fetch('https://testapi.slrorganicfarms.com/cart/getOrderDetailsByUserId', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -264,15 +265,14 @@ export function History(props) {
 
 
   return (<div>
-          <Header title={(props.location.pathname).substring(1)} history={props.history} />
+          {/* <Header title={(props.location.pathname).substring(1)} history={props.history} /> */}
     <Paper className={classes.root}>
 
-      <Hidden smDown>
+      {/* <Hidden smDown>
           <MenuPane history={history} />
-        </Hidden>
+        </Hidden> */}
         <main className={classes.content}>
-          <div></div>
-
+      <Container maxWidth="lg">
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -301,22 +301,20 @@ export function History(props) {
                   {/* const value = row[column.transactionId]; */}
 
                   <React.Fragment>
-                    <TableCell
-                      // onClick={historicOrder(column)}
+                  <TableCell
                       align={column.align}>
-                      {/* {column.format && typeof value === 'number' ? column.format(value) : value} */}
+                      {column.Id}
+                    </TableCell>
+                    <TableCell
+                      align={column.align}>
                       {transactionDate}
                     </TableCell>
                     <TableCell
-                      // onClick={historicOrder(column)}
                       align={column.align}>
-                      {/* {column.format && typeof value === 'number' ? column.format(value) : value} */}
                       {transactionTime}
                     </TableCell>
                     <TableCell
-                      // onClick={historicOrder(column)}
                       align={column.align}>
-                      {/* {column.format && typeof value === 'number' ? column.format(value) : value} */}
                       {column.OrderStatus}
                     </TableCell>
                   </React.Fragment>
@@ -340,6 +338,7 @@ export function History(props) {
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
       />
+      </Container>
       </main>
       <Hidden mdUp >
               <Footer history={history}/>
