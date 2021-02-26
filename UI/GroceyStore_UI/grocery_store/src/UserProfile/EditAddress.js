@@ -9,7 +9,8 @@ export const EditAddress = (props) => {
     const [address, setAddress] = useState({ FirstAddress: props.addressLine1, 
                                              StreetDetails: props.addressLine2, 
                                              City: props.city, Phone:props.phone, pincode: props.pinCode,
-                                             NickName:props.addressName
+                                             NickName:props.addressName,
+                                             AddressId:props.addressId
                                          })
     const [errors, setErrors] = useState({})
     const { userStore, setUserStore } = useStore()
@@ -44,8 +45,7 @@ export const EditAddress = (props) => {
                         
                         props.AddressUpdated()
                         }
-                    })
-                  
+                    })       
                 }
             })
 
@@ -124,7 +124,6 @@ export const EditAddress = (props) => {
                 id="Pin"
                 label="Pin code"
                 name="pincode"
-                type="number"
                 onChange={handleAddressChange}
                 error={errors.pinCode}
                 helperText={errors.pinCode}
@@ -136,7 +135,6 @@ export const EditAddress = (props) => {
                 id="Phone"
                 label="Phone (10 digits)"
                 name="Phone"
-                type="number"
                 onChange={handleAddressChange}        
                 defaultValue={props.phone}
             />

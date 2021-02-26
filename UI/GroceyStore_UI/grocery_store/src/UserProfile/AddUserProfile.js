@@ -54,7 +54,6 @@ export const AddUserProfile = (props) => {
                     id="Pin"
                     label="Pin code"
                     name="pinCode"
-                    type="number"
                     onChange={handleAddressChange}
                     error={errors.pinCode}
                     helperText={errors.pinCode}

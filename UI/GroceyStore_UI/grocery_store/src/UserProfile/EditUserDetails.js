@@ -36,7 +36,7 @@ export const EditUserDetails =(props)=>{
         console.log(updatedUserData,'updated user data')
 
 
-        fetch('https://testapi.slrorganicfarms.com/profile/UpdateProfile', {
+        fetch('https://testapi.slrorganicfarms.com/profile/UpdateProfileClient', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -107,6 +107,7 @@ export const EditUserDetails =(props)=>{
             name="Phone"
             defaultValue={props.phoneNumber}
             onChange={handleFormChange}
+            disabled
         />
         <Button onClick={handleUpdateClick}>Update</Button>
         </form>
