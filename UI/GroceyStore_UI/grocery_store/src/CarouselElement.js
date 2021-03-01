@@ -70,7 +70,7 @@ export const CarouselElement = (props) =>{
                     <CardMedia className={classes.card}
 
                     image={item.BannerPicUrl}
-                    style={{ width: "30vw", height: "30vh"}}
+                    style={{ width: "30vw", height: "40vh"}}
                   />
                   </Card>
                 )

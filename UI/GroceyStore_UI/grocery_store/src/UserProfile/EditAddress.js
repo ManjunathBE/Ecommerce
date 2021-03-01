@@ -57,16 +57,10 @@ export const EditAddress = (props) => {
 
         temp.addressLine1 = address.FirstAddress ? "" : "Address Line 1 is required"
         temp.city = address.City ? "" : "City is required"
-        console.log(address.pincode.length,'pin length')
-
-        console.log(address.pincode)
-        console.log(typeof(address.pincode))
         temp.pinCode = (address.pincode) ? "" : "pin code is required"
 
         if (!temp.pinCode) temp.pinCode = (address.pincode).toString().length === 6 ? "" : "Pincode should be 6 digits long"
        
-
-
         setErrors({ ...temp })
         return Object.values(temp).every(param => param === "")
     }
@@ -82,6 +76,15 @@ export const EditAddress = (props) => {
                 name="NickName"
                 onChange={handleAddressChange}
                 defaultValue={props.addressName}
+            />
+            <TextField
+                margin="normal"
+                required
+                id="contactPerson"
+                label="Contact Person"
+                name="ContactPerson"
+                onChange={handleAddressChange}
+                defaultValue={props.contactPerson}
             />
             <TextField
                 margin="normal"
@@ -129,6 +132,7 @@ export const EditAddress = (props) => {
                 helperText={errors.pinCode}
                 defaultValue={props.pinCode}
             />
+            <br/>
             <TextField
                 margin="normal"
                 required
@@ -138,7 +142,17 @@ export const EditAddress = (props) => {
                 onChange={handleAddressChange}        
                 defaultValue={props.phone}
             />
-            <Button onClick={handleSubmit}>Update</Button>
+            <br/>
+            <TextField
+                margin="normal"
+                required
+                id="gst"
+                label="GST"
+                name="GST"
+                onChange={handleAddressChange}
+                defaultValue={props.gst}
+            /><br/>
+            <Button variant="contained" color="primary" onClick={handleSubmit}>Update</Button>
             <br />
             <br />
             <br />

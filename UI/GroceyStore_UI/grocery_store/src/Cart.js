@@ -22,6 +22,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { MenuPane } from './MenuPane'
 import Footer from './Footer'
 import EmptyCartImage from './Images/empty-cart.png'
+import { EditAddress } from "./UserProfile/EditAddress";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
   },
   container: {
-   
+
     paddingBottom: theme.spacing(4),
   },
   paper: {
@@ -162,7 +163,7 @@ export const Cart = (props) => {
   const [showSelectedAddress, setShowSelectedAddress] = useState(false)
   const [selectedAddressForDelivery, setSelectedAddressForDelivery] = useState()
   const [selectedAddressId, setSelectedAddressId] = useState()
-  const {addressStore, setAddressStore} = useStore()
+  const { addressStore, setAddressStore, setUserStore, setTokenStore } = useStore()
   const [itemUpdated, setItemUpdated] = useState(false)
 
   const EnhancedTableToolbar = (props) => {
@@ -269,17 +270,17 @@ export const Cart = (props) => {
         body: JSON.stringify(payload)
       })
         .then(result => {
-          if(result.status===200)
-          result.json().then(body => {
-            if (body.success === true) {
-            console.log(body, 'result from backend')
-            setIsOrderPlaced(true)
-            setCartStore({ type: 'DeleteAll' })
-            }
-            else{
-             //TODO: handle some error occured
-            }
-          })
+          if (result.status === 200)
+            result.json().then(body => {
+              if (body.success === true) {
+                console.log(body, 'result from backend')
+                setIsOrderPlaced(true)
+                setCartStore({ type: 'DeleteAll' })
+              }
+              else {
+                //TODO: handle some error occured
+              }
+            })
         })
     }
   }
@@ -305,26 +306,26 @@ export const Cart = (props) => {
 
   }
 
-  const handleSelectAddressDialogClose = ()=>{
+  const handleSelectAddressDialogClose = () => {
     setShowAddressSelection(false)
   }
 
   const splitAddress = () => {
-    // setSelectedAddressId(selectedAddressForDelivery.id)
+    console.log(selectedAddressForDelivery, 'selected address for delivery')
     return (<Card>
       <CardContent>
         <Typography>Selected delivery address</Typography><br />
-        <Typography>{selectedAddressForDelivery.AddressNickName}<br/>
-                {selectedAddressForDelivery.FirstAddress }
-                  {selectedAddressForDelivery.StreetDetails }
-                   {selectedAddressForDelivery.City } 
-                  {selectedAddressForDelivery.pincode }<br/>
-                  Phone: {selectedAddressForDelivery.Phone[0] }</Typography>
-              </CardContent>    
+        <Typography>{selectedAddressForDelivery.AddressNickName}<br />
+          {selectedAddressForDelivery.FirstAddress}, {selectedAddressForDelivery.StreetDetails} <br />
+          {selectedAddressForDelivery.City} <br />
+          Pin: {selectedAddressForDelivery.pincode}<br />
+                  Phone: {selectedAddressForDelivery.Phone[0]}
+        </Typography>
+      </CardContent>
     </Card>)
   }
 
-  const FlashItemUpdated=()=>{
+  const FlashItemUpdated = () => {
     setItemUpdated(true)
   }
 
@@ -332,129 +333,193 @@ export const Cart = (props) => {
   const emptyRows = cartStore.cart
   console.log(emptyRows, 'empt')
   var totalPrice = 0
+  console.log(addressStore.address.length, 'address length')
+
+  const fetchUserDetails = (UpdateType) => {
+    const payload = {
+      "mobilenumber": window.localStorage.phone,
+      "logintype": "social",
+      "device_token": ""
+    }
+    console.log(payload, 'payload')
+
+    fetch('https://testapi.slrorganicfarms.com/auth/login',
+      {
+        mode: 'cors',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(result => {
+        console.log(result, 'fetch in login')
+        if (result.status === 404) {
+          console.log('result is 404')
+        } else if (result.status !== 200) {
+          console.log(result)
+          console.log('result is not 200')
+        } else {
+          result.json().then(body => {
+            if (body.success !== true) {
+              console.log('request failed', body)
+            }
+            else {
+              console.log(body, 'response')
+              var user = body.data[0]
+              var address = body.address
+              console.log('address from backend', address)
+
+              window.localStorage.setItem('token', body.token)
+              window.localStorage.setItem('phone', user.Phone)
+
+              setAddressStore({ address, type: 'Address' })
+              setUserStore({ user, type: 'User' })
+              setSelectedAddressForDelivery(address[0])
+              setTokenStore({ token: user.token })
+              setShowSelectedAddress(true)
+            }
+          });
+        }
+      })
+      .catch(error => {
+        console.log("error from server", JSON.stringify(error, Object.getOwnPropertyNames(error)));
+      });
+  }
+
+
+  const handleAddressUpdated = () => {
+    fetchUserDetails()
+    setShowAddressSelection(false)
+
+  }
+
+  const handleAddressAdded = () => {
+    setShowAddressSelection(false)
+  }
 
   return (
     <div>
-       <div className={classes.root}>
-       <main className={classes.content}>
-         <Container maxWidth="lg">
-      {/* <Header title={(props.location.pathname).substring(1)} history={props.history} />\ */}
+      <div className={classes.root}>
+        <main className={classes.content}>
+          <Container maxWidth="lg">
+            {/* <Header title={(props.location.pathname).substring(1)} history={props.history} />\ */}
 
-      {itemUpdated ?
-                <div >
-                  <FlashMessage duration={5000} >
-                    <div className='flashStyling text-center'>
-                      Item Updated
+            {itemUpdated ?
+              <div >
+                <FlashMessage duration={5000} >
+                  <div className='flashStyling text-center'>
+                    Item Updated
                         </div>
-                  </FlashMessage>
-                </div>: ""}
+                </FlashMessage>
+              </div> : ""}
 
-      {isOrderPlaced ? <FlashMessage duration={5000}>
-        <div className='flashStyling'>
-          Order placed
+            {isOrderPlaced ? <FlashMessage duration={5000}>
+              <div className='flashStyling'>
+                Order placed
         </div>
-      </FlashMessage> : ""}
+            </FlashMessage> : ""}
 
-     
-        {/* <Hidden smDown>
+
+            {/* <Hidden smDown>
           <MenuPane history={history} />
         </Hidden> */}
 
-       
-
-          <EnhancedTableToolbar numSelected={selected.length} selectedItems={selected} />
-
-          <Grid container spacing={2}>
-
-            <Grid item xs={12} md={7} className={classes.margins}>
-              <Card>
-                <CardContent style={{ padding: '0px' }}>
 
 
-                  <TableContainer >
-                    {emptyRows.length ? <React.Fragment><Table>
-                      <EnhancedTableHead
-                        classes={classes}
-                        numSelected={selected.length}
-                        onSelectAllClick={handleSelectAllClick}
-                        cartCount={cartStore.cart.length}
-                      />
-                      <TableBody>
-                        {cartStore.cart.map((cart, index) => {
-                          console.log(cart, 'item in cart')
+            <EnhancedTableToolbar numSelected={selected.length} selectedItems={selected} />
+
+            <Grid container spacing={2}>
+
+              <Grid item xs={12} md={7} className={classes.margins}>
+                <Card>
+                  <CardContent style={{ padding: '0px' }}>
 
 
-                          const isItemSelected = isSelected(cart.productName);
-                          const labelId = `enhanced-table-checkbox-${index}`;
+                    <TableContainer >
+                      {emptyRows.length ? <React.Fragment><Table>
+                        <EnhancedTableHead
+                          classes={classes}
+                          numSelected={selected.length}
+                          onSelectAllClick={handleSelectAllClick}
+                          cartCount={cartStore.cart.length}
+                        />
+                        <TableBody>
+                          {cartStore.cart.map((cart, index) => {
+                            console.log(cart, 'item in cart')
 
-                          totalPrice =  totalPrice + cart.price
-                          return (
-                            <TableRow
-                              hover
 
-                              role="checkbox"
-                              aria-checked={isItemSelected}
-                              tabIndex={-1}
-                              key={cart.productName}
-                              selected={isItemSelected}
-                            >
-                              <TableCell padding="checkbox">
-                                <Checkbox
-                                  checked={isItemSelected}
-                                  inputProps={{ 'aria-labelledby': labelId }}
-                                  onClick={(event) => handleClick(event, cart.productName)}
-                                />
-                              </TableCell>
-                              <TableCell component="th" id={labelId} scope="row" padding="none">
-                                {cart.productName}
-                              </TableCell>
-                              <TableCell align="right">{cart.quantity}
-                                <EditTwoToneIcon onClick={(event) => handleEditClick(event, cart)} />
-                              </TableCell>
-                              <TableCell align="right">{cart.unit}</TableCell>
-                              <TableCell align="right">{(cart.price).toFixed(2)}</TableCell>
-                            </TableRow>
-                          );
-                        })}
-                        <Hidden mdUp>
-                          <TableRow>
-                            <TableCell colspan={5} align="right">total price: ₹ {(totalPrice.toFixed(2))} <br />
+                            const isItemSelected = isSelected(cart.productName);
+                            const labelId = `enhanced-table-checkbox-${index}`;
+
+                            totalPrice = totalPrice + cart.price
+                            return (
+                              <TableRow
+                                hover
+
+                                role="checkbox"
+                                aria-checked={isItemSelected}
+                                tabIndex={-1}
+                                key={cart.productName}
+                                selected={isItemSelected}
+                              >
+                                <TableCell padding="checkbox">
+                                  <Checkbox
+                                    checked={isItemSelected}
+                                    inputProps={{ 'aria-labelledby': labelId }}
+                                    onClick={(event) => handleClick(event, cart.productName)}
+                                  />
+                                </TableCell>
+                                <TableCell component="th" id={labelId} scope="row" padding="none">
+                                  {cart.productName}
+                                </TableCell>
+                                <TableCell align="right">{cart.quantity}
+                                  <EditTwoToneIcon onClick={(event) => handleEditClick(event, cart)} />
+                                </TableCell>
+                                <TableCell align="right">{cart.unit}</TableCell>
+                                <TableCell align="right">{(cart.price).toFixed(2)}</TableCell>
+                              </TableRow>
+                            );
+                          })}
+                          <Hidden mdUp>
+                            <TableRow>
+                              <TableCell colspan={5} align="right">total price: ₹ {(totalPrice.toFixed(2))} <br />
                               total items :{cartStore.cart.length}</TableCell>
 
-                          </TableRow>
+                            </TableRow>
+                          </Hidden>
+                        </TableBody>
+                      </Table>
+
+                        {showSelectedAddress ? splitAddress() : ""}
+
+                        <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={() => history.push("/")}>Continue Shopping</Button>
+
+                        <Hidden mdUp>
+                          <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handleSelectAddress}>Add/Select Address</Button>
+                          <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
                         </Hidden>
-                      </TableBody>
-                    </Table>
 
-                      {showSelectedAddress ? splitAddress() : ""}
-
-                      <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={() => history.push("/")}>Continue Shopping</Button>
-
-                      <Hidden mdUp>
-                        <Button disabled={cartStore.cart.length===0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handleSelectAddress}>Add/Select Address</Button>
-                        <Button disabled={cartStore.cart.length===0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
-                      </Hidden>
-
-                    </React.Fragment> : "Cart is empty"}
-                  </TableContainer>
-                </CardContent>
-              </Card>
-
-
-
-            </Grid>
-            <Grid item xs={false} md={4} className={classes.margins}>
-              <Hidden smDown>
-                <Card>
-                  <CardContent>
-                    <Typography style={{ fontSize: '32px' }}>Total : ₹ {(totalPrice).toFixed(2)}</Typography> <br />
-                    <Button disabled={cartStore.cart.length===0}className={classes.btnnMargins} variant='contained' color='primary' onClick={handleSelectAddress}>Add/Select Address</Button> <br />
-                    <Button  disabled={cartStore.cart.length===0}className={classes.btnnMargins} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
+                      </React.Fragment> : "Cart is empty"}
+                    </TableContainer>
                   </CardContent>
                 </Card>
-              </Hidden>
+
+
+
+              </Grid>
+              <Grid item xs={false} md={4} className={classes.margins}>
+                <Hidden smDown>
+                  <Card>
+                    <CardContent>
+                      <Typography style={{ fontSize: '32px' }}>Total : ₹ {(totalPrice).toFixed(2)}</Typography> <br />
+                      <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handleSelectAddress}>Add/Select Address</Button> <br />
+                      <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
+                    </CardContent>
+                  </Card>
+                </Hidden>
+              </Grid>
             </Grid>
-          </Grid>
           </Container>
         </main>
         <Hidden mdUp >
@@ -465,25 +530,31 @@ export const Cart = (props) => {
 
       <Dialog open={showAddressSelection} onClose={handleSelectAddressDialogClose}>
         <DialogTitle>
-        <IconButton className={classes.closeButton} aria-label="close" onClick={handleSelectAddressDialogClose}>
-                  <CloseIcon />
-                </IconButton>
+          <IconButton className={classes.closeButton} aria-label="close" onClick={handleSelectAddressDialogClose}>
+            <CloseIcon />
+          </IconButton>
           <Typography>Select Delivery address</Typography>
         </DialogTitle>
         <DialogContent>
 
-          {addressStore.address.map((address) =>
-            <Card style={{ marginTop: '16px' }} onClick={() => handleAddressCardClick(address)} spacing={2}>
-              <CardContent>
-                <Typography>{address.AddressNickName}<br/>
-                {address.FirstAddress }
-                  {address.StreetDetails }
-                   {address.City } 
-                  {address.pincode }<br/>
-                  Phone: {address.Phone[0] }</Typography>
-              </CardContent>
-            </Card>
-          )}
+          {addressStore.address.length ?
+
+            (addressStore.address.map((address) =>
+              <Card style={{ marginTop: '16px' }} onClick={() => handleAddressCardClick(address)} spacing={2}>
+                <CardContent>
+                  <Typography>{address.AddressNickName}<br />
+                    {address.FirstAddress}, {address.StreetDetails} <br/>
+                    {address.City}<br/>
+                    Pin: {address.pincode}<br />
+                  Phone: {address.Phone[0]}</Typography>
+                </CardContent>
+              </Card>)
+            ) :
+            <div>
+              <Typography>We could not find any address in your profile. please add one</Typography>
+              <EditAddress modelOpen={handleAddressAdded} AddressUpdated={handleAddressUpdated} />
+
+            </div>}
         </DialogContent>
       </Dialog>
 
@@ -499,8 +570,8 @@ export const Cart = (props) => {
           <AddProduct modelOpen={handleEditOrderDialogClose} price={productToEdit.itemPrice}
             productName={productToEdit.productName}
             unitType={productToEdit.unit}
-            quantityToEdit={productToEdit.quantity} 
-            addToCart={FlashItemUpdated}/>
+            quantityToEdit={productToEdit.quantity}
+            addToCart={FlashItemUpdated} unitTypeId={productToEdit.unitTypeId} />
         </DialogContent>
       </Dialog>
 

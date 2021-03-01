@@ -340,11 +340,13 @@ export const UserProfile = (props) => {
                         {/* <Typography> Address : {index+1} <br/> {id.addressLine1}, {id.addressLine2}<br />{`${toFirstCharUppercase(id.city)}`}<br /> Pin: {id.pinCode}</Typography> */}
                         <Typography> Address Name : {add.AddressNickName}
                           <span className="positionRight"><EditTwoToneIcon onClick={() => handleAddressEdit(add)} /></span>
+                          <br />{add.ContactPerson}
                           <br />{add.FirstAddress}
                           <br />{add.StreetDetails}
-                          <br />{add.City} Pin: {add.pincode}
-                          <br />{add.Phone[0]}</Typography>
-                          <Button variant="contained" onClick={()=>deleteAddress(add.AddressId)}>Delete</Button>
+                          <br />{add.City},  Pin: {add.pincode}
+                          <br />Phone: {add.Phone[0]}
+                          <br />GSTIN: {add.GST}</Typography>
+                          <Button variant="contained" color="red" onClick={()=>deleteAddress(add.AddressId)}>Delete</Button>
                           <Button variant="contained" onClick={setDefaultAddress}>Set as default</Button>
                       </Card>
                     </Grid>
@@ -395,7 +397,8 @@ export const UserProfile = (props) => {
                 Edit Address
               </DialogTitle>
         <EditAddress addressName={AddressToEdit.AddressNickName} addressLine1={AddressToEdit.FirstAddress} addressLine2={AddressToEdit.StreetDetails} phone={AddressToEdit.Phone[0]}
-          city={AddressToEdit.City} pinCode={AddressToEdit.pincode} AddressUpdated={handleAddressUpdated} addressId={AddressToEdit.AddressId} />
+          city={AddressToEdit.City} pinCode={AddressToEdit.pincode} AddressUpdated={handleAddressUpdated} addressId={AddressToEdit.AddressId}
+          contactPerson={AddressToEdit.ContactPerson} gst={AddressToEdit.GST}/>
       </Dialog>
 
 

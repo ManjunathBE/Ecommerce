@@ -14,6 +14,7 @@ import {VerifyOtp} from './VerifyOtp'
 import {HistoricOrderDetails} from './HistoricOrderDetails'
 import {Unauthorised} from './Unauthorised'
 import {Suggestion} from './Suggestion'
+import {Payment} from './Payment'
 
 
 export const Routes = () => (
@@ -29,6 +30,8 @@ export const Routes = () => (
       <PrivateRoute path="/UserProfile" component={UserProfile} />
       <PrivateRoute path="/AddUserProfile" component={AddUserProfile} />
       <PrivateRoute path ="/OrderDetails" component={HistoricOrderDetails} />
+      <PrivateRoute path ="/Payment" component={Payment} />
+      
       <PrivateRoute path ="/noauth" component={Unauthorised} />
       <PrivateRoute path ="/feedback" component={Suggestion} />
       <Route path="/verifyotp" component={VerifyOtp} />

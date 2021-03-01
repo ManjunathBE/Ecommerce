@@ -4,22 +4,43 @@ import HomeIcon from '@material-ui/icons/Home';
 import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 import { useStore } from "./Store";
 
 const StyledBadge = withStyles((theme) => ({
     badge: {
-        right: -3,
-        top: 13,
-        border: `2px solid ${theme.palette.background.paper}`,
+        right: 3,
+        top: 30,
+        border: `1px solid ${theme.palette.background.paper}`,
         padding: '0 4px',
     },
 }))(Badge);
+
+const useStyles = makeStyles((theme) => ({
+    title: {
+      margin: "auto",
+      fontSize: "x-large",
+      padding:theme.spacing(2),
+      cursor: "pointer"
+    },
+    cartIcon:{
+        fontSize: "50px",
+        padding:theme.spacing(1),
+      cursor: "pointer"
+    },
+    menuDropdown:{
+        fontSize: "large",
+        cursor: "pointer"
+
+    }
+  }))
+  
 
 export const Header = (props) => {
     const { history } = props;
     const [currentPage, setCurentPage] = useState();
     const { cartStore } = useStore();
+    const classes = useStyles();
 
     const handlePageChange = (event) => {
         console.log(history.location,'locaiton in header')
@@ -48,7 +69,7 @@ export const Header = (props) => {
                 break;
 
             case "Payment":
-                history.push("/History")
+                history.push("/Payment")
                 break;
 
             case "Suggestion":
@@ -70,10 +91,10 @@ export const Header = (props) => {
 
             
 <Container maxWidth="lg">
-<div id="header">
+<div id="header" >
             <Grid container>
                 <Grid xs={3}>
-                    <Typography onClick={() => history.push('/')} > Slr Organics </Typography>
+                    <Typography className={classes.title} onClick={() => history.push('/')} > SLR Organics </Typography>
                 </Grid>
 
                 <Grid xs={9} >
@@ -82,6 +103,7 @@ export const Header = (props) => {
                         value={currentPage}
                         onChange={handlePageChange}
                         name="Navigator"
+                        className={classes.menuDropdown}
                     >
                         <option value="Dashboard">Dashboard</option>
                         <option value="My Account">My Account</option>
@@ -91,9 +113,9 @@ export const Header = (props) => {
                         <option value="Suggestion">Feedback</option>
                     </NativeSelect>
               
-                    <IconButton aria-label="cart" onClick={handleCartClick}>
+                    <IconButton  aria-label="cart" onClick={handleCartClick}>
                         <StyledBadge badgeContent={cartStore.cart.length} color="secondary">
-                            <ShoppingCartIcon />
+                            <ShoppingCartIcon className={classes.cartIcon}/>
                         </StyledBadge>
                     </IconButton>
                     </div>

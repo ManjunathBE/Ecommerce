@@ -11,8 +11,9 @@ import { MenuPane } from './MenuPane'
 import { Header } from './Header'
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import { unitMapper } from "./Helper";
 
-import {MissingReturnItems} from './MissingReturnItems'
+import { MissingReturnItems } from './MissingReturnItems'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     },
     container: {
         [theme.breakpoints.up('md')]: {
-            padding: theme.spacing(9),
+            padding: theme.spacing(1),
         },
     },
     closeButton: {
@@ -36,6 +37,10 @@ const useStyles = makeStyles((theme) => ({
         top: theme.spacing(1),
         color: theme.palette.grey[500],
     },
+    addressDiv:{
+        marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(2)
+    }
 }));
 
 
@@ -44,13 +49,13 @@ export const HistoricOrderDetails = (props) => {
     const { cartStore, setCartStore, userStore } = useStore();
     const [orderDetails, setOrderDetails] = useState([])
     const [isToggleOn, setIsToggleOn] = useState(false)
-    //const [showToggleSwitch, setShowToggleSwitch] = useState(false)
     const classes = useStyles();
     const { history } = props
     const [showMissingReturnOption, setShowMissingReturnOption] = useState(false)
     const [selectedItemForMissingReturn, setSelectedItemForMissingReturn] = useState()
     const [missingReturnValue, setMissingReturnValue] = useState()
-    
+    const [warningDialog, setWarningDialog] = useState(false)
+
     var MissingReturnItemsList = []
 
 
@@ -58,7 +63,7 @@ export const HistoricOrderDetails = (props) => {
         { id: 'Product', numeric: false, disablePadding: true, label: 'Product Name' },
         { id: 'Price', numeric: true, disablePadding: true, label: 'Price' },
         { id: 'Quantity', numeric: true, disablePadding: true, label: 'Quantity' },
-        // { id: 'Units', numeric: true, disablePadding: true, label: 'Units' },
+        { id: 'Units', numeric: true, disablePadding: true, label: 'Units' },
     ]
 
 
@@ -133,17 +138,28 @@ export const HistoricOrderDetails = (props) => {
         }
     }
 
-    const handleEditOrReorder = () => {
+    const handleEditOrReorder = (e) => {
+        e.preventDefault()
+
+        console.log(cartStore.cart.length, 'cart in edit')
+        if (cartStore.cart.length !== 0) {
+            setWarningDialog(true)
+        }
+        else {
+            console.log(orderDetails,'orderdetails in history')
+            orderDetails.map((item) => setCartStore({ item, type: 'AddFromHistory' }))
+            history.push(`/cart`)
+        }
 
     }
 
     const handleItemClick = (item) => {
         console.log(item)
-        
+
         if (props.location.state.orderStatus === 'Out for Delivery') {
-             setShowMissingReturnOption(true)
-             setSelectedItemForMissingReturn(item)
-            
+            setShowMissingReturnOption(true)
+            setSelectedItemForMissingReturn(item)
+
         }
     }
 
@@ -163,13 +179,13 @@ export const HistoricOrderDetails = (props) => {
     const handleMissingClick = () => {
 
         MissingReturnItemsList.push({
-            OrderId:selectedItemForMissingReturn.OrderId,
-            Itemid:selectedItemForMissingReturn.Itemid,
-            qty:selectedItemForMissingReturn.qty,
-            ItemCost:selectedItemForMissingReturn.ItemCost,
-            SuppliedQty:{missingReturnValue},
-            FinalAmount:selectedItemForMissingReturn.MRP_Price*(selectedItemForMissingReturn.qty-selectedItemForMissingReturn.SuppliedQty),
-            MissingOrReturn:"Missing"
+            OrderId: selectedItemForMissingReturn.OrderId,
+            Itemid: selectedItemForMissingReturn.Itemid,
+            qty: selectedItemForMissingReturn.qty,
+            ItemCost: selectedItemForMissingReturn.ItemCost,
+            SuppliedQty: { missingReturnValue },
+            FinalAmount: selectedItemForMissingReturn.MRP_Price * (selectedItemForMissingReturn.qty - selectedItemForMissingReturn.SuppliedQty),
+            MissingOrReturn: "Missing"
         })
         setShowMissingReturnOption(false)
 
@@ -177,21 +193,33 @@ export const HistoricOrderDetails = (props) => {
 
     const handleReturnClick = () => {
         MissingReturnItemsList.push({
-            OrderId:selectedItemForMissingReturn.OrderId,
-            Itemid:selectedItemForMissingReturn.Itemid,
-            qty:selectedItemForMissingReturn.qty,
-            ItemCost:selectedItemForMissingReturn.ItemCost,
-            SuppliedQty:{missingReturnValue},
-            FinalAmount:selectedItemForMissingReturn.MRP_Price*(selectedItemForMissingReturn.qty-selectedItemForMissingReturn.SuppliedQty),
-            MissingOrReturn:"Return"
+            OrderId: selectedItemForMissingReturn.OrderId,
+            Itemid: selectedItemForMissingReturn.Itemid,
+            qty: selectedItemForMissingReturn.qty,
+            ItemCost: selectedItemForMissingReturn.ItemCost,
+            SuppliedQty: { missingReturnValue },
+            FinalAmount: selectedItemForMissingReturn.MRP_Price * (selectedItemForMissingReturn.qty - selectedItemForMissingReturn.SuppliedQty),
+            MissingOrReturn: "Return"
         })
         setShowMissingReturnOption(false)
 
     }
 
-    const handleFinishOrder=()=>{
-        
+    const handleFinishOrder = () => {
+
     }
+
+    const handleWarningDialogClose = () => {
+        setWarningDialog(false)
+    }
+
+    const handleProceedToCart = () => {
+        console.log(orderDetails,'orderdetails in history')
+        orderDetails.map((item) => setCartStore({ item, type: 'AddFromHistory' }))
+        history.push(`/cart`)
+    }
+
+    console.log(orderDetails,'order details in hitem history')
     return (
         <div>
             {/* <Header title={(props.location.pathname).substring(1)} history={props.history} /> */}
@@ -204,6 +232,20 @@ export const HistoricOrderDetails = (props) => {
 
 
                         <div className={classes.container}>
+                            <Button variant="contained" color="primary" onClick={() => history.goBack()}>Back</Button>
+                            <div className={classes.addressDiv}>
+                                {orderDetails.length?
+                                <React.Fragment>
+                                <Typography style={{fontWeight:'bold'}}>Delivery Address</Typography>
+
+                                <Typography>{orderDetails[0].AddressNickName}<br/>
+                                {orderDetails[0].FirstAddress}, {orderDetails[0].StreetDetails}, {orderDetails[0].City}, Pin:  {orderDetails[0].pincode} <br/>
+                                Phone: {orderDetails[0].Phone}<br/>
+                                ContactPerson: {orderDetails[0].ContactPerson}<br/>
+                                GSTIN: {orderDetails[0].GST}
+                                </Typography></React.Fragment> : ""}
+                                
+                            </div>
                             {showToggleSwitch()}
 
                             <TableContainer>
@@ -226,11 +268,11 @@ export const HistoricOrderDetails = (props) => {
                                         {!isToggleOn ?
                                             orderDetails.map((p) => {
                                                 return (
-                                                    <TableRow onClick={()=>handleItemClick(p)}>
+                                                    <TableRow onClick={() => handleItemClick(p)}>
                                                         <TableCell align='center'>{p.ItemName}</TableCell>
                                                         <TableCell align='center'>{p.ItemCost}</TableCell>
                                                         <TableCell align='center'>{p.qty}</TableCell>
-                                                        {/* <TableCell>{p.unit}</TableCell> */}
+                                                        <TableCell align='center'>{p.UnitName}</TableCell>
                                                     </TableRow>
                                                 )
                                             })
@@ -241,15 +283,16 @@ export const HistoricOrderDetails = (props) => {
                                                         <TableCell align='center'>{p.ItemName}</TableCell>
                                                         <TableCell align='center'>{p.FinalAmount}</TableCell>
                                                         <TableCell align='center'>{p.SuppliedQty}</TableCell>
-                                                        {/* <TableCell>{p.unit}</TableCell> */}
+                                                        <TableCell align='center'>{p.UnitName}</TableCell>
                                                     </TableRow>
                                                 )
                                             })}
                                     </TableBody>
                                 </Table>
                             </TableContainer>
+                            {showActionButtons()}
                         </div>
-                        {showActionButtons()}
+
                     </Container>
                 </main>
 
@@ -259,20 +302,29 @@ export const HistoricOrderDetails = (props) => {
             </Paper>
 
             <Dialog onClose={handleDialogClose} open={showMissingReturnOption}>
-        <DialogTitle className={classes.root}>
-            <IconButton className={classes.closeButton} aria-label="close" onClick={handleDialogClose}>
-                <CloseIcon />
-            </IconButton>
+                <DialogTitle className={classes.root}>
+                    <IconButton className={classes.closeButton} aria-label="close" onClick={handleDialogClose}>
+                        <CloseIcon />
+                    </IconButton>
         Missing/Return
       </DialogTitle>
-        <DialogContent dividers>
-            {/* <MissingReturnItems selectedItem={selectedItemForMissingReturn}/> */}
-            <TextField onchange={handleMissingReturnQuantityChange} /> <br />
-        <Button variant="contained" color="primary" onClick={handleMissingClick}>Missing</Button>
-        <Button variant="contained" color="primary" onClick={handleReturnClick}>Return</Button>
-        </DialogContent>
-    </Dialog>
-           
+                <DialogContent dividers>
+                    {/* <MissingReturnItems selectedItem={selectedItemForMissingReturn}/> */}
+                    <TextField onchange={handleMissingReturnQuantityChange} /> <br />
+                    <Button variant="contained" color="primary" onClick={handleMissingClick}>Missing</Button>
+                    <Button variant="contained" color="primary" onClick={handleReturnClick}>Return</Button>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog onClose={handleWarningDialogClose} open={warningDialog}>
+                <DialogTitle>
+                </DialogTitle>
+                <DialogContent>
+                    The items in your cart will be deleted
+          <Button varaint="contained" color="primary" onClick={handleProceedToCart}>Proceed</Button>
+                </DialogContent>
+            </Dialog>
+
         </div>
 
 

@@ -9,7 +9,7 @@ const cartReducer = (state = initialState, action) => {
 
     var itemNumber = 1
     console.log(action, 'action in store')
-
+    
     switch (action.type) {
         case 'Add':
             console.log('in store add')
@@ -20,7 +20,8 @@ const cartReducer = (state = initialState, action) => {
                     unit: action.unit,
                     price: action.price,
                     productId: action.productId,
-                    itemPrice: action.itemPrice
+                    itemPrice: action.itemPrice,
+                    unitTypeId: action.unitTypeId
                 }]
             }
         case 'Update':
@@ -28,7 +29,7 @@ const cartReducer = (state = initialState, action) => {
                 ...state, cart: state.cart.map((item) => (item.productName === action.productName ?
                     {
                         ...item, quantity: action.quantity,
-                        unit: action.unit, price: action.price, productId: action.productId, itemPrice: action.itemPrice
+                        unit: action.unit, price: action.price, productId: action.productId, itemPrice: action.itemPrice,  unitTypeId: action.unitTypeId
                     } : item))
             }
 
@@ -44,11 +45,14 @@ const cartReducer = (state = initialState, action) => {
 
         case 'AddFromHistory':
             return {
-                ...state, cart: [{
-                    productName: action.item.productName,
-                    quantity: action.item.quantity,
-                    unit: action.item.unit,
-                    price: action.item.price
+                ...state, cart: [...state.cart,{
+                    productName: action.item.ItemName,
+                    quantity: action.item.qty,
+                    unit: action.item.UnitName,
+                    price: (action.item.SellIngPrice *action.item.qty) ,
+                    productId: action.item.Itemid,
+                    itemPrice: action.item.SellIngPrice,
+                    unitTypeId: action.item.UnitTypeId
                 }]
             }
         default:

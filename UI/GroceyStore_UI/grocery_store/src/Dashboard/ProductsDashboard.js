@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogContent,
   Table, TableContainer, TableBody, TableCell, TableHead, TableRow, Hidden,
-  Container
+  Container, Button
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { toFirstCharUppercase, unitMapper } from "../Helper";
@@ -23,8 +23,9 @@ import { MenuPane } from '../MenuPane'
 import Box from '@material-ui/core/Box';
 import FlashMessage from 'react-flash-message'
 import Loader from "react-loader-spinner";
-import {Spinner} from '../Spinner'
+import { Spinner } from '../Spinner'
 import Footer from '../Footer'
+import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 
 const useStyles = makeStyles((theme) => ({
   DashboardContainer: {
@@ -63,9 +64,12 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "left"
   },
   alignRight: {
-
     justifyContent: "flex-end",
     float: 'right',
+  },
+  backBtn:{
+    paddingTop:theme.spacing(1),
+    paddingBottom:theme.spacing(1)
   }
 }));
 
@@ -84,6 +88,8 @@ export const ProductsDashboard = (props) => {
   const [productId, setProductId] = useState()
   const [showSpinner, setShowSpinner] = useState(true)
   const [showFallback, setShowFallback] = useState(false)
+  const [zeroQuantityFlashWarning, setZeroQuantityFlashWarning] = useState(false)
+  const [unitTypeId, setUnitTypeId] = useState()
 
   useEffect(() => {
     fetchProducts()
@@ -141,18 +147,11 @@ export const ProductsDashboard = (props) => {
   }
 
   const getGridCard = (id) => {
-    const { Id, ItemName, ItemImage, UnitTypeId, MRP_Price, SellIngPrice } = products[
+    const { Id, ItemName, ItemImage, UnitName, MRP_Price, SellIngPrice, UnitTypeId } = products[
       `${id}`
     ];
     var isDiscount = false;
     var unitToDisplay = ""
-
-    if (UnitTypeId === 1) {
-      unitToDisplay = 'Kg'
-    }
-    else{
-      unitToDisplay = 'Piece'
-    }
 
     var discountPercentage;
     var price;
@@ -174,7 +173,7 @@ export const ProductsDashboard = (props) => {
     return (
 
       <Grid item xs={6} sm={3} key={id}>
-        <Card onClick={() => handleProductClick(price, ItemName, unitMapper(UnitTypeId), Id)}>
+        <Card onClick={() => handleProductClick(price, ItemName, UnitName, Id, UnitTypeId)}>
           {isDiscount ?
             <div>
               {discountPercentage}
@@ -187,7 +186,7 @@ export const ProductsDashboard = (props) => {
           <CardContent >
             <Typography className={classes.cardContent}>{`${toFirstCharUppercase(ItemName)}`}</Typography>
             <div className="text-center">
-              ₹{MRP_Price} / {unitToDisplay}
+              ₹{MRP_Price} / {UnitName}
             </div>
           </CardContent>
         </Card>
@@ -222,9 +221,9 @@ export const ProductsDashboard = (props) => {
         <TableBody>
 
           {(products).map((id) =>
-            <TableRow onClick={() => handleProductClick(id.SellIngPrice, id.ItemName, unitMapper(id.UnitTypeId), id.Id)}>
+            <TableRow onClick={() => handleProductClick(id.SellIngPrice, id.ItemName, id.UnitName, id.Id, id.UnitTypeId)}>
               <TableCell align="right">{id.ItemName}</TableCell>
-              <TableCell align="right">{unitMapper(id.UnitTypeId)}</TableCell>
+              <TableCell align="right">{id.UnitName}</TableCell>
               <TableCell align="right">{id.SellIngPrice}</TableCell>
             </TableRow>
           )}
@@ -263,11 +262,12 @@ export const ProductsDashboard = (props) => {
     }
   }
 
-  const handleProductClick = (price, productName, unitType, productId) => {
+  const handleProductClick = (price, productName, UnitName, productId, UnitTypeId) => {
     setProductId(productId)
     setProductPrice(price)
     setproductName(productName)
-    setUnitType(unitType)
+    setUnitType(UnitName)
+    setUnitTypeId(UnitTypeId)
     setOpenAddProductDialogState(true)
     setAddedToCart(false)
   }
@@ -284,32 +284,44 @@ export const ProductsDashboard = (props) => {
     setAddedToCart(true)
   }
 
+  const FlashZeroQuantity = () => {
+    setZeroQuantityFlashWarning(true)
+  }
+
   return (
     <div>
-       <div className={classes.root}>
-       <main className={classes.content}>
+      {zeroQuantityFlashWarning ?
+        <FlashMessage duration={5000} >
+          <div className='flashStyling text-center'>
+            Quantity should be greater than zero
+                      </div>
+        </FlashMessage> : ""}
+      <div className={classes.root}>
+        <main className={classes.content}>
 
-<Container maxWidth="lg" className={classes.container}>
-      {/* <Header title={(props.location.pathname).substring(1)} history={props.history} /> */}
-      {addedToCart ?
-                <div >
-                  <FlashMessage duration={5000} >
-                    <div className='flashStyling text-center'>
-                      Added to Cart
+          <Container maxWidth="lg" className={classes.container}>
+            {/* <Header title={(props.location.pathname).substring(1)} history={props.history} /> */}
+            {addedToCart ?
+              <div >
+                <FlashMessage duration={5000} >
+                  <div className='flashStyling text-center'>
+                    Added to Cart
                         </div>
-                  </FlashMessage>
-                </div>: ""}
+                </FlashMessage>
+              </div> : ""}
 
-     
 
-        {/* <Hidden smDown>
+
+            {/* <Hidden smDown>
           <MenuPane history={history} />
         </Hidden> */}
 
-       
+<div className={classes.backBtn}>
+            <Button  variant="contained" color="primary" onClick={() => history.push('/')}>
+              <span><KeyboardBackspaceIcon/></span>  Back to categories</Button>
+            </div>
 
-
-                {showFallback? <Typography>Items coming soon ... !</Typography>:""}
+            {showFallback ? <Typography>Items coming soon ... !</Typography> : ""}
 
             {products ? (
               SetView()
@@ -324,18 +336,18 @@ export const ProductsDashboard = (props) => {
                 {productName}
               </DialogTitle>
               <DialogContent dividers>
-                <AddProduct modelOpen={closeModal} price={productPrice} productName={productName}
-                  unitType={unitType} addToCart={FlashAddedToCart} productId={productId} />
+                <AddProduct modelOpen={closeModal} price={productPrice} productName={productName} unitTypeId={unitTypeId}
+                  unitType={unitType} addToCart={FlashAddedToCart} productId={productId} zeroQuantityFlash={FlashZeroQuantity} />
               </DialogContent>
             </Dialog>
           </Container>
         </main>
 
         <Hidden mdUp >
-              <Footer history={history}/>
-            </Hidden>
+          <Footer history={history} />
+        </Hidden>
 
-        <Spinner showSpinner={showSpinner}/>
+        <Spinner showSpinner={showSpinner} />
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import React, { useState, useReducer } from "react"
 import Picker from 'react-scrollable-picker';
-import { TextField, Grid, Table, TableContainer, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
+import { TextField, Grid, Table, TableContainer, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button"
 import { useStore } from "./Store";
@@ -31,14 +31,14 @@ const useStyles = makeStyles((theme) => ({
 export const AddProduct = (props) => {
     console.log(props, 'props in add')
     const { cartStore, setCartStore } = useStore();
-    const { productName, price, history, unitType, quantityToEdit, productId } = props
+    const { productName, price, history, unitType, quantityToEdit, productId, unitTypeId } = props
     const [units, setUnits] = useState(1)
     const [isEnterWeightSetToManual, setIsEnterWeightSetToManual] = useState(false)
     const [quantityByManualEntry, setQuantityByManualEntry] = useState()
     const [quantityToDisplay, setQuantityToDisplay] = useState()
     const [showPriceAndQuantity, setShowPriceAndQuantity] = useState(false)
     const [errors, setErrors] = useState({})
-    const [zeroQuantityFlashWarning, setZeroQuantityFlashWarning] = useState(false)
+    const [zeroQuantityWarning, setZeroQuantityWarning] = useState(false)
 
 
 
@@ -101,7 +101,7 @@ export const AddProduct = (props) => {
 
     const QuantitySelector = () => {
 
-        if (unitType === "Kg") {
+        if (unitTypeId === 1) {
             return (
                 <Grid container spacing={3}>
                     <Grid xs={6}>
@@ -158,7 +158,7 @@ export const AddProduct = (props) => {
                 </Grid>
             )
         }
-        else if (unitType === 'Numbers') {
+        else if (unitTypeId === 2) {
             return (
                 <div>
                     <Table classname={classes.TableMargin}>
@@ -241,6 +241,7 @@ export const AddProduct = (props) => {
     }
 
     const handleKGChange = (name, value) => {
+        setZeroQuantityWarning(false)
         setValueGroupsKG({ Weight: value })
         setCalculatdPrice((price * (value + valueGroupsGrams.Weight)).toFixed(2))
         setQuantityToDisplay(value + valueGroupsGrams.Weight)
@@ -248,6 +249,7 @@ export const AddProduct = (props) => {
     };
 
     const handleGramsChange = (name, value) => {
+        setZeroQuantityWarning(false)
         setValueGroupsGrams({ Weight: value })
         setCalculatdPrice((price * (valueGroupsKG.Weight + value)).toFixed(2))
         setQuantityToDisplay(valueGroupsKG.Weight + value)
@@ -262,6 +264,7 @@ export const AddProduct = (props) => {
     }
 
     const handleNumbersChange = (name, value) => {
+        setZeroQuantityWarning(false)
         setValueGroupsNumbers({ Weight: value })
         setCalculatdPrice((price * value).toFixed(2))
         setQuantityToDisplay(value)
@@ -269,6 +272,7 @@ export const AddProduct = (props) => {
     }
 
     const handleWeightTextInput = (event) => {
+        setZeroQuantityWarning(false)
         setIsEnterWeightSetToManual(event.target.checked)
         setCalculatdPrice(0)
         setShowPriceAndQuantity(false)
@@ -289,23 +293,23 @@ export const AddProduct = (props) => {
         var isUpdate = false
         var quantity, unit
 
-        if (unitType === 'Kg') {
+        if (unitTypeId === 1) {
             if (isEnterWeightSetToManual) {
                 quantity = quantityByManualEntry
             }
             else {
                 quantity = valueGroupsKG.Weight + valueGroupsGrams.Weight
             }
-            unit = 'Kg'
+            unit = 'KG'
         }
-        else if (unitType === 'Numbers') {
+        else if (unitTypeId === 2) {
             if (isEnterWeightSetToManual && ValidateManualWeightInput()) {
                 quantity = quantityByManualEntry
             }
             else {
                 quantity = valueGroupsNumbers.Weight
             }
-            unit = 'Numbers'
+            unit = 'Pc'
         }
         console.log(typeof (quantity), 'typeee')
 
@@ -315,46 +319,42 @@ export const AddProduct = (props) => {
             }
         });
 
-
+console.log(quantity,'quantity in add to cart')
         
             if (quantity === 0) {
-                alert('please select desired quantity')
-                setZeroQuantityFlashWarning(true)
+                console.log('inside if quantity check')
+                console.log(zeroQuantityWarning)
+               
+                setZeroQuantityWarning(true)
             }
         else {
 
+            setZeroQuantityWarning(false)
             if (isUpdate) {
                 console.log('am here in update cart')
-                setCartStore({ productId, productName, quantity, unit, price: price * (quantity), itemPrice:price, type: 'Update' })
+                setCartStore({ productId, productName, quantity, unit, price: price * (quantity), itemPrice:price, unitTypeId:unitTypeId, type: 'Update' })
                 props.modelOpen("false")
             }
             else {
                 console.log('am here in add cart')
-                setCartStore({ productId, productName, quantity, unit, price: price * (quantity), itemPrice:price, type: 'Add' })
+                setCartStore({ productId, productName, quantity, unit, price: price * (quantity), itemPrice:price, unitTypeId:unitTypeId, type: 'Add' })
                 props.modelOpen("false")
             }
             setIsEnterWeightSetToManual(false)
             props.addToCart("true")
         }
-
-
-
     }
 
     const classes = useStyles()
     return (
         <div>
-            {zeroQuantityFlashWarning?
-            <FlashMessage duration={5000} >
-            <div className='flashStyling text-center'>
-              Profile Updated
-                      </div>
-          </FlashMessage>:""}
+
             {showPriceAndQuantity ?
                 <div>
                     <span> Price: {calculatedPrice}</span>
                     <span className="positionRight">Quantity: {!isEnterWeightSetToManual ? quantityToDisplay : quantityByManualEntry} {unitType}</span>
                 </div> : ""}
+                {zeroQuantityWarning? <Typography style={{color:'red', align:'center'}}>Quantity should be greater than zero</Typography>:""}
 
             {isEnterWeightSetToManual ? ManualQuantityInput() : QuantitySelector()}
             <FormControlLabel
