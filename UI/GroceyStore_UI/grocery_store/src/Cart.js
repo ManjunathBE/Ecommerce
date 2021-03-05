@@ -82,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
 const TableHeaders = [
   { id: 'Product', numeric: false, disablePadding: true, label: 'Product' },
   { id: 'Quantity', numeric: true, disablePadding: false, label: 'Quantity' },
-  { id: 'Untis', numeric: true, disablePadding: false, label: 'Units' },
+  { id: 'Unit', numeric: true, disablePadding: false, label: 'Unit' },
   { id: 'Price', numeric: true, disablePadding: false, label: 'Price (₹)' },
 ];
 
@@ -255,9 +255,11 @@ export const Cart = (props) => {
       )
 
       console.log(userStore, 'userStore')
+
       const payload = {
         OrderCost: totalPrice,
         OrderAddressId: selectedAddressForDelivery.AddressId,
+        orderId:cartStore.cart[0].orderId,
         OrderItemList: cartItemList
       }
       console.log(payload, 'ordered products')
@@ -315,11 +317,14 @@ export const Cart = (props) => {
     return (<Card>
       <CardContent>
         <Typography>Selected delivery address</Typography><br />
-        <Typography>{selectedAddressForDelivery.AddressNickName}<br />
-          {selectedAddressForDelivery.FirstAddress}, {selectedAddressForDelivery.StreetDetails} <br />
-          {selectedAddressForDelivery.City} <br />
-          Pin: {selectedAddressForDelivery.pincode}<br />
+        <Typography><span style={{fontWeight:'bold'}}> {selectedAddressForDelivery.AddressNickName}</span><br />
+          {selectedAddressForDelivery.FirstAddress}, <br/> 
+          {selectedAddressForDelivery.StreetDetails} <br />
+          {selectedAddressForDelivery.City} - {selectedAddressForDelivery.pincode}<br />
+          GSTIN NO: {selectedAddressForDelivery.GST} <br/>
+                    <br/>{selectedAddressForDelivery.ContactPerson} <br/>
                   Phone: {selectedAddressForDelivery.Phone[0]}
+                  
         </Typography>
       </CardContent>
     </Card>)
@@ -408,7 +413,7 @@ export const Cart = (props) => {
             {itemUpdated ?
               <div >
                 <FlashMessage duration={5000} >
-                  <div className='flashStyling text-center'>
+                  <div className='flashStyling text-center' style={{color:'success.main'}}>
                     Item Updated
                         </div>
                 </FlashMessage>
@@ -437,70 +442,72 @@ export const Cart = (props) => {
 
 
                     <TableContainer >
-                      {emptyRows.length ? <React.Fragment><Table>
-                        <EnhancedTableHead
-                          classes={classes}
-                          numSelected={selected.length}
-                          onSelectAllClick={handleSelectAllClick}
-                          cartCount={cartStore.cart.length}
-                        />
-                        <TableBody>
-                          {cartStore.cart.map((cart, index) => {
-                            console.log(cart, 'item in cart')
+                      {emptyRows.length ?
+                        <React.Fragment>
+                          <Table>
+                            <EnhancedTableHead
+                              classes={classes}
+                              numSelected={selected.length}
+                              onSelectAllClick={handleSelectAllClick}
+                              cartCount={cartStore.cart.length}
+                            />
+                            <TableBody>
+                              {cartStore.cart.map((cart, index) => {
+                                console.log(cart, 'item in cart')
 
 
-                            const isItemSelected = isSelected(cart.productName);
-                            const labelId = `enhanced-table-checkbox-${index}`;
+                                const isItemSelected = isSelected(cart.productName);
+                                const labelId = `enhanced-table-checkbox-${index}`;
 
-                            totalPrice = totalPrice + cart.price
-                            return (
-                              <TableRow
-                                hover
+                                totalPrice = totalPrice + cart.price
+                                return (
+                                  <TableRow
+                                    hover
 
-                                role="checkbox"
-                                aria-checked={isItemSelected}
-                                tabIndex={-1}
-                                key={cart.productName}
-                                selected={isItemSelected}
-                              >
-                                <TableCell padding="checkbox">
-                                  <Checkbox
-                                    checked={isItemSelected}
-                                    inputProps={{ 'aria-labelledby': labelId }}
-                                    onClick={(event) => handleClick(event, cart.productName)}
-                                  />
-                                </TableCell>
-                                <TableCell component="th" id={labelId} scope="row" padding="none">
-                                  {cart.productName}
-                                </TableCell>
-                                <TableCell align="right">{cart.quantity}
-                                  <EditTwoToneIcon onClick={(event) => handleEditClick(event, cart)} />
-                                </TableCell>
-                                <TableCell align="right">{cart.unit}</TableCell>
-                                <TableCell align="right">{(cart.price).toFixed(2)}</TableCell>
-                              </TableRow>
-                            );
-                          })}
-                          <Hidden mdUp>
-                            <TableRow>
-                              <TableCell colspan={5} align="right">total price: ₹ {(totalPrice.toFixed(2))} <br />
+                                    role="checkbox"
+                                    aria-checked={isItemSelected}
+                                    tabIndex={-1}
+                                    key={cart.productName}
+                                    selected={isItemSelected}
+                                  >
+                                    <TableCell padding="checkbox">
+                                      <Checkbox
+                                        checked={isItemSelected}
+                                        inputProps={{ 'aria-labelledby': labelId }}
+                                        onClick={(event) => handleClick(event, cart.productName)}
+                                      />
+                                    </TableCell>
+                                    <TableCell component="th" id={labelId} scope="row" padding="none">
+                                      {cart.productName}
+                                    </TableCell>
+                                    <TableCell align="right">{cart.quantity}
+                                      <EditTwoToneIcon onClick={(event) => handleEditClick(event, cart)} />
+                                    </TableCell>
+                                    <TableCell align="right">{cart.unit}</TableCell>
+                                    <TableCell align="right">{(cart.price).toFixed(2)}</TableCell>
+                                  </TableRow>
+                                );
+                              })}
+                              <Hidden mdUp>
+                                <TableRow>
+                                  <TableCell colspan={5} align="right">total price: ₹ {(totalPrice.toFixed(2))} <br />
                               total items :{cartStore.cart.length}</TableCell>
 
-                            </TableRow>
+                                </TableRow>
+                              </Hidden>
+                            </TableBody>
+                          </Table>
+
+                          {showSelectedAddress ? splitAddress() : ""}
+
+                          <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={() => history.push("/")}>Continue Shopping</Button>
+
+                          <Hidden mdUp>
+                            <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handleSelectAddress}>Add/Select Address</Button>
+                            <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
                           </Hidden>
-                        </TableBody>
-                      </Table>
 
-                        {showSelectedAddress ? splitAddress() : ""}
-
-                        <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={() => history.push("/")}>Continue Shopping</Button>
-
-                        <Hidden mdUp>
-                          <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handleSelectAddress}>Add/Select Address</Button>
-                          <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
-                        </Hidden>
-
-                      </React.Fragment> : "Cart is empty"}
+                        </React.Fragment> : "Cart is empty"}
                     </TableContainer>
                   </CardContent>
                 </Card>
@@ -542,10 +549,12 @@ export const Cart = (props) => {
             (addressStore.address.map((address) =>
               <Card style={{ marginTop: '16px' }} onClick={() => handleAddressCardClick(address)} spacing={2}>
                 <CardContent>
-                  <Typography>{address.AddressNickName}<br />
-                    {address.FirstAddress}, {address.StreetDetails} <br/>
-                    {address.City}<br/>
-                    Pin: {address.pincode}<br />
+                  <Typography><span style={{fontWeight:'bold'}}> {address.AddressNickName}</span><br />
+                    {address.FirstAddress}, <br/>
+                    {address.StreetDetails}, <br />
+                    {address.City} - {address.pincode}<br />
+                    GSTIN NO: {address.GST} <br/>
+                    <br/>{address.ContactPerson} <br/>
                   Phone: {address.Phone[0]}</Typography>
                 </CardContent>
               </Card>)

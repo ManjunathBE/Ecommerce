@@ -40,6 +40,9 @@ const useStyles = makeStyles((theme) => ({
     addressDiv:{
         marginTop: theme.spacing(2),
         marginBottom: theme.spacing(2)
+    },
+    btnMargin:{
+        marginRight: theme.spacing(2)
     }
 }));
 
@@ -61,9 +64,9 @@ export const HistoricOrderDetails = (props) => {
 
     const Headers = [
         { id: 'Product', numeric: false, disablePadding: true, label: 'Product Name' },
-        { id: 'Price', numeric: true, disablePadding: true, label: 'Price' },
         { id: 'Quantity', numeric: true, disablePadding: true, label: 'Quantity' },
-        { id: 'Units', numeric: true, disablePadding: true, label: 'Units' },
+        { id: 'Unit', numeric: true, disablePadding: true, label: 'Unit' },
+        { id: 'Price', numeric: true, disablePadding: true, label: 'Price (₹)' },
     ]
 
 
@@ -110,14 +113,14 @@ export const HistoricOrderDetails = (props) => {
     const showActionButtons = () => {
         console.log(props.location.state.orderStatus, 'order status')
         if (props.location.state.orderStatus === 'Order Booked') {
-            return (<Button variant="contained" color="primary" onClick={handleEditOrReorder}>Edit</Button>)
+            return (<Button className={classes.btnMargin} variant="contained" color="primary" onClick={handleEditOrReorder}>Edit</Button>)
         }
-        else if (props.location.state.orderStatus === 'Completed') {
-            return (<Button variant="contained" color="primary" onClick={handleEditOrReorder}>Reorder</Button>)
+        else if (props.location.state.orderStatus === 'Completed' || props.location.state.orderStatus === 'Canceled') {
+            return (<Button className={classes.btnMargin} variant="contained" color="primary" onClick={handleEditOrReorder}>Re-order</Button>)
         }
         else if (props.location.state.orderStatus === 'Out for Delivery') {
             return (<React.Fragment>
-                <Button variant="contained" color="primary" onClick={handleFinishOrder}>Finish</Button></React.Fragment>)
+                <Button className={classes.btnMargin} variant="contained" color="primary" onClick={handleFinishOrder}>Finish</Button></React.Fragment>)
         }
     }
 
@@ -215,6 +218,7 @@ export const HistoricOrderDetails = (props) => {
 
     const handleProceedToCart = () => {
         console.log(orderDetails,'orderdetails in history')
+        setCartStore({type:'DeleteAll'})
         orderDetails.map((item) => setCartStore({ item, type: 'AddFromHistory' }))
         history.push(`/cart`)
     }
@@ -232,17 +236,21 @@ export const HistoricOrderDetails = (props) => {
 
 
                         <div className={classes.container}>
-                            <Button variant="contained" color="primary" onClick={() => history.goBack()}>Back</Button>
+                            <Button className={classes.btnMargin}variant="contained" color="primary" onClick={() => history.goBack()}>Back</Button>
+                            {showActionButtons()}
+                            <Button variant="contained" color="secondary" >Cancel order</Button>
                             <div className={classes.addressDiv}>
                                 {orderDetails.length?
                                 <React.Fragment>
                                 <Typography style={{fontWeight:'bold'}}>Delivery Address</Typography>
 
                                 <Typography>{orderDetails[0].AddressNickName}<br/>
-                                {orderDetails[0].FirstAddress}, {orderDetails[0].StreetDetails}, {orderDetails[0].City}, Pin:  {orderDetails[0].pincode} <br/>
-                                Phone: {orderDetails[0].Phone}<br/>
-                                ContactPerson: {orderDetails[0].ContactPerson}<br/>
-                                GSTIN: {orderDetails[0].GST}
+                                {orderDetails[0].FirstAddress}<br/>
+                                {orderDetails[0].StreetDetails}<br/>
+                                {orderDetails[0].City} - {orderDetails[0].pincode} <br/>
+                                GSTIN: {orderDetails[0].GST}<br/>
+                                <br/>{orderDetails[0].ContactPerson}<br/>
+                                Phone: {orderDetails[0].Phone}
                                 </Typography></React.Fragment> : ""}
                                 
                             </div>
@@ -270,9 +278,9 @@ export const HistoricOrderDetails = (props) => {
                                                 return (
                                                     <TableRow onClick={() => handleItemClick(p)}>
                                                         <TableCell align='center'>{p.ItemName}</TableCell>
-                                                        <TableCell align='center'>{p.ItemCost}</TableCell>
                                                         <TableCell align='center'>{p.qty}</TableCell>
                                                         <TableCell align='center'>{p.UnitName}</TableCell>
+                                                        <TableCell align='center'>{p.ItemCost}</TableCell>
                                                     </TableRow>
                                                 )
                                             })
@@ -290,7 +298,7 @@ export const HistoricOrderDetails = (props) => {
                                     </TableBody>
                                 </Table>
                             </TableContainer>
-                            {showActionButtons()}
+                            
                         </div>
 
                     </Container>

@@ -7,6 +7,7 @@ import { Hidden } from '@material-ui/core';
 import { MenuPane } from './MenuPane'
 import firebaseConfig from './firebaseConfig';
 import firebase from "@firebase/app";
+import 'firebase/storage'
 import { withRouter } from 'react-router-dom'
 
 
@@ -18,6 +19,7 @@ function App(props) {
   console.log(loginState, 'login state')
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
+    const storage = firebase.storage()
   } else {
     firebase.app(); // if already initialized, use that one
   }

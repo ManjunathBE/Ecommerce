@@ -283,7 +283,8 @@ export const AddProduct = (props) => {
         var temp = []
         if (isEnterWeightSetToManual) {
             console.log(props)
-            temp.quantity = quantityByManualEntry ? "" : "Quantity is required "
+            temp.quantity = (/^\d$/).test(quantityByManualEntry)? "" : "Invalid input. Only integers allowed"
+            //temp.quantity = quantityByManualEntry ? "" : "Quantity is required "
             setErrors({ ...temp })
         }
         return Object.values(temp).every(param => param === "")
@@ -294,7 +295,7 @@ export const AddProduct = (props) => {
         var quantity, unit
 
         if (unitTypeId === 1) {
-            if (isEnterWeightSetToManual) {
+            if (isEnterWeightSetToManual && ValidateManualWeightInput()) {
                 quantity = quantityByManualEntry
             }
             else {

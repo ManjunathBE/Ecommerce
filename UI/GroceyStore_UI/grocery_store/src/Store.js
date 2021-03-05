@@ -52,7 +52,8 @@ const cartReducer = (state = initialState, action) => {
                     price: (action.item.SellIngPrice *action.item.qty) ,
                     productId: action.item.Itemid,
                     itemPrice: action.item.SellIngPrice,
-                    unitTypeId: action.item.UnitTypeId
+                    unitTypeId: action.item.UnitTypeId,
+                    orderId: action.item.OrderId
                 }]
             }
         default:

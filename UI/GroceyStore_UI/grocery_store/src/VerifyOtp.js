@@ -5,6 +5,8 @@ import { useAuth } from './Auth'
 import { useStore } from "./Store";
 import { makeStyles } from "@material-ui/core/styles";
 import { fetchUser } from './Helper'
+import { Label } from "@material-ui/icons";
+import { Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
 
@@ -24,6 +26,7 @@ export const VerifyOtp = (props) => {
     const { userStore, setUserStore } = useStore();
     const { tokenStore, setTokenStore } = useStore();
     const { addresStore, setAddressStore } = useStore()
+    const [noAccessText, setNoAccessText] = useState(); 
 
     //var phone = props.location.state.phone
 
@@ -45,7 +48,7 @@ export const VerifyOtp = (props) => {
         event.preventDefault()
 
         if (validateForm()) {
-            setLoginState(true)
+           
 
             const payload = {
                 "mobilenumber": phone,
@@ -73,9 +76,11 @@ export const VerifyOtp = (props) => {
                         result.json().then(body => {
                             if (body.success !== true) {
                                 console.log('request failed', body)
-                                history.push('/noauth')
+                                setNoAccessText('You are not authorised to accesss this website. Please contact admin')
+                               // history.push('/noauth')
                             }
                             else {
+                                setLoginState(true)
                                 console.log(body, 'response')
                                 var user = body.data[0]
                                 var address = body.address
@@ -135,6 +140,8 @@ export const VerifyOtp = (props) => {
     return (
         <div>
             <div>
+                {noAccessText? <Typography className='text-center' style={{color:'red', align:'center'}}>{noAccessText}</Typography>:""}
+                
                 <TextField
                     variant="outlined"
                     fullWidth
@@ -145,7 +152,6 @@ export const VerifyOtp = (props) => {
                     name="phone"
                     defaultValue={phone}
                     disabled
-
                 />
 
                 <TextField

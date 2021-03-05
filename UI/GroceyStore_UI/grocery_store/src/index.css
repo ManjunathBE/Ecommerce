@@ -13,10 +13,11 @@ code {
 }
 
 #header{
-  background-color: lightgray;
+  background-color:darkslategray;
   position: sticky;
   top: 0;
   height: 75px;
+  color: white
 }
 
 
@@ -50,8 +51,8 @@ code {
 }
 
 .flashStyling{
-  color: #4F8A10;
-  background-color: #DFF2BF;
+  color: whitesmoke;
+  background-color: green;
   width: 40vw;
   height: 50px;
   color:white;

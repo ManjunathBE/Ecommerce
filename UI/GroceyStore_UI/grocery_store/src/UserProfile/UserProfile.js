@@ -338,14 +338,16 @@ export const UserProfile = (props) => {
                     <Grid className={classes.AddressDiv} item xs={12} md={4} >
                       <Card className={classes.AddressDiv} >
                         {/* <Typography> Address : {index+1} <br/> {id.addressLine1}, {id.addressLine2}<br />{`${toFirstCharUppercase(id.city)}`}<br /> Pin: {id.pinCode}</Typography> */}
-                        <Typography> Address Name : {add.AddressNickName}
+                        <Typography><span style={{fontWeight:'bold'}}> {add.AddressNickName} </span>
                           <span className="positionRight"><EditTwoToneIcon onClick={() => handleAddressEdit(add)} /></span>
-                          <br />{add.ContactPerson}
+                          
                           <br />{add.FirstAddress}
                           <br />{add.StreetDetails}
-                          <br />{add.City},  Pin: {add.pincode}
+                          <br />{add.City} - {add.pincode}
+                          <br />GSTIN NO: {add.GST}<br/>
+                          <br />{add.ContactPerson}
                           <br />Phone: {add.Phone[0]}
-                          <br />GSTIN: {add.GST}</Typography>
+                          </Typography>
                           <Button variant="contained" color="red" onClick={()=>deleteAddress(add.AddressId)}>Delete</Button>
                           <Button variant="contained" onClick={setDefaultAddress}>Set as default</Button>
                       </Card>

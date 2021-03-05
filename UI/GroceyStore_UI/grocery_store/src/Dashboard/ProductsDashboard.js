@@ -82,7 +82,6 @@ export const ProductsDashboard = (props) => {
   const [productPrice, setProductPrice] = useState(0)
   const [productName, setproductName] = useState("")
   const [unitType, setUnitType] = useState("")
-  const images = require.context('../assets/products', true);
   const { viewStore } = useStore();
   const [addedToCart, setAddedToCart] = useState(false)
   const [productId, setProductId] = useState()

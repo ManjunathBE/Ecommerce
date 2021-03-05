@@ -1,5 +1,5 @@
 import React, { Component, useState } from "react"
-import { Grid, Typography, NativeSelect,Container } from "@material-ui/core"
+import { Grid, Typography, NativeSelect, Container } from "@material-ui/core"
 import HomeIcon from '@material-ui/icons/Home';
 import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
@@ -18,23 +18,32 @@ const StyledBadge = withStyles((theme) => ({
 
 const useStyles = makeStyles((theme) => ({
     title: {
-      margin: "auto",
-      fontSize: "x-large",
-      padding:theme.spacing(2),
-      cursor: "pointer"
-    },
-    cartIcon:{
-        fontSize: "50px",
-        padding:theme.spacing(1),
-      cursor: "pointer"
-    },
-    menuDropdown:{
-        fontSize: "large",
+        margin: "auto",
+        fontSize: "x-large",
+        padding: theme.spacing(2),
         cursor: "pointer"
-
+    },
+    cartIcon: {
+        fontSize: "50px",
+        padding: theme.spacing(1),
+        cursor: "pointer",
+        color: 'white'
+    },
+    MuiNativeSelect: {
+            fontSize: "large",
+            cursor: "pointer",
+            color: "white",
+            backgroundColor: 'darkslategray',     
+        "& option": {
+            backgroundColor: 'darkslategray'
+        },
+        '&:not([multiple]) option, &:not([multiple]) optgroup': {
+            backgroundColor: 'darkslategray'
+          }
     }
-  }))
-  
+    
+    }))
+
 
 export const Header = (props) => {
     const { history } = props;
@@ -43,7 +52,7 @@ export const Header = (props) => {
     const classes = useStyles();
 
     const handlePageChange = (event) => {
-        console.log(history.location,'locaiton in header')
+        console.log(history.location, 'locaiton in header')
         const name = event.target.name;
         const value = event.target.value;
         console.log(name, value, currentPage, 'header dropdown')
@@ -82,47 +91,48 @@ export const Header = (props) => {
         }
     };
 
-    const handleCartClick =()=>{
+    const handleCartClick = () => {
         setCurentPage("Cart")
         history.push("/Cart")
     }
 
     return (
 
-            
-<Container maxWidth="lg">
-<div id="header" >
-            <Grid container>
-                <Grid xs={3}>
-                    <Typography className={classes.title} onClick={() => history.push('/')} > SLR Organics </Typography>
-                </Grid>
 
-                <Grid xs={9} >
-                    <div className="positionRight">
-                    <NativeSelect
-                        value={currentPage}
-                        onChange={handlePageChange}
-                        name="Navigator"
-                        className={classes.menuDropdown}
-                    >
-                        <option value="Dashboard">Dashboard</option>
-                        <option value="My Account">My Account</option>
-                        <option value="My Orders">My Orders</option>
-                        <option value="Cart">My Cart</option>
-                        <option value="Payment">Payment</option>
-                        <option value="Suggestion">Feedback</option>
-                    </NativeSelect>
-              
-                    <IconButton  aria-label="cart" onClick={handleCartClick}>
-                        <StyledBadge badgeContent={cartStore.cart.length} color="secondary">
-                            <ShoppingCartIcon className={classes.cartIcon}/>
-                        </StyledBadge>
-                    </IconButton>
-                    </div>
+        <Container maxWidth="lg">
+            <div id="header" >
+                <Grid container>
+                    <Grid xs={3}>
+                        <Typography className={classes.title} onClick={() => history.push('/')} > SLR Organics </Typography>
+                    </Grid>
+
+                    <Grid xs={9} >
+                        <div className="positionRight">
+                            <NativeSelect
+                                value={currentPage}
+                                onChange={handlePageChange}
+                                name="Navigator"
+                                className={ classes.MuiNativeSelect }
+
+                            >
+                                <option className={classes.menuOptions} value="Dashboard">Dashboard</option>
+                                <option value="My Account">My Account</option>
+                                <option value="My Orders">My Orders</option>
+                                <option value="Cart">My Cart</option>
+                                <option value="Payment">Payment</option>
+                                <option value="Suggestion">Feedback</option>
+                            </NativeSelect>
+
+                            <IconButton aria-label="cart" onClick={handleCartClick}>
+                                <StyledBadge badgeContent={cartStore.cart.length} color="secondary">
+                                    <ShoppingCartIcon className={classes.cartIcon} />
+                                </StyledBadge>
+                            </IconButton>
+                        </div>
+                    </Grid>
                 </Grid>
-            </Grid>
             </div>
-            </Container>
+        </Container>
 
     )
 }

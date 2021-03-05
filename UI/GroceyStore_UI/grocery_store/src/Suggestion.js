@@ -69,6 +69,7 @@ export const Suggestion = (props) => {
           value={suggestion}
         />
         <Button color="primary" variant="contained" onClick={handleSubmit}>Submit</Button>
+        <Button color="primary" variant="contained" onClick={()=>setSuggestion('')}>Clear</Button>
         </React.Fragment>
         </Container>
     )

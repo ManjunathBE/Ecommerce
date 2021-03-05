@@ -63,7 +63,6 @@ export const Dashboard = (props) => {
   const classes = useStyles();
   const { history } = props;
   const [category, setCategory] = useState({});
-  const images = require.context('../assets/catagory', true);
   const { viewStore } = useStore();
   const { tokenStore } = useStore();
   const [showSpinner, setShowSpinner] = useState(true)
@@ -73,14 +72,7 @@ export const Dashboard = (props) => {
   }, [])
 
   const fetchCategory = () => {
-    console.log('token from store', tokenStore)
-    console.log(window.localStorage, 'local storage')
-    var token = window.localStorage.token
-
-    console.log(props, 'props in dashboard')
-    // var token = props.location.state.token
-    // console.log(token,'token in dashboard')
-
+   
     const payload = {
       "branch_id": "1"
     }
@@ -90,7 +82,7 @@ export const Dashboard = (props) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-access-token': token
+          'x-access-token': window.localStorage.token
         },
         body: JSON.stringify(payload)
       })
