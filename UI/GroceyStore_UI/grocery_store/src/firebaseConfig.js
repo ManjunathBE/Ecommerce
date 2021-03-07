@@ -8,12 +8,14 @@
 {/* <script>
   // Your web app's Firebase configuration */}
   const firebaseConfig = {
-    apiKey: "AIzaSyAtKVBsuK6i2UpdBHzxxwQ4tAovaYrjwdg",
-    authDomain: "grocerystoreauth.firebaseapp.com",
-    projectId: "grocerystoreauth",
-    storageBucket: "grocerystoreauth.appspot.com",
-    messagingSenderId: "206463662716",
-    appId: "1:206463662716:web:a75e05bfc8f0ee325227f9"
+    apiKey: "AIzaSyCQ3dky12G9YxSgI5EQ8IQNcPyTdh6LqFM",
+    authDomain: "organicstore-6f221.firebaseapp.com",
+    databaseURL: "https://organicstore-6f221.firebaseio.com",
+    projectId: "organicstore-6f221",
+    storageBucket: "organicstore-6f221.appspot.com",
+    messagingSenderId: "997177018341",
+    appId: "1:997177018341:web:a3b4f0a7053a73a5a5d10c",
+    measurementId: "G-6RBLF29RBK"
   };
   // Initialize Firebase
 // </script>
