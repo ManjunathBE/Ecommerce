@@ -14,6 +14,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import { Spinner } from './Spinner'
 
 import firebase from "firebase";
 
@@ -38,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   selectEmpty: {
     marginTop: theme.spacing(2),
   },
-  
+
 }))
 
 export const Payment = () => {
@@ -51,6 +52,11 @@ export const Payment = () => {
   const [paymentType, setPaymentType] = useState();
   const classes = useStyles();
   const [selectedPaymentProof, setSelectedPaymentProof] = useState(null)
+  const [paymentURL, setPaymentURL] = useState()
+  const [showSpinner, setShowSpinner] = useState(false)
+  const [disableSaveBtn, setDisableSaveBtn] = useState(true)
+  const [disableUploadBtn, setDisableUploadBtn] = useState(true)
+  const paymentProofRef = React.useRef()
 
   useEffect(() => {
     fetchPaymentDetails()
@@ -87,7 +93,7 @@ export const Payment = () => {
               console.log(body, 'response')
               setPaymentData(body.data)
 
-              SetColor()
+
             }
 
           });
@@ -99,14 +105,7 @@ export const Payment = () => {
   }
   console.log(paymentData, 'payment data')
 
-  const SetColor = () => {
-    var Email;
-    paymentData.map((x, index) =>
-      setPaymentData[index](Email = 'red')
 
-
-    )
-  }
   const Headers = [
     { id: 'Date', numeric: false, disablePadding: true, label: 'Date' },
     { id: 'BillNo', numeric: true, disablePadding: true, label: 'Bill Num.' },
@@ -116,7 +115,10 @@ export const Payment = () => {
 
   const handlePaymentClick = (item) => {
     setSelectedPaymentRecord(item)
-    setShowPaymentUploadDialog(true)
+    if (item.IsUserConfirmed !== true) {
+      setShowPaymentUploadDialog(true)
+    }
+
   }
 
   const handlePaymentTypeChange = (event) => {
@@ -124,29 +126,58 @@ export const Payment = () => {
   }
 
   const handleImageUpload = (event) => {
-    setSelectedPaymentProof(event.target.files[0], 'taget')
+    setSelectedPaymentProof(event.target.files[0])
+    setDisableUploadBtn(false)
 
   }
-  const handleSubmit = () => {
 
+  const handleSubmit = () => {
+    const payload = {
+      Id: selectedPaymentRecord.Id,
+      PaymentTypeId: 1,
+      PaymentProofUrl: paymentURL
+    }
+    fetch('https://testapi.slrorganicfarms.com/cart/updateOrderPaymentType', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': window.localStorage.token
+      },
+      body: JSON.stringify(payload)
+    })
+      .then(result => {
+        if (result.status === 200)
+          result.json().then(body => {
+            if (body.success === true) {
+              console.log(body, 'result from backend')
+              setPaymentData(body.data)
+              setShowPaymentUploadDialog(false)
+            }
+            else {
+              //TODO: handle some error occured
+            }
+          })
+      })
+  }
+  const handleUpload = async () => {
+    setShowSpinner(true)
     const uploadTask = firebase.storage().ref(`/images/${selectedPaymentProof.name}`).put(selectedPaymentProof)
     uploadTask.on("state_changed", console.log, console.error, () => {
       firebase
-      .storage()
+        .storage()
         .ref("images")
         .child(selectedPaymentProof.name)
         .getDownloadURL()
         .then((url) => {
           setSelectedPaymentProof(null);
-          //setURL(url);
-          console.log(url,'url from firebase')
+          setPaymentURL(url);
+          console.log('am hererer')
+          console.log(url, 'url from firebase')
+          setShowSpinner(false)
+          setDisableSaveBtn(false)
         });
     });
-   
-   
-   
-   
-   
+
     // const formData = new FormData()
     // formData.append('image', selectedPaymentProof)
 
@@ -157,76 +188,107 @@ export const Payment = () => {
     //     'x-access-token': window.localStorage.token
     //   },
     //   body: FormData
-      
+
     // })
+  }
+
+  const handlePaymentDialogClose = () => {
+    setShowPaymentUploadDialog(false)
+    setDisableSaveBtn(true)
+    setDisableUploadBtn(true)
+  }
+
+  const handleClear = () => {
+    setSelectedPaymentProof("")
+    paymentProofRef.current.value = ""
+    setDisableSaveBtn(true)
+    setDisableUploadBtn(true)
+
   }
 
   return (
     <div className={classes.root}>
       <Container>
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                {Headers.map(x =>
-                  <TableCell>
-                    {x.label}
-                  </TableCell>)
-                }
-                {/* <Hidden mdDown>
+        {paymentData ?
+
+          <TableContainer>
+            <Table >
+              <TableHead>
+                <TableRow >
+                  {Headers.map(x =>
+                    <TableCell align="center">
+                      {x.label}
+                    </TableCell>)
+                  }
+                  {/* <Hidden mdDown>
                   <TableCell colSpan={2} > Status</TableCell>
                 </Hidden> */}
 
-              </TableRow>
+                </TableRow>
 
-            </TableHead>
-            <TableBody>
+              </TableHead>
+              <TableBody >
 
-              {paymentData.map((x) =>
-                <React.Fragment>
-                  <TableRow style={{backgroundColor: x.IsConfirmed ? 'lightgreen': x.IsUserConfirmed? 'lightcyan':""}}  onClick={() => handlePaymentClick(x)}>
-                    <TableCell>{x.OrderDateAndTime}</TableCell>
-                    <TableCell>{x.BillNum}</TableCell>
-                    <TableCell>{x.OrderCost}</TableCell>
-                    <TableCell>{x.Crates}</TableCell>
-                    {/* <TableCell style={{ backgroundColor: x.IsUserConfirmed ? 'green' : '' }}>{x.IsUserConfirmed ? 'Confirmed' : 'Yet to Confirm'}</TableCell>
+                {paymentData.map((x) => {
+                  var paymentDateTime = new Date(x.OrderDateAndTime)
+                  var paymentDate = paymentDateTime.toLocaleDateString()
+                  var crateBgColor=""
+                  if(x.Crates>0){
+                    crateBgColor='Red'
+                  }
+                  return (
+                    <React.Fragment>
+                      <TableRow style={{ backgroundColor: x.IsConfirmed ? 'lightgreen' : x.IsUserConfirmed ? 'pink' : "" }} onClick={() => handlePaymentClick(x)}>
+                        <TableCell align="center">{paymentDate}</TableCell>
+                        <TableCell align="center">{x.BillNum}</TableCell>
+                        <TableCell align="center">{x.OrderCost}</TableCell>
+                        <TableCell align="center" style={{backgroundColor:crateBgColor}}>{x.Crates}</TableCell>
+                        {/* <TableCell style={{ backgroundColor: x.IsUserConfirmed ? 'green' : '' }}>{x.IsUserConfirmed ? 'Confirmed' : 'Yet to Confirm'}</TableCell>
                     <TableCell style={{ backgroundColor: x.IsConfirmed ? 'green' : '' }}>{x.IsConfirmed ? 'Confirmed' : 'Yet to Confirm'}</TableCell> */}
-                  </TableRow>
-                </React.Fragment>
+                      </TableRow>
+                    </React.Fragment>
+                  )
 
-              )}
-
-
-
-            </TableBody>
-          </Table>
-
-        </TableContainer>
+                })}
 
 
+
+              </TableBody>
+            </Table>
+
+          </TableContainer> : ""}
+
+        <Spinner showSpinner={showSpinner} />
       </Container>
       <Dialog open={showPaymentUploadDialog}>
         <DialogTitle className={classes.root}>
           Bill Number : {selectedPaymentRecord.BillNum}
-          <IconButton className={classes.closeButton} aria-label="close" onClick={() => setShowPaymentUploadDialog(false)}>
+          <IconButton className={classes.closeButton} aria-label="close" onClick={handlePaymentDialogClose}>
             <CloseIcon />
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          Payment Type
-           <FormControl className={classes.formControl}>
+          <Grid container>
+            <Grid item>
+              <Typography> Payment Type</Typography>
+            </Grid>
+            <Grid item>
+              <FormControl className={classes.formControl}>
 
-            <Select
-              id="demo-simple-select"
-              value={paymentType}
-              onChange={handlePaymentTypeChange}
-            >
-              <MenuItem value={10}>Cash</MenuItem>
-              <MenuItem value={20}>Account transfer</MenuItem>
-            </Select>
+                <Select
+                  id="demo-simple-select"
+                  value={paymentType}
+                  onChange={handlePaymentTypeChange}
+                >
+                  <MenuItem value={1}>Cash</MenuItem>
+                  <MenuItem value={2}>Account transfer</MenuItem>
+                  <MenuItem value={3}>Wallet</MenuItem>
+                </Select>
 
 
-          </FormControl>
+              </FormControl>
+            </Grid>
+          </Grid>
           <br />
 
           {/* <input
@@ -243,30 +305,42 @@ export const Payment = () => {
                 Upload
   </Button>
             </label> */}
+          <Grid container>
+            <Grid item>
+              <Typography>payment proof :</Typography>
+            </Grid>
+            <Grid item>
+              <input
+                accept="image/jpeg"
+                className={classes.input}
+                id="faceImage"
+                name="paymentUpload"
+                type="file"
+                onChange={handleImageUpload}
+                ref={paymentProofRef}
+              />
+            </Grid>
+            <Grid item>
+              <label htmlFor="paymentProof">
+                <Button component="span" disabled={disableUploadBtn} onClick={handleUpload} variant="contained" color="primary">
+                  Upload
+              </Button>
 
-          <input
-            accept="image/jpeg"
-            className={classes.input}
-            id="faceImage"
-            type="file"
-            onChange={handleImageUpload}
-          />
+                <Button variant="contained" color="primary" onClick={handleClear}>
+                  Clear
+          </Button>
 
-          <label htmlFor="paymentProof">
-            <IconButton
-              className={classes.faceImage}
-              color="primary"
-              aria-label="upload picture"
-              component="span"
-            >
-              {/* <PhotoCamera fontSize="large" /> */}
-            </IconButton>
-          </label>
+              </label>
+            </Grid>
+            {/* <Grid>
+             
+            </Grid> */}
+          </Grid>
 
 
-          <Button onClick={ handleSubmit} color="primary">
+          <Button disabled={disableSaveBtn} variant="contained" color="primary" onClick={handleSubmit}>
             Save
-      </Button>
+          </Button>
         </DialogContent>
 
       </Dialog>
