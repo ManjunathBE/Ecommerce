@@ -19,12 +19,12 @@ export const Footer = (props) => {
                     <Typography>History</Typography>
             </Grid>
                 <Grid item xs={3} onClick={()=>history.push('/Cart')}>
-                    <DashboardIcon /><br />
+                <ShoppingCartIcon/><br />
                     <Typography>Cart</Typography>
                 </Grid>
-                <Grid item xs={3} onClick={()=>history.push('/Select View')}>
+                <Grid item xs={3} onClick={()=>history.push('/Payment')}>
                     <DashboardIcon /><br />
-                    <Typography>View</Typography>
+                    <Typography>Payment</Typography>
                 </Grid>
             </Grid>
     )

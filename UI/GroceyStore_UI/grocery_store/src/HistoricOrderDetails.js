@@ -37,11 +37,11 @@ const useStyles = makeStyles((theme) => ({
         top: theme.spacing(1),
         color: theme.palette.grey[500],
     },
-    addressDiv:{
+    addressDiv: {
         marginTop: theme.spacing(2),
         marginBottom: theme.spacing(2)
     },
-    btnMargin:{
+    btnMargin: {
         marginRight: theme.spacing(2)
     }
 }));
@@ -63,7 +63,7 @@ export const HistoricOrderDetails = (props) => {
 
 
     const Headers = [
-        { id: 'Product', numeric: false, disablePadding: true, label: 'Product Name' },
+        { id: 'Product', numeric: false, disablePadding: true, label: 'Product' },
         { id: 'Quantity', numeric: true, disablePadding: true, label: 'Quantity' },
         { id: 'Unit', numeric: true, disablePadding: true, label: 'Unit' },
         { id: 'Price', numeric: true, disablePadding: true, label: 'Price (₹)' },
@@ -149,7 +149,7 @@ export const HistoricOrderDetails = (props) => {
             setWarningDialog(true)
         }
         else {
-            console.log(orderDetails,'orderdetails in history')
+            console.log(orderDetails, 'orderdetails in history')
             orderDetails.map((item) => setCartStore({ item, type: 'AddFromHistory' }))
             history.push(`/cart`)
         }
@@ -217,13 +217,41 @@ export const HistoricOrderDetails = (props) => {
     }
 
     const handleProceedToCart = () => {
-        console.log(orderDetails,'orderdetails in history')
-        setCartStore({type:'DeleteAll'})
+        console.log(orderDetails, 'orderdetails in history')
+        setCartStore({ type: 'DeleteAll' })
         orderDetails.map((item) => setCartStore({ item, type: 'AddFromHistory' }))
         history.push(`/cart`)
     }
+    const handleCancelOrder = () => {
 
-    console.log(orderDetails,'order details in hitem history')
+        fetch('https://testapi.slrorganicfarms.com/cart/CancelOrder', {
+
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-access-token': window.localStorage.token
+            },
+            body: JSON.stringify({
+                OrderId: props.location.state.orderId
+            })
+        })
+            .then(result => {
+                if (result.status === 200)
+                    result.json().then(body => {
+                        if (body.success === true) {
+                            console.log(body, 'result from backend')
+                            history.goBack()
+                        }
+                        else {
+                            //TODO: handle some error occured
+                        }
+                    })
+            })
+
+
+    }
+
+    console.log(orderDetails, 'order details in hitem history')
     return (
         <div>
             {/* <Header title={(props.location.pathname).substring(1)} history={props.history} /> */}
@@ -236,23 +264,23 @@ export const HistoricOrderDetails = (props) => {
 
 
                         <div className={classes.container}>
-                            <Button className={classes.btnMargin}variant="contained" color="primary" onClick={() => history.goBack()}>Back</Button>
+                            <Button className={classes.btnMargin} variant="contained" color="primary" onClick={() => history.goBack()}>Back</Button>
                             {showActionButtons()}
-                            <Button variant="contained" color="secondary" >Cancel order</Button>
+                            <Button variant="contained" color="secondary" onClick={handleCancelOrder} >Cancel order</Button>
                             <div className={classes.addressDiv}>
-                                {orderDetails.length?
-                                <React.Fragment>
-                                <Typography style={{fontWeight:'bold'}}>Delivery Address</Typography>
+                                {orderDetails.length ?
+                                    <React.Fragment>
+                                        <Typography style={{ fontWeight: 'bold' }}>Delivery Address</Typography>
 
-                                <Typography>{orderDetails[0].AddressNickName}<br/>
-                                {orderDetails[0].FirstAddress}<br/>
-                                {orderDetails[0].StreetDetails}<br/>
-                                {orderDetails[0].City} - {orderDetails[0].pincode} <br/>
-                                GSTIN: {orderDetails[0].GST}<br/>
-                                <br/>{orderDetails[0].ContactPerson}<br/>
+                                        <Typography>{orderDetails[0].AddressNickName}<br />
+                                            {orderDetails[0].FirstAddress}<br />
+                                            {orderDetails[0].StreetDetails}<br />
+                                            {orderDetails[0].City} - {orderDetails[0].pincode} <br />
+                                GSTIN: {orderDetails[0].GST}<br />
+                                            <br />{orderDetails[0].ContactPerson}<br />
                                 Phone: {orderDetails[0].Phone}
-                                </Typography></React.Fragment> : ""}
-                                
+                                        </Typography></React.Fragment> : ""}
+
                             </div>
                             {showToggleSwitch()}
 
@@ -298,7 +326,7 @@ export const HistoricOrderDetails = (props) => {
                                     </TableBody>
                                 </Table>
                             </TableContainer>
-                            
+
                         </div>
 
                     </Container>

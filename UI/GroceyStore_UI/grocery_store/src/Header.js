@@ -1,6 +1,5 @@
-import React, { Component, useState } from "react"
+import React, { useState } from "react"
 import { Grid, Typography, NativeSelect, Container } from "@material-ui/core"
-import HomeIcon from '@material-ui/icons/Home';
 import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
@@ -21,7 +20,10 @@ const useStyles = makeStyles((theme) => ({
         margin: "auto",
         fontSize: "x-large",
         padding: theme.spacing(2),
-        cursor: "pointer"
+        cursor: "pointer",
+        [theme.breakpoints.down('md')]: {
+            fontSize: "large"
+        },
     },
     cartIcon: {
         fontSize: "50px",
@@ -36,10 +38,15 @@ const useStyles = makeStyles((theme) => ({
             backgroundColor: 'darkslategray',     
         "& option": {
             backgroundColor: 'darkslategray'
+            
         },
         '&:not([multiple]) option, &:not([multiple]) optgroup': {
-            backgroundColor: 'darkslategray'
+            backgroundColor: 'darkslategray',
+            padding:theme.spacing(1)
           }
+    },
+    Select:{
+        
     }
     
     }))
@@ -50,6 +57,7 @@ export const Header = (props) => {
     const [currentPage, setCurentPage] = useState();
     const { cartStore } = useStore();
     const classes = useStyles();
+    console.log(history.location,'location in history')
 
     const handlePageChange = (event) => {
         console.log(history.location, 'locaiton in header')
@@ -115,7 +123,7 @@ export const Header = (props) => {
                                 className={ classes.MuiNativeSelect }
 
                             >
-                                <option className={classes.menuOptions} value="Dashboard">Dashboard</option>
+                                <option value="Dashboard">Dashboard</option>
                                 <option value="My Account">My Account</option>
                                 <option value="My Orders">My Orders</option>
                                 <option value="Cart">My Cart</option>

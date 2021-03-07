@@ -11,17 +11,12 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
-import { Delete } from "@material-ui/icons";
 import Button from "@material-ui/core/Button"
-import SuccessPage from './Success'
-import { Redirect } from "react-router-dom";
 import FlashMessage from 'react-flash-message'
 import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
 import { AddProduct } from './AddProduct'
 import CloseIcon from '@material-ui/icons/Close';
-import { MenuPane } from './MenuPane'
 import Footer from './Footer'
-import EmptyCartImage from './Images/empty-cart.png'
 import { EditAddress } from "./UserProfile/EditAddress";
 
 
@@ -259,7 +254,7 @@ export const Cart = (props) => {
       const payload = {
         OrderCost: totalPrice,
         OrderAddressId: selectedAddressForDelivery.AddressId,
-        orderId:cartStore.cart[0].orderId,
+        OrderId:cartStore.cart[0].orderId,
         OrderItemList: cartItemList
       }
       console.log(payload, 'ordered products')
@@ -403,6 +398,10 @@ export const Cart = (props) => {
     setShowAddressSelection(false)
   }
 
+  const handleCancelEditing = ()=>{
+    setCartStore({ type: 'DeleteAll' })
+  }
+
   return (
     <div>
       <div className={classes.root}>
@@ -502,6 +501,8 @@ export const Cart = (props) => {
 
                           <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={() => history.push("/")}>Continue Shopping</Button>
 
+                         {cartStore.cart[0].orderId? <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={handleCancelEditing}>Cancel Editing</Button> : ""}
+
                           <Hidden mdUp>
                             <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handleSelectAddress}>Add/Select Address</Button>
                             <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
@@ -580,7 +581,8 @@ export const Cart = (props) => {
             productName={productToEdit.productName}
             unitType={productToEdit.unit}
             quantityToEdit={productToEdit.quantity}
-            addToCart={FlashItemUpdated} unitTypeId={productToEdit.unitTypeId} />
+            addToCart={FlashItemUpdated} unitTypeId={productToEdit.unitTypeId} 
+            productId={productToEdit.productId}/>
         </DialogContent>
       </Dialog>
 

@@ -348,8 +348,8 @@ export const UserProfile = (props) => {
                           <br />{add.ContactPerson}
                           <br />Phone: {add.Phone[0]}
                           </Typography>
-                          <Button variant="contained" color="red" onClick={()=>deleteAddress(add.AddressId)}>Delete</Button>
-                          <Button variant="contained" onClick={setDefaultAddress}>Set as default</Button>
+                          <Button variant="contained" color="secondary" onClick={()=>deleteAddress(add.AddressId)}>Delete</Button>
+                          {/* <Button variant="contained" onClick={setDefaultAddress}>Set as default</Button> */}
                       </Card>
                     </Grid>
                   )}

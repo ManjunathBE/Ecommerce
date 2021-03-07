@@ -19,7 +19,8 @@ export const EditAddress = (props) => {
                                              City: props.city, Phone:props.phone, pincode: props.pinCode,
                                              NickName:props.addressName,
                                              AddressId:props.addressId,
-                                             GST:props.gst
+                                             GST:props.gst,
+                                             ContactPerson:props.contactPerson
                                          })
     const [errors, setErrors] = useState({})
     const { userStore, setUserStore } = useStore()
