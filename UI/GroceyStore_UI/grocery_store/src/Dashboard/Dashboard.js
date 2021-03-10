@@ -41,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
   },
   cardContent: {
     textAlign: "center",
+    paddingBottom:theme.spacing(2)
   },
   content: {
     flexGrow: 1,
@@ -49,6 +50,9 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     paddingBottom: theme.spacing(4),
+    [theme.breakpoints.down('md')]: { 
+      padding: '0px'
+    },
   },
   paper: {
     padding: theme.spacing(2),
@@ -56,6 +60,21 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     flexDirection: 'column',
   },
+  MuiCardContent:{
+    '& root':{
+      '& :last-child' :{
+        paddingBottom: theme.spacing(2)
+      }
+
+    }
+    
+  },
+  cardShadow:{
+    '&:hover':{
+      boxShadow: '0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)'
+    },
+    cursor:'pointer'
+  }
 }));
 
 export const Dashboard = (props) => {
@@ -120,11 +139,11 @@ export const Dashboard = (props) => {
 
     return (
       <Grid item xs={6} sm={3} key={id}>
-        <Card onClick={() => history.push(`/${Id}`)}>
+        <Card className={classes.cardShadow} onClick={() => history.push(`/${Id}`)}>
           <CardMedia
             className={classes.cardMedia}
             image={CategoryPic}
-            style={{ width: "180px", height: "130px", paddingTop: "90px" }}
+            style={{ width: "100%", height: "200px", paddingTop: "90px" }}
           />
           <CardContent className={classes.cardContent}>
             {CategoryName?

@@ -10,6 +10,12 @@ import { CenterFocusStrong } from '@material-ui/icons';
 const useStyles = makeStyles((theme) => ({
   card: {
     margin: "auto",
+    [theme.breakpoints.down('md')]: {
+    
+      width: '100%',
+    
+    },
+    
   }
 }))
 
@@ -70,7 +76,7 @@ export const CarouselElement = (props) =>{
                     <CardMedia className={classes.card}
 
                     image={item.BannerPicUrl}
-                    style={{ width: "30vw", height: "40vh"}}
+                    style={{ height: "40vh"}}
                   />
                   </Card>
                 )

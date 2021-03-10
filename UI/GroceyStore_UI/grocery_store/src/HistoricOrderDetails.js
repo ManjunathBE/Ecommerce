@@ -113,9 +113,10 @@ export const HistoricOrderDetails = (props) => {
     const showActionButtons = () => {
         console.log(props.location.state.orderStatus, 'order status')
         if (props.location.state.orderStatus === 'Order Booked') {
-            return (<Button className={classes.btnMargin} variant="contained" color="primary" onClick={handleEditOrReorder}>Edit</Button>)
+            return (<React.Fragment><Button className={classes.btnMargin} variant="contained" color="primary" onClick={handleEditOrReorder}>Edit</Button>
+            <Button variant="contained" color="secondary" onClick={handleCancelOrder} >Cancel order</Button> </React.Fragment> )
         }
-        else if (props.location.state.orderStatus === 'Completed' || props.location.state.orderStatus === 'Canceled') {
+        else if (props.location.state.orderStatus === 'Completed' || props.location.state.orderStatus === 'Order Cancelled') {
             return (<Button className={classes.btnMargin} variant="contained" color="primary" onClick={handleEditOrReorder}>Re-order</Button>)
         }
         else if (props.location.state.orderStatus === 'Out for Delivery') {
@@ -210,6 +211,26 @@ export const HistoricOrderDetails = (props) => {
 
     const handleFinishOrder = () => {
 
+        fetch('https://testapi.slrorganicfarms.com/cart/SetOrderClosed',{
+            mode: 'cors',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': window.localStorage.token
+        },
+        body: JSON.stringify({OrderId:props.location.state.orderId})
+        })
+        .then(result => {
+            if (result.status === 200)
+              result.json().then(body => {
+                if (body.success === true) {
+                    history.goBack()
+                }
+                else {
+                  //TODO: handle some error occured
+                }
+              })
+          })
     }
 
     const handleWarningDialogClose = () => {
@@ -266,10 +287,11 @@ export const HistoricOrderDetails = (props) => {
                         <div className={classes.container}>
                             <Button className={classes.btnMargin} variant="contained" color="primary" onClick={() => history.goBack()}>Back</Button>
                             {showActionButtons()}
-                            <Button variant="contained" color="secondary" onClick={handleCancelOrder} >Cancel order</Button>
+                           
                             <div className={classes.addressDiv}>
                                 {orderDetails.length ?
                                     <React.Fragment>
+                                        <Typography> <span style={{ fontWeight: 'bold' }}> Order Number : </span>{props.location.state.orderId}</Typography><br/>
                                         <Typography style={{ fontWeight: 'bold' }}>Delivery Address</Typography>
 
                                         <Typography>{orderDetails[0].AddressNickName}<br />
@@ -308,7 +330,7 @@ export const HistoricOrderDetails = (props) => {
                                                         <TableCell align='center'>{p.ItemName}</TableCell>
                                                         <TableCell align='center'>{p.qty}</TableCell>
                                                         <TableCell align='center'>{p.UnitName}</TableCell>
-                                                        <TableCell align='center'>{p.ItemCost}</TableCell>
+                                                        <TableCell align='center'>{p.ItemCost.toFixed(2)}</TableCell>
                                                     </TableRow>
                                                 )
                                             })
@@ -317,9 +339,9 @@ export const HistoricOrderDetails = (props) => {
                                                 return (
                                                     <TableRow>
                                                         <TableCell align='center'>{p.ItemName}</TableCell>
-                                                        <TableCell align='center'>{p.FinalAmount}</TableCell>
                                                         <TableCell align='center'>{p.SuppliedQty}</TableCell>
                                                         <TableCell align='center'>{p.UnitName}</TableCell>
+                                                        <TableCell align='center'>{p.FinalAmount}</TableCell>
                                                     </TableRow>
                                                 )
                                             })}

@@ -106,11 +106,6 @@ export const VerifyOtp = (props) => {
                 });
 
 
-
-
-
-
-
             // 
             //     firebaseConfirmationResult.confirm(passwordFromUser).then((result) => {
             //         setLoginState(true)

@@ -3,11 +3,27 @@ import React, { Component, useState } from "react";
 import { Header } from './Header'
 import { useStore } from "./Store";
 import FlashMessage from 'react-flash-message'
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+
+  txtFieldMargin:{
+    marginTop:theme.spacing(2),
+    border: '1px solid black',
+    marginBottom: theme.spacing(2),
+    borderRadius: '10px'
+  
+  },
+  btnMargins:{
+    marginRight:theme.spacing(2)
+  }
+}))
 
 export const Suggestion = (props) => {
     const [suggestion, setSuggestion] = useState("")
     const { userStore } = useStore();
     const [showFlashMessage, setShowFlashMessage] = useState(false)
+    const classes = useStyles();
     
     const handleSuggestionInput=(event)=>{
         setShowFlashMessage(false)
@@ -60,6 +76,7 @@ export const Suggestion = (props) => {
                 We always like to hear from our customers. Send us your thoughts, we will get back to you as soon as we can.
             </Typography>
             <TextField
+            className={classes.txtFieldMargin}
           id="standard-multiline-static"
           multiline
           fullWidth
@@ -68,8 +85,8 @@ export const Suggestion = (props) => {
           onChange={handleSuggestionInput}
           value={suggestion}
         />
-        <Button color="primary" variant="contained" onClick={handleSubmit}>Submit</Button>
-        <Button color="primary" variant="contained" onClick={()=>setSuggestion('')}>Clear</Button>
+        <Button className={classes.btnMargins} color="primary" variant="contained" onClick={handleSubmit}>Submit</Button>
+        <Button className={classes.btnMargins} color="primary" variant="contained" onClick={()=>setSuggestion('')}>Clear</Button>
         </React.Fragment>
         </Container>
     )

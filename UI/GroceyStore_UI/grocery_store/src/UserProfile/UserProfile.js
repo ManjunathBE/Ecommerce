@@ -57,6 +57,17 @@ const useStyles = makeStyles((theme) => ({
     },
     padding: theme.spacing(3),
   },
+  AddressCardDiv:{
+    
+    [theme.breakpoints.down('xs')]: {
+      padding: theme.spacing(2),
+    },
+    padding: theme.spacing(3),
+    '&:hover':{
+      boxShadow: '0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)'
+    }
+
+  },
   formPosition: {
     paddingBottom: theme.spacing(4),
     width: '100%',
@@ -97,13 +108,23 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     right: theme.spacing(1),
     top: theme.spacing(1),
-    color: theme.palette.grey[500],
+    color: 'red'
   },
   EditIconMargin: {
-    marginLeft: theme.spacing(3)
+    marginLeft: theme.spacing(3),
+    cursor:'pointer'
   },
   AddressButton: {
     marginLeft: theme.spacing(3),
+  },
+
+  container:{
+    [theme.breakpoints.down('md')]: { 
+      padding: '0px'
+    },
+  },
+  EditIcon:{
+    cursor:'pointer'
   }
 
 
@@ -319,7 +340,7 @@ export const UserProfile = (props) => {
                   </Grid>
                   <Grid className={classes.userDetailsDiv} item xs={12} md={5} lg={5}>
                     <Typography variant="h5"> {userStore.user.FirstName} {userStore.user.LastName}
-                      <span className={classes.EditIconMargin}><EditTwoToneIcon onClick={() => handleUserDetailsEdit()} /></span>
+                      <span className={classes.EditIconMargin}><EditTwoToneIcon className={classes.EditIcon} onClick={() => handleUserDetailsEdit()} /></span>
                     </Typography>
 
                     <Typography variant="h6"><PhoneIphoneOutlinedIcon style={{ color: "blue" }} />   {userStore.user.Phone}</Typography>
@@ -336,10 +357,10 @@ export const UserProfile = (props) => {
                   {(addressStore.address).map((add, index) =>
 
                     <Grid className={classes.AddressDiv} item xs={12} md={4} >
-                      <Card className={classes.AddressDiv} >
+                      <Card className={classes.AddressCardDiv} >
                         {/* <Typography> Address : {index+1} <br/> {id.addressLine1}, {id.addressLine2}<br />{`${toFirstCharUppercase(id.city)}`}<br /> Pin: {id.pinCode}</Typography> */}
                         <Typography><span style={{fontWeight:'bold'}}> {add.AddressNickName} </span>
-                          <span className="positionRight"><EditTwoToneIcon onClick={() => handleAddressEdit(add)} /></span>
+                          <span className="positionRight"><EditTwoToneIcon className={classes.EditIcon} onClick={() => handleAddressEdit(add)} /></span>
                           
                           <br />{add.FirstAddress}
                           <br />{add.StreetDetails}
@@ -364,7 +385,7 @@ export const UserProfile = (props) => {
                 Add Address
               </DialogTitle>
                 <DialogContent>
-                  <EditAddress modelOpen={closeModal} AddressUpdated={handleAddressUpdated} />
+                  <EditAddress modelOpen={closeModal} AddressUpdated={handleAddressUpdated} gst={""}/>
                 </DialogContent>
 
 

@@ -160,6 +160,7 @@ export const Cart = (props) => {
   const [selectedAddressId, setSelectedAddressId] = useState()
   const { addressStore, setAddressStore, setUserStore, setTokenStore } = useStore()
   const [itemUpdated, setItemUpdated] = useState(false)
+  const [showAddAddressDialog, setShowAddAddressDialog] = useState(false)
 
   const EnhancedTableToolbar = (props) => {
     const classes = useToolbarStyles();
@@ -390,7 +391,9 @@ export const Cart = (props) => {
 
   const handleAddressUpdated = () => {
     fetchUserDetails()
-    setShowAddressSelection(false)
+    setShowAddAddressDialog(false)
+    setShowAddressSelection(true)
+    
 
   }
 
@@ -400,6 +403,19 @@ export const Cart = (props) => {
 
   const handleCancelEditing = ()=>{
     setCartStore({ type: 'DeleteAll' })
+  }
+
+  const handleAddress = ()=>{
+    setShowAddressSelection(false)
+    setShowAddAddressDialog(true)
+  }
+
+  const handleAddAddressDialogClose=()=>{
+    setShowAddAddressDialog(false)
+  }
+
+  const closeModal = () => {
+    setShowAddAddressDialog(false)
   }
 
   return (
@@ -499,11 +515,13 @@ export const Cart = (props) => {
 
                           {showSelectedAddress ? splitAddress() : ""}
 
-                          <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={() => history.push("/")}>Continue Shopping</Button>
+                          
 
                          {cartStore.cart[0].orderId? <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={handleCancelEditing}>Cancel Editing</Button> : ""}
 
                           <Hidden mdUp>
+                          <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={() => history.push("/")}>Continue Shopping</Button>
+                          <br/>
                             <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handleSelectAddress}>Add/Select Address</Button>
                             <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
                           </Hidden>
@@ -523,6 +541,7 @@ export const Cart = (props) => {
                       <Typography style={{ fontSize: '32px' }}>Total : ₹ {(totalPrice).toFixed(2)}</Typography> <br />
                       <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handleSelectAddress}>Add/Select Address</Button> <br />
                       <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
+                      <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={() => history.push("/")}>Continue Shopping</Button>
                     </CardContent>
                   </Card>
                 </Hidden>
@@ -538,12 +557,16 @@ export const Cart = (props) => {
 
       <Dialog open={showAddressSelection} onClose={handleSelectAddressDialogClose}>
         <DialogTitle>
+          {<FlashMessage></FlashMessage>}
           <IconButton className={classes.closeButton} aria-label="close" onClick={handleSelectAddressDialogClose}>
             <CloseIcon />
           </IconButton>
-          <Typography>Select Delivery address</Typography>
+
         </DialogTitle>
         <DialogContent>
+          <Button onClick={handleAddress} variant ="contained" color="primary">Add Address</Button>
+
+        <Typography> or <br/> Select saved address</Typography>
 
           {addressStore.address.length ?
 
@@ -567,6 +590,24 @@ export const Cart = (props) => {
             </div>}
         </DialogContent>
       </Dialog>
+
+
+      <Dialog open={showAddAddressDialog}>
+        <DialogTitle>
+        <IconButton className={classes.closeButton} aria-label="close" onClick={handleAddAddressDialogClose}>
+                    <CloseIcon />
+                  </IconButton>
+                Add Address
+
+        </DialogTitle>
+        <DialogContent>
+        <EditAddress modelOpen={closeModal} AddressUpdated={handleAddressUpdated} gst={""}
+                  />
+        </DialogContent>
+
+      </Dialog>
+
+
 
 
       <Dialog classes={{ paper: classes.addProductPopUpDimesnsion }} onClose={handleEditOrderDialogClose} open={editCart}>

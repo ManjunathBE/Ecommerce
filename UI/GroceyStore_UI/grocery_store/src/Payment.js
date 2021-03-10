@@ -39,6 +39,10 @@ const useStyles = makeStyles((theme) => ({
   selectEmpty: {
     marginTop: theme.spacing(2),
   },
+  btnMargin: {
+    marginRight: theme.spacing(2),
+    marginTop:theme.spacing(2)
+  }
 
 }))
 
@@ -232,9 +236,9 @@ export const Payment = () => {
                 {paymentData.map((x) => {
                   var paymentDateTime = new Date(x.OrderDateAndTime)
                   var paymentDate = paymentDateTime.toLocaleDateString()
-                  var crateBgColor=""
-                  if(x.Crates>0){
-                    crateBgColor='Red'
+                  var crateBgColor = ""
+                  if (x.MissingCrates > 0) {
+                    crateBgColor = 'Red'
                   }
                   return (
                     <React.Fragment>
@@ -242,7 +246,7 @@ export const Payment = () => {
                         <TableCell align="center">{paymentDate}</TableCell>
                         <TableCell align="center">{x.BillNum}</TableCell>
                         <TableCell align="center">{x.OrderCost}</TableCell>
-                        <TableCell align="center" style={{backgroundColor:crateBgColor}}>{x.Crates}</TableCell>
+                        <TableCell align="center" style={{ backgroundColor: crateBgColor }}>{x.MissingCrates}</TableCell>
                         {/* <TableCell style={{ backgroundColor: x.IsUserConfirmed ? 'green' : '' }}>{x.IsUserConfirmed ? 'Confirmed' : 'Yet to Confirm'}</TableCell>
                     <TableCell style={{ backgroundColor: x.IsConfirmed ? 'green' : '' }}>{x.IsConfirmed ? 'Confirmed' : 'Yet to Confirm'}</TableCell> */}
                       </TableRow>
@@ -322,15 +326,18 @@ export const Payment = () => {
             </Grid>
             <Grid item>
               <label htmlFor="paymentProof">
-                <Button component="span" disabled={disableUploadBtn} onClick={handleUpload} variant="contained" color="primary">
+                <Button className={classes.btnMargin} component="span" disabled={disableUploadBtn} onClick={handleUpload} variant="contained" color="primary">
                   Upload
               </Button>
 
-                <Button variant="contained" color="primary" onClick={handleClear}>
-                  Clear
+                <Button className={classes.btnMargin} variant="contained" color="primary" onClick={handleClear}>
+                  Clear File Upload
           </Button>
 
               </label>
+              <Button className={classes.btnMargin} disabled={disableSaveBtn} variant="contained" color="primary" onClick={handleSubmit}>
+                Save
+          </Button>
             </Grid>
             {/* <Grid>
              
@@ -338,9 +345,7 @@ export const Payment = () => {
           </Grid>
 
 
-          <Button disabled={disableSaveBtn} variant="contained" color="primary" onClick={handleSubmit}>
-            Save
-          </Button>
+
         </DialogContent>
 
       </Dialog>

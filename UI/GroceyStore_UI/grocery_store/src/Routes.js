@@ -33,7 +33,7 @@ export const Routes = () => (
       <PrivateRoute path ="/Payment" component={Payment} />
       
       <PrivateRoute path ="/noauth" component={Unauthorised} />
-      <PrivateRoute path ="/feedback" component={Suggestion} />
+      <PrivateRoute path ="/Feedback" component={Suggestion} />
       <Route path="/verifyotp" component={VerifyOtp} />
       
       <Route path="/login" component={Login} />

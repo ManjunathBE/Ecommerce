@@ -5,6 +5,7 @@ import IconButton from '@material-ui/core/IconButton';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import { useStore } from "./Store";
+import { useAuth } from './Auth'
 
 const StyledBadge = withStyles((theme) => ({
     badge: {
@@ -16,6 +17,13 @@ const StyledBadge = withStyles((theme) => ({
 }))(Badge);
 
 const useStyles = makeStyles((theme) => ({
+   
+container:{
+    [theme.breakpoints.down('md')]: { 
+        padding: '0px'
+      },
+},
+  
     title: {
         margin: "auto",
         fontSize: "x-large",
@@ -58,6 +66,13 @@ export const Header = (props) => {
     const { cartStore } = useStore();
     const classes = useStyles();
     console.log(history.location,'location in history')
+    const { setLoginState } = useAuth()
+    var location =history.location.pathname
+
+    if(location!=='/'){
+        location = history.location.pathname.substring(1)
+    }
+    
 
     const handlePageChange = (event) => {
         console.log(history.location, 'locaiton in header')
@@ -69,15 +84,15 @@ export const Header = (props) => {
         );
 
         switch (value) {
-            case "Dashboard":
+            case "/":
                 history.push("/")
                 break;
 
-            case "My Account":
+            case "UserProfile":
                 history.push("/UserProfile")
                 break;
 
-            case "My Orders":
+            case "History":
                 history.push("/History")
                 break;
 
@@ -89,8 +104,14 @@ export const Header = (props) => {
                 history.push("/Payment")
                 break;
 
-            case "Suggestion":
+            case "Feedback":
                 history.push("/Feedback")
+                break;
+            
+            case "SignOut":
+                window.localStorage.clear();
+                setLoginState(false)
+                history.push("/login")
                 break;
 
 
@@ -106,8 +127,7 @@ export const Header = (props) => {
 
     return (
 
-
-        <Container maxWidth="lg">
+        <Container className={classes.container} maxWidth="lg">
             <div id="header" >
                 <Grid container>
                     <Grid xs={3}>
@@ -121,14 +141,14 @@ export const Header = (props) => {
                                 onChange={handlePageChange}
                                 name="Navigator"
                                 className={ classes.MuiNativeSelect }
-
                             >
-                                <option value="Dashboard">Dashboard</option>
-                                <option value="My Account">My Account</option>
-                                <option value="My Orders">My Orders</option>
+                                <option value="/">Dashboard</option>
+                                <option value="UserProfile">My Account</option>
+                                <option value="History">My Orders</option>
                                 <option value="Cart">My Cart</option>
                                 <option value="Payment">Payment</option>
-                                <option value="Suggestion">Feedback</option>
+                                <option value="Feedback">Feedback</option>
+                                <option value="SignOut">Sign Out</option>
                             </NativeSelect>
 
                             <IconButton aria-label="cart" onClick={handleCartClick}>

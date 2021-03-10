@@ -18,7 +18,7 @@ import Footer from './Footer'
 import { MenuPane } from './MenuPane'
 
 const columns = [
-  { id: 'orderId', label: 'Order Id', minWidth: 130 },
+  { id: 'orderId', label: 'Order NO', minWidth: 130 },
   { id: 'date', label: 'Date', minWidth: 130 },
   { id: 'time', label: 'Time', minWidth: 130 },
   {
@@ -30,11 +30,11 @@ const columns = [
   },
 ];
 
-const useStyles = makeStyles((theme)=>({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     width: '100%',
-    
+
   },
   content: {
     flexGrow: 1,
@@ -42,9 +42,22 @@ const useStyles = makeStyles((theme)=>({
     overflow: 'auto',
   },
   container: {
+
+    [theme.breakpoints.down('md')]: {
+      padding: '0px'
+    }
+  },
+  tableContainer: {
     [theme.breakpoints.up('md')]: {
-      padding: theme.spacing(9),
-    },
+      padding: theme.spacing(3),
+      marginLeft: theme.spacing(3),
+      marginRight: theme.spacing(3),
+      textAlign: 'center'
+    }
+  },
+  tableHeaderData: {
+    fontWeight: 'Bold',
+    textAlign: 'center'
   },
 }));
 
@@ -107,12 +120,12 @@ export function History(props) {
   }
 
   const handleOrderClick = (tran) => {
-    console.log(tran.OrderStatus,'order status in history')
+    console.log(tran.OrderStatus, 'order status in history')
     setSelectedRowId(tran.Id)
     setDialogView(true)
     history.push({
       pathname: "/OrderDetails",
-      state: {orderId:tran.Id, orderStatus:tran.OrderStatus}
+      state: { orderId: tran.Id, orderStatus: tran.OrderStatus }
     })
   }
 
@@ -264,23 +277,22 @@ export function History(props) {
 
 
 
-  return (<div>
-          {/* <Header title={(props.location.pathname).substring(1)} history={props.history} /> */}
-    <Paper className={classes.root}>
+  return (<div className={classes.root}>
+    {/* <Header title={(props.location.pathname).substring(1)} history={props.history} /> */}
+    {/* <Paper className={classes.root}> */}
 
-      {/* <Hidden smDown>
+    {/* <Hidden smDown>
           <MenuPane history={history} />
         </Hidden> */}
-        <main className={classes.content}>
-      <Container maxWidth="lg">
-      <TableContainer className={classes.container}>
+    {/* <main className={classes.content}> */}
+    <Container maxWidth="lg" className={classes.container}>
+      <TableContainer className={classes.tableContainer}>
         <Table stickyHeader aria-label="sticky table">
-          <TableHead>
+          <TableHead >
             <TableRow>
               {columns.map((column) => (
-                <TableCell
+                <TableCell className={classes.tableHeaderData}
                   key={column.id}
-                  align={column.align}
                   style={{ minWidth: column.minWidth }}
                 >
                   {column.label}
@@ -296,25 +308,25 @@ export function History(props) {
               var transactionTime = transactionDateTime.toLocaleTimeString()
 
               return (
-                <TableRow hover role="checkbox" tabIndex={-1} onClick={() => handleOrderClick(column)}>
+                <TableRow style={{cursor:'pointer'}}hover role="checkbox" tabIndex={-1} onClick={() => handleOrderClick(column)}>
 
                   {/* const value = row[column.transactionId]; */}
 
                   <React.Fragment>
-                  <TableCell
-                      align={column.align}>
+                    <TableCell
+                      align='center'>
                       {column.Id}
                     </TableCell>
                     <TableCell
-                      align={column.align}>
+                      align='center'>
                       {transactionDate}
                     </TableCell>
                     <TableCell
-                      align={column.align}>
+                      align='center'>
                       {transactionTime}
                     </TableCell>
                     <TableCell
-                      align={column.align}>
+                      align='center'>
                       {column.OrderStatus}
                     </TableCell>
                   </React.Fragment>
@@ -329,7 +341,7 @@ export function History(props) {
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
+      {/* <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
         count={transactions.length}
@@ -337,13 +349,13 @@ export function History(props) {
         page={page}
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
-      </Container>
-      </main>
-      <Hidden mdUp >
-              <Footer history={history}/>
-            </Hidden>
-    </Paper>
+      /> */}
+    </Container>
+    {/* </main> */}
+    <Hidden mdUp >
+      <Footer history={history} />
+    </Hidden>
+    {/* </Paper> */}
     {Dialogview ? <HistoricOrderDetails orderId={selectedRowId} /> : null}
 
 

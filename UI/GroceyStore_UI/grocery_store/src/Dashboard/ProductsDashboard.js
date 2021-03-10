@@ -56,6 +56,9 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     paddingBottom: theme.spacing(4),
+    [theme.breakpoints.down('md')]: { 
+      padding: '0px'
+    },
   },
   addProductPopUpDimesnsion: {
     width: "350px",
@@ -70,6 +73,12 @@ const useStyles = makeStyles((theme) => ({
   backBtn:{
     paddingTop:theme.spacing(1),
     paddingBottom:theme.spacing(1)
+  },
+  cardShadow:{
+    '&:hover':{
+      boxShadow: '0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)'
+    },
+    cursor:'pointer'
   }
 }));
 
@@ -167,12 +176,10 @@ export const ProductsDashboard = (props) => {
         price = MRP_Price
       }
     }
-
-    // const image = images(`./${imagePath}.jpg`);
     return (
 
       <Grid item xs={6} sm={3} key={id}>
-        <Card onClick={() => handleProductClick(price, ItemName, UnitName, Id, UnitTypeId)}>
+        <Card className={classes.cardShadow} onClick={() => handleProductClick(price, ItemName, UnitName, Id, UnitTypeId)}>
           {isDiscount ?
             <div>
               {discountPercentage}
@@ -180,6 +187,7 @@ export const ProductsDashboard = (props) => {
           <CardMedia
             className={classes.cardMedia}
             image={ItemImage}
+            // style={{ width: "100%", height: "200px" }}
             style={{ width: "130px", height: "130px" }}
           />
           <CardContent >

@@ -9,6 +9,18 @@ import { makeStyles } from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => ({
     divider:{
         width:'25px'
+    },
+
+    formPosition: {
+        textAlign: 'center'
+      },
+    txtFieldMargins:{
+        [theme.breakpoints.up('md')]: {
+            margin: theme.spacing(2)
+          }
+    },
+    btnMargins: {
+        marginTop: theme.spacing(2)
     }
 
 }));
@@ -37,7 +49,7 @@ export const EditAddress = (props) => {
         console.log(props)
         console.log(address, 'addressss')
         if(validate()){
-
+console.log('validate passed')
         address.userId = userStore.user.userId
         console.log('userid', address.userId)
         fetch('https://testapi.slrorganicfarms.com/profile/AddUpdateAdddress', {
@@ -67,10 +79,10 @@ export const EditAddress = (props) => {
     const validate = (event) => {
         const temp = []
         console.log(address,'in validate')
+        console.log((/^$|(^.{15}$)/).test(address.GST), 'gst validate')
       
         temp.addressName = address.NickName?"":"Shop name is required"
         temp.addressLine1 = address.FirstAddress ? "" : "Address Line 1 is required"
-        temp.addressLine2 = address.StreetDetails?"": "Address Line 2 is required"
         temp.city = address.City ? "" : "City is required"
         temp.pinCode = (/^[1-9][0-9]{5}$/).test(address.pincode)?"":"invalid pin"
         // /^$|([6-9][0-9]{9})/
@@ -86,17 +98,18 @@ export const EditAddress = (props) => {
 
 
     return (
-        <div>
+        <div className={classes.formPosition}>
             <TextField
                 margin="normal"
                 required
                 id="addressName"
-                label="Shop and (branch/area)"
+                label="Shop & Area"
                 name="NickName"
                 onChange={handleAddressChange}
                 defaultValue={props.addressName}             
                 error={errors.addressName}
                 helperText={errors.addressName}
+                className={classes.txtFieldMargins}
             />
             
             <span className={classes.divider}></span>
@@ -110,6 +123,7 @@ export const EditAddress = (props) => {
                 error={errors.addressLine1}
                 helperText={errors.addressLine1}
                 defaultValue={props.addressLine1}
+                className={classes.txtFieldMargins}
             />
             <br />
             <TextField
@@ -119,9 +133,10 @@ export const EditAddress = (props) => {
                 name="StreetDetails"
                 onChange={handleAddressChange}
                 defaultValue={props.addressLine2}
+                className={classes.txtFieldMargins}
 
             />
-            <br />
+            
             <TextField
                 margin="normal"
                 required
@@ -132,6 +147,7 @@ export const EditAddress = (props) => {
                 error={errors.city}
                 helperText={errors.city}
                 defaultValue={props.city}
+                className={classes.txtFieldMargins}
 
             />
             <br />
@@ -145,8 +161,9 @@ export const EditAddress = (props) => {
                 error={errors.pinCode}
                 helperText={errors.pinCode}
                 defaultValue={props.pinCode}
+                className={classes.txtFieldMargins}
             />
-            <br/>
+            
             <TextField
                 margin="normal"
                 required
@@ -157,6 +174,7 @@ export const EditAddress = (props) => {
                 defaultValue={props.gst}
                 error={errors.gst}
                 helperText={errors.gst}
+                className={classes.txtFieldMargins}
             />
             <br/>
             <TextField
@@ -166,8 +184,9 @@ export const EditAddress = (props) => {
                 name="ContactPerson"
                 onChange={handleAddressChange}
                 defaultValue={props.contactPerson}
+                className={classes.txtFieldMargins}
             />
-            <br/>
+            
             <TextField
                 margin="normal"
                 required
@@ -178,9 +197,10 @@ export const EditAddress = (props) => {
                 defaultValue={props.phone}
                 error={errors.Phone}
                 helperText={errors.Phone}
+                className={classes.txtFieldMargins}
             />
-           
-            <Button variant="contained" color="primary" onClick={handleSubmit}>Update</Button>
+           <br/>
+            <Button className={classes.btnMargins} variant="contained" color="primary" onClick={handleSubmit}>Update</Button>
             <br />
             <br />
             <br />
