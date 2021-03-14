@@ -344,7 +344,7 @@ export const HistoricOrderDetails = (props) => {
                                                 )
                                             })
                                             :
-                                            orderDetails.map((p) => {
+                                            orderDetails.map((p, index) => {
                                                 return (
                                                     <TableRow>
                                                         <TableCell align='center'>{index + 1}</TableCell>
