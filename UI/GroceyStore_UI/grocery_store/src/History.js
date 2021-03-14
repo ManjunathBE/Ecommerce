@@ -16,6 +16,7 @@ import { Label } from "@material-ui/icons";
 import { HistoricOrderDetails } from './HistoricOrderDetails'
 import Footer from './Footer'
 import { MenuPane } from './MenuPane'
+import FlashMessage from 'react-flash-message'
 
 const columns = [
   { id: 'orderId', label: 'Order NO', minWidth: 130 },
@@ -74,12 +75,14 @@ export function History(props) {
   const { history } = props;
   const [warningDialog, setWarningDialog] = useState(false)
   const [showToggleSwitch, setShowToggleSwitch] = useState(false)
+  const [showFinishOrderFlash,setShowFinishOrderFlash] = useState(false)
 
 
 
 
   useEffect(() => {
     fetchTransactions()
+
   }, [])
 
   const fetchTransactions = () => {
@@ -138,6 +141,10 @@ export function History(props) {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  const handleFinishOrder =()=>{
+    setShowFinishOrderFlash(true)
+  }
 
 
 
@@ -285,6 +292,14 @@ export function History(props) {
           <MenuPane history={history} />
         </Hidden> */}
     {/* <main className={classes.content}> */}
+    {props.location.state?
+              <div >
+                <FlashMessage duration={5000} >
+                  <div className='flashStyling text-center' style={{color:'success.main'}}>
+                  Thanks for shopping with us, we look forward to serving you again...
+                        </div>
+                </FlashMessage>
+              </div> : ""}
     <Container maxWidth="lg" className={classes.container}>
       <TableContainer className={classes.tableContainer}>
         <Table stickyHeader aria-label="sticky table">
@@ -356,7 +371,7 @@ export function History(props) {
       <Footer history={history} />
     </Hidden>
     {/* </Paper> */}
-    {Dialogview ? <HistoricOrderDetails orderId={selectedRowId} /> : null}
+    {Dialogview ? <HistoricOrderDetails orderId={selectedRowId} finishOrder={()=>handleFinishOrder()}/> : null}
 
 
   </div>

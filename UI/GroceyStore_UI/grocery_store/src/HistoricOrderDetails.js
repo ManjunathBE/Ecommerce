@@ -43,6 +43,9 @@ const useStyles = makeStyles((theme) => ({
     },
     btnMargin: {
         marginRight: theme.spacing(2)
+    },
+    table:{
+        marginBottom:theme.spacing(10)
     }
 }));
 
@@ -63,6 +66,7 @@ export const HistoricOrderDetails = (props) => {
 
 
     const Headers = [
+        { id: 'Sl.No', numeric: true, disablePadding: true, label: 'Sl.No' }, 
         { id: 'Product', numeric: false, disablePadding: true, label: 'Product' },
         { id: 'Quantity', numeric: true, disablePadding: true, label: 'Quantity' },
         { id: 'Unit', numeric: true, disablePadding: true, label: 'Unit' },
@@ -121,7 +125,7 @@ export const HistoricOrderDetails = (props) => {
         }
         else if (props.location.state.orderStatus === 'Out for Delivery') {
             return (<React.Fragment>
-                <Button className={classes.btnMargin} variant="contained" color="primary" onClick={handleFinishOrder}>Finish</Button></React.Fragment>)
+                <Button className={classes.btnMargin} variant="contained" color="primary" onClick={handleFinishOrder}>Received</Button></React.Fragment>)
         }
     }
 
@@ -210,6 +214,7 @@ export const HistoricOrderDetails = (props) => {
     }
 
     const handleFinishOrder = () => {
+        console.log(props,'props in historic order')
 
         fetch('https://testapi.slrorganicfarms.com/cart/SetOrderClosed',{
             mode: 'cors',
@@ -224,7 +229,10 @@ export const HistoricOrderDetails = (props) => {
             if (result.status === 200)
               result.json().then(body => {
                 if (body.success === true) {
-                    history.goBack()
+                    history.push({
+                        pathname:"/history",
+                        state:{finishOrder:true}
+                    })
                 }
                 else {
                   //TODO: handle some error occured
@@ -307,7 +315,7 @@ export const HistoricOrderDetails = (props) => {
                             {showToggleSwitch()}
 
                             <TableContainer>
-                                <Table>
+                                <Table className={classes.table}>
                                     <TableHead>
                                         <TableRow>
                                             {Headers.map((headCell) => (
@@ -324,9 +332,10 @@ export const HistoricOrderDetails = (props) => {
                                     </TableHead>
                                     <TableBody>
                                         {!isToggleOn ?
-                                            orderDetails.map((p) => {
+                                            orderDetails.map((p, index) => {
                                                 return (
                                                     <TableRow onClick={() => handleItemClick(p)}>
+                                                        <TableCell align='center'>{index+1}</TableCell>
                                                         <TableCell align='center'>{p.ItemName}</TableCell>
                                                         <TableCell align='center'>{p.qty}</TableCell>
                                                         <TableCell align='center'>{p.UnitName}</TableCell>

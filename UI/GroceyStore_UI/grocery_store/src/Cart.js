@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { Header } from './Header'
 import { useStore } from "./Store";
 import {
-  Table, TableContainer, TableBody, TableCell, TableHead, TableRow, Checkbox, Paper, Toolbar, Typography,
+  Table, TableContainer, TableBody, TableCell, TableHead, TableRow,TableSortLabel, Checkbox, Paper, Toolbar, Typography,
   Tooltip, DialogTitle, DialogContent, Dialog, Card, CardMedia,
   CardContent, Hidden, Container, Grid
 } from '@material-ui/core'
@@ -74,15 +74,47 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+
+function descendingComparator(a, b, orderBy) {
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+  return 0;
+}
+
+function getComparator(order, orderBy) {
+  return order === 'desc'
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+function stableSort(array, comparator) {
+  console.log(array,'in stablesort')
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  console.log(stabilizedThis,'in stablesort mapped')
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+  return stabilizedThis.map((el) => el[0]);
+}
+
 const TableHeaders = [
-  { id: 'Product', numeric: false, disablePadding: true, label: 'Product' },
-  { id: 'Quantity', numeric: true, disablePadding: false, label: 'Quantity' },
-  { id: 'Unit', numeric: true, disablePadding: false, label: 'Unit' },
-  { id: 'Price', numeric: true, disablePadding: false, label: 'Price (₹)' },
+  { id: 'productName', numeric: false, disablePadding: true, label: 'Product' },
+  { id: 'quantity', numeric: true, disablePadding: false, label: 'Quantity' },
+  { id: 'unit', numeric: true, disablePadding: false, label: 'Unit' },
+  { id: 'price', numeric: true, disablePadding: false, label: 'Price (₹)' },
 ];
 
 function EnhancedTableHead(props) {
-  const { classes, onSelectAllClick, numSelected, cartCount } = props;
+  const { classes, onSelectAllClick, numSelected, cartCount, onRequestSort,orderBy, order } = props;
+  const createSortHandler = (property) => (event) => {
+    onRequestSort(event, property);
+  };
 
   return (
     <TableHead>
@@ -100,8 +132,20 @@ function EnhancedTableHead(props) {
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'default'}
+            sortDirection={orderBy === headCell.id ? order : false}
           >
+             <TableSortLabel
+              active={orderBy === headCell.id}
+              direction={orderBy === headCell.id ? order : 'asc'}
+              onClick={createSortHandler(headCell.id)}
+            >
             {headCell.label}
+            {orderBy === headCell.id ? (
+                <span className={classes.visuallyHidden}>
+                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                </span>
+              ) : null}
+            </TableSortLabel>
           </TableCell>
         ))}
       </TableRow>
@@ -114,7 +158,10 @@ EnhancedTableHead.propTypes = {
   classes: PropTypes.object.isRequired,
   numSelected: PropTypes.number.isRequired,
   onSelectAllClick: PropTypes.func.isRequired,
-  cartCount: PropTypes.number.isRequired
+  cartCount: PropTypes.number.isRequired,
+  onRequestSort: PropTypes.func.isRequired,
+  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+  orderBy: PropTypes.string.isRequired,
 };
 
 const useToolbarStyles = makeStyles((theme) => ({
@@ -161,6 +208,8 @@ export const Cart = (props) => {
   const { addressStore, setAddressStore, setUserStore, setTokenStore } = useStore()
   const [itemUpdated, setItemUpdated] = useState(false)
   const [showAddAddressDialog, setShowAddAddressDialog] = useState(false)
+  const [orderBy, setOrderBy] = React.useState('productName');
+  const [order, setOrder] = React.useState('asc');
 
   const EnhancedTableToolbar = (props) => {
     const classes = useToolbarStyles();
@@ -196,6 +245,13 @@ export const Cart = (props) => {
 
   EnhancedTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
+  };
+
+  const handleRequestSort = (event, property) => {
+    console.log('in handle sort request',property)
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
   };
 
   const handleSelectAllClick = (event) => {
@@ -463,11 +519,19 @@ export const Cart = (props) => {
                             <EnhancedTableHead
                               classes={classes}
                               numSelected={selected.length}
+                              order={order}
+                              orderBy={orderBy}
                               onSelectAllClick={handleSelectAllClick}
+                              onRequestSort={handleRequestSort}
                               cartCount={cartStore.cart.length}
                             />
                             <TableBody>
-                              {cartStore.cart.map((cart, index) => {
+                              
+                              {stableSort(cartStore.cart, getComparator(order, orderBy))
+                              .map((cart, index) => {
+                                
+                                
+
                                 console.log(cart, 'item in cart')
 
 

@@ -283,7 +283,7 @@ export const AddProduct = (props) => {
         var temp = []
         if (isEnterWeightSetToManual) {
             console.log(props)
-            temp.quantity = (/^[1-9]*$/).test(quantityByManualEntry)? "" : "Invalid input. Only integers allowed"
+            temp.quantity = (/^\d*(\.\d+)?$/).test(quantityByManualEntry)? "" : "Invalid input. Only integers allowed"
             //temp.quantity = quantityByManualEntry ? "" : "Quantity is required "
             setErrors({ ...temp })
         }
@@ -322,7 +322,7 @@ export const AddProduct = (props) => {
 
 console.log(quantity,'quantity in add to cart')
         
-            if (quantity === 0) {
+            if (quantity == 0) {
                 console.log('inside if quantity check')
                 console.log(zeroQuantityWarning)
                
