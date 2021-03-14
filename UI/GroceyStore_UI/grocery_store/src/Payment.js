@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   },
   btnMargin: {
     marginRight: theme.spacing(2),
-    marginTop:theme.spacing(2)
+    marginTop: theme.spacing(2)
   }
 
 }))
@@ -111,6 +111,7 @@ export const Payment = () => {
 
 
   const Headers = [
+    { id: 'Order', numeric: false, disablePadding: true, label: 'Order' },
     { id: 'Date', numeric: false, disablePadding: true, label: 'Date' },
     { id: 'BillNo', numeric: true, disablePadding: true, label: 'Bill Num.' },
     { id: 'Amount', numeric: true, disablePadding: true, label: 'Amount' },
@@ -243,6 +244,7 @@ export const Payment = () => {
                   return (
                     <React.Fragment>
                       <TableRow style={{ backgroundColor: x.IsConfirmed ? 'lightgreen' : x.IsUserConfirmed ? 'pink' : "" }} onClick={() => handlePaymentClick(x)}>
+                        <TableCell align="center">{x.OrderId}</TableCell>
                         <TableCell align="center">{paymentDate}</TableCell>
                         <TableCell align="center">{x.BillNum}</TableCell>
                         <TableCell align="center">{x.OrderCost}</TableCell>

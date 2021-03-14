@@ -44,8 +44,8 @@ const useStyles = makeStyles((theme) => ({
     btnMargin: {
         marginRight: theme.spacing(2)
     },
-    table:{
-        marginBottom:theme.spacing(10)
+    table: {
+        marginBottom: theme.spacing(10)
     }
 }));
 
@@ -66,7 +66,7 @@ export const HistoricOrderDetails = (props) => {
 
 
     const Headers = [
-        { id: 'Sl.No', numeric: true, disablePadding: true, label: 'Sl.No' }, 
+        { id: 'Sl.No', numeric: true, disablePadding: true, label: 'Sl.No' },
         { id: 'Product', numeric: false, disablePadding: true, label: 'Product' },
         { id: 'Quantity', numeric: true, disablePadding: true, label: 'Quantity' },
         { id: 'Unit', numeric: true, disablePadding: true, label: 'Unit' },
@@ -118,7 +118,7 @@ export const HistoricOrderDetails = (props) => {
         console.log(props.location.state.orderStatus, 'order status')
         if (props.location.state.orderStatus === 'Order Booked') {
             return (<React.Fragment><Button className={classes.btnMargin} variant="contained" color="primary" onClick={handleEditOrReorder}>Edit</Button>
-            <Button variant="contained" color="secondary" onClick={handleCancelOrder} >Cancel order</Button> </React.Fragment> )
+                <Button variant="contained" color="secondary" onClick={handleCancelOrder} >Cancel order</Button> </React.Fragment>)
         }
         else if (props.location.state.orderStatus === 'Completed' || props.location.state.orderStatus === 'Order Cancelled') {
             return (<Button className={classes.btnMargin} variant="contained" color="primary" onClick={handleEditOrReorder}>Re-order</Button>)
@@ -214,31 +214,31 @@ export const HistoricOrderDetails = (props) => {
     }
 
     const handleFinishOrder = () => {
-        console.log(props,'props in historic order')
+        console.log(props, 'props in historic order')
 
-        fetch('https://testapi.slrorganicfarms.com/cart/SetOrderClosed',{
+        fetch('https://testapi.slrorganicfarms.com/cart/SetOrderClosed', {
             mode: 'cors',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': window.localStorage.token
-        },
-        body: JSON.stringify({OrderId:props.location.state.orderId})
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-access-token': window.localStorage.token
+            },
+            body: JSON.stringify({ OrderId: props.location.state.orderId })
         })
-        .then(result => {
-            if (result.status === 200)
-              result.json().then(body => {
-                if (body.success === true) {
-                    history.push({
-                        pathname:"/history",
-                        state:{finishOrder:true}
+            .then(result => {
+                if (result.status === 200)
+                    result.json().then(body => {
+                        if (body.success === true) {
+                            history.push({
+                                pathname: "/history",
+                                state: { finishOrder: true }
+                            })
+                        }
+                        else {
+                            //TODO: handle some error occured
+                        }
                     })
-                }
-                else {
-                  //TODO: handle some error occured
-                }
-              })
-          })
+            })
     }
 
     const handleWarningDialogClose = () => {
@@ -295,11 +295,11 @@ export const HistoricOrderDetails = (props) => {
                         <div className={classes.container}>
                             <Button className={classes.btnMargin} variant="contained" color="primary" onClick={() => history.goBack()}>Back</Button>
                             {showActionButtons()}
-                           
+
                             <div className={classes.addressDiv}>
                                 {orderDetails.length ?
                                     <React.Fragment>
-                                        <Typography> <span style={{ fontWeight: 'bold' }}> Order Number : </span>{props.location.state.orderId}</Typography><br/>
+                                        <Typography> <span style={{ fontWeight: 'bold' }}> Order Number : </span>{props.location.state.orderId}</Typography><br />
                                         <Typography style={{ fontWeight: 'bold' }}>Delivery Address</Typography>
 
                                         <Typography>{orderDetails[0].AddressNickName}<br />
@@ -335,7 +335,7 @@ export const HistoricOrderDetails = (props) => {
                                             orderDetails.map((p, index) => {
                                                 return (
                                                     <TableRow onClick={() => handleItemClick(p)}>
-                                                        <TableCell align='center'>{index+1}</TableCell>
+                                                        <TableCell align='center'>{index + 1}</TableCell>
                                                         <TableCell align='center'>{p.ItemName}</TableCell>
                                                         <TableCell align='center'>{p.qty}</TableCell>
                                                         <TableCell align='center'>{p.UnitName}</TableCell>
@@ -347,6 +347,7 @@ export const HistoricOrderDetails = (props) => {
                                             orderDetails.map((p) => {
                                                 return (
                                                     <TableRow>
+                                                        <TableCell align='center'></TableCell>
                                                         <TableCell align='center'>{p.ItemName}</TableCell>
                                                         <TableCell align='center'>{p.SuppliedQty}</TableCell>
                                                         <TableCell align='center'>{p.UnitName}</TableCell>
