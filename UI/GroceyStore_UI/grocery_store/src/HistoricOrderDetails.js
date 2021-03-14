@@ -351,7 +351,7 @@ export const HistoricOrderDetails = (props) => {
                                                         <TableCell align='center'>{p.ItemName}</TableCell>
                                                         <TableCell align='center'>{p.SuppliedQty}</TableCell>
                                                         <TableCell align='center'>{p.UnitName}</TableCell>
-                                                        <TableCell align='center'>{p.FinalAmount}</TableCell>
+                                                        <TableCell align='center'>{p.SellIngPrice * p.SuppliedQty}</TableCell>
                                                     </TableRow>
                                                 )
                                             })}
