@@ -244,7 +244,7 @@ export const Payment = () => {
                   return (
                     <React.Fragment>
                       <TableRow style={{ backgroundColor: x.IsConfirmed ? 'lightgreen' : x.IsUserConfirmed ? 'pink' : "" }} onClick={() => handlePaymentClick(x)}>
-                        <TableCell align="center">{x.OrderId}</TableCell>
+                        <TableCell align="center">{x.Id}</TableCell>
                         <TableCell align="center">{paymentDate}</TableCell>
                         <TableCell align="center">{x.BillNum}</TableCell>
                         <TableCell align="center">{x.OrderCost}</TableCell>
