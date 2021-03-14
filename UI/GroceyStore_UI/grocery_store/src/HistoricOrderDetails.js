@@ -347,7 +347,7 @@ export const HistoricOrderDetails = (props) => {
                                             orderDetails.map((p) => {
                                                 return (
                                                     <TableRow>
-                                                        <TableCell align='center'></TableCell>
+                                                        <TableCell align='center'>{index + 1}</TableCell>
                                                         <TableCell align='center'>{p.ItemName}</TableCell>
                                                         <TableCell align='center'>{p.SuppliedQty}</TableCell>
                                                         <TableCell align='center'>{p.UnitName}</TableCell>
