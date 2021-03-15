@@ -255,7 +255,7 @@ export const Payment = () => {
                   }
                   return (
                     <React.Fragment>
-                      <TableRow style={{ backgroundColor: x.IsConfirmed ? 'lightgreen' : x.IsUserConfirmed ? 'skyblue' : "" }} onClick={() => handlePaymentClick(x)}>
+                      <TableRow style={{cursor:'pointer', backgroundColor: x.IsConfirmed ? 'lightgreen' : x.IsUserConfirmed ? 'skyblue' : "" }}hover onClick={() => handlePaymentClick(x)}>
                         <TableCell align="center">{x.Id}</TableCell>
                         <TableCell align="center">{paymentDate}</TableCell>
                         <TableCell align="center">{x.BillNum}</TableCell>

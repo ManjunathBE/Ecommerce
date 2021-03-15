@@ -299,7 +299,9 @@ export const HistoricOrderDetails = (props) => {
                             <div className={classes.addressDiv}>
                                 {orderDetails.length ?
                                     <React.Fragment>
-                                        <Typography> <span style={{ fontWeight: 'bold' }}> Order Number : </span>{props.location.state.orderId}</Typography><br />
+                                        <Typography> <span style={{ fontWeight: 'bold' }}> Order Number : </span>{props.location.state.orderId}</Typography>
+                                        <Typography> <span style={{ fontWeight: 'bold' }}> Order Status : </span>{orderDetails[0].OrderStatus}</Typography>
+                                        <br />
                                         <Typography style={{ fontWeight: 'bold' }}>Delivery Address</Typography>
 
                                         <Typography>{orderDetails[0].AddressNickName}<br />
