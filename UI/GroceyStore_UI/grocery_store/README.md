@@ -1,5 +1,13 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Run the project
+npm start
+
+## Project build for deploy
+npm run build
+
+## Deploy to Firebase hosting
+firebase deploy --only hosting:b2bstore-test
 
 ## Docker File Creation
 

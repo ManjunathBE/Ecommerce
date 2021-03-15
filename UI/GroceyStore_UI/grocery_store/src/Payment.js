@@ -42,7 +42,19 @@ const useStyles = makeStyles((theme) => ({
   btnMargin: {
     marginRight: theme.spacing(2),
     marginTop: theme.spacing(2)
-  }
+  },
+  tableContainer: {
+    [theme.breakpoints.up('md')]: {
+      padding: theme.spacing(3),
+      marginLeft: theme.spacing(3),
+      marginRight: theme.spacing(3),
+      textAlign: 'center'
+    }
+  },
+  tableHeaderData: {
+    fontWeight: 'Bold',
+    textAlign: 'center'
+  },
 
 }))
 
@@ -113,7 +125,7 @@ export const Payment = () => {
   const Headers = [
     { id: 'Order', numeric: false, disablePadding: true, label: 'Order' },
     { id: 'Date', numeric: false, disablePadding: true, label: 'Date' },
-    { id: 'BillNo', numeric: true, disablePadding: true, label: 'Bill Num.' },
+    { id: 'BillNo', numeric: true, disablePadding: true, label: 'Bill No' },
     { id: 'Amount', numeric: true, disablePadding: true, label: 'Amount' },
     { id: 'Crate', numeric: true, disablePadding: true, label: 'Crates Missing' },
   ];
@@ -216,12 +228,12 @@ export const Payment = () => {
       <Container>
         {paymentData ?
 
-          <TableContainer>
+          <TableContainer  className={classes.tableContainer}>
             <Table >
               <TableHead>
                 <TableRow >
                   {Headers.map(x =>
-                    <TableCell align="center">
+                    <TableCell align="center" className={classes.tableHeaderData}>
                       {x.label}
                     </TableCell>)
                   }
@@ -243,7 +255,7 @@ export const Payment = () => {
                   }
                   return (
                     <React.Fragment>
-                      <TableRow style={{ backgroundColor: x.IsConfirmed ? 'lightgreen' : x.IsUserConfirmed ? 'pink' : "" }} onClick={() => handlePaymentClick(x)}>
+                      <TableRow style={{ backgroundColor: x.IsConfirmed ? 'lightgreen' : x.IsUserConfirmed ? 'skyblue' : "" }} onClick={() => handlePaymentClick(x)}>
                         <TableCell align="center">{x.Id}</TableCell>
                         <TableCell align="center">{paymentDate}</TableCell>
                         <TableCell align="center">{x.BillNum}</TableCell>
@@ -328,17 +340,15 @@ export const Payment = () => {
             </Grid>
             <Grid item>
               <label htmlFor="paymentProof">
+              <Button className={classes.btnMargin} variant="contained" color="primary" onClick={handleClear}>
+                  Clear
+          </Button>
                 <Button className={classes.btnMargin} component="span" disabled={disableUploadBtn} onClick={handleUpload} variant="contained" color="primary">
                   Upload
               </Button>
-
-                <Button className={classes.btnMargin} variant="contained" color="primary" onClick={handleClear}>
-                  Clear File Upload
-          </Button>
-
               </label>
               <Button className={classes.btnMargin} disabled={disableSaveBtn} variant="contained" color="primary" onClick={handleSubmit}>
-                Save
+                Submit
           </Button>
             </Grid>
             {/* <Grid>
