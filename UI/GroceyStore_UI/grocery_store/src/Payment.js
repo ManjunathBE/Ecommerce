@@ -65,7 +65,7 @@ export const Payment = () => {
   const [userConfirmStatus, setuserConfirmStatus] = useState('white')
   const [showPaymentUploadDialog, setShowPaymentUploadDialog] = useState(false)
   const [selectedPaymentRecord, setSelectedPaymentRecord] = useState({})
-  const [paymentType, setPaymentType] = useState();
+  const [paymentType, setPaymentType] = useState(null);
   const classes = useStyles();
   const [selectedPaymentProof, setSelectedPaymentProof] = useState(null)
   const [paymentURL, setPaymentURL] = useState()
@@ -73,6 +73,8 @@ export const Payment = () => {
   const [disableSaveBtn, setDisableSaveBtn] = useState(true)
   const [disableUploadBtn, setDisableUploadBtn] = useState(true)
   const paymentProofRef = React.useRef()
+  const [imageSrc,setImageSrc] = useState();
+  const [imagePreviewVisibility, setImagePreviewVisibility ] = useState(false)
 
   useEffect(() => {
     fetchPaymentDetails()
@@ -144,6 +146,8 @@ export const Payment = () => {
 
   const handleImageUpload = (event) => {
     setSelectedPaymentProof(event.target.files[0])
+    setImageSrc(URL.createObjectURL(event.target.files[0]))
+    setImagePreviewVisibility(true)
     setDisableUploadBtn(false)
 
   }
@@ -151,7 +155,7 @@ export const Payment = () => {
   const handleSubmit = () => {
     const payload = {
       Id: selectedPaymentRecord.Id,
-      PaymentTypeId: 1,
+      PaymentTypeId: paymentType,
       PaymentProofUrl: paymentURL
     }
     fetch('https://testapi.slrorganicfarms.com/cart/updateOrderPaymentType', {
@@ -213,13 +217,18 @@ export const Payment = () => {
     setShowPaymentUploadDialog(false)
     setDisableSaveBtn(true)
     setDisableUploadBtn(true)
+    setImageSrc("")
+    setImagePreviewVisibility(false)
   }
 
   const handleClear = () => {
     setSelectedPaymentProof("")
     paymentProofRef.current.value = ""
+    setPaymentType(null)
     setDisableSaveBtn(true)
     setDisableUploadBtn(true)
+    setImageSrc("")
+    setImagePreviewVisibility(false)
 
   }
 
@@ -338,6 +347,7 @@ export const Payment = () => {
                 ref={paymentProofRef}
               />
             </Grid>
+           {imagePreviewVisibility?  <img style={{width:'150px', height:'150px'}}src={imageSrc} alt="payment_proof"/>:""}
             <Grid item>
               <label htmlFor="paymentProof">
               <Button className={classes.btnMargin} variant="contained" color="primary" onClick={handleClear}>
@@ -362,6 +372,15 @@ export const Payment = () => {
 
       </Dialog>
 
+<Dialog>
+  <DialogTitle>
+
+  </DialogTitle>
+  <DialogContent>
+    
+  </DialogContent>
+
+</Dialog>
     </div>
   )
 }

@@ -281,6 +281,14 @@ export const HistoricOrderDetails = (props) => {
     }
 
     console.log(orderDetails, 'order details in hitem history')
+    let totalEstimatedPrice = 0
+    let totalSuppliedPrice = 0
+    const calculateTotalEstimatedPrice = ()=>{
+        orderDetails.map(x=>
+            totalEstimatedPrice = totalEstimatedPrice + x.ItemCost
+            )
+            return totalEstimatedPrice
+    }
     return (
         <div>
             {/* <Header title={(props.location.pathname).substring(1)} history={props.history} /> */}
@@ -315,7 +323,7 @@ export const HistoricOrderDetails = (props) => {
 
                             </div>
                             {showToggleSwitch()}
-
+{!isToggleOn?<div className="positionRight">Estimated price:{calculateTotalEstimatedPrice()}</div>:<div className="positionRight">Total price:{totalSuppliedPrice}</div>}
                             <TableContainer>
                                 <Table className={classes.table}>
                                     <TableHead>
@@ -335,6 +343,7 @@ export const HistoricOrderDetails = (props) => {
                                     <TableBody>
                                         {!isToggleOn ?
                                             orderDetails.map((p, index) => {
+                                                totalEstimatedPrice = totalEstimatedPrice+p.ItemCost
                                                 return (
                                                     <TableRow onClick={() => handleItemClick(p)}>
                                                         <TableCell align='center'>{index + 1}</TableCell>
@@ -347,6 +356,7 @@ export const HistoricOrderDetails = (props) => {
                                             })
                                             :
                                             orderDetails.map((p, index) => {
+                                                totalEstimatedPrice = totalSuppliedPrice+(p.SellIngPrice * p.SuppliedQty)
                                                 return (
                                                     <TableRow>
                                                         <TableCell align='center'>{index + 1}</TableCell>

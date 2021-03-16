@@ -11,6 +11,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import FlashMessage from 'react-flash-message'
+import { isDesktop } from 'react-device-detect'
 
 const useStyles = makeStyles((theme) => ({
     TextFieldMargin: {
@@ -192,34 +193,34 @@ export const AddProduct = (props) => {
 
     const ManualQuantityInput = () => {
         // if (unitType === "Kg") {
-            return (
+        return (
 
-                <TextField
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    required
-                    id="manualWeight"
-                    label={unitType === "Kg"?"Kg":"Numbers"}
-                    name="manualWeight"
-                    onChange={handleManualQuantityChange}
-                    error={errors.quantity}
-                    helperText={errors.quantity}/>)
-                /*{ <Input
+            <TextField
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                required
+                id="manualWeight"
+                label="Quantity"
+                name="manualWeight"
+                onChange={handleManualQuantityChange}
+                error={errors.quantity}
+                helperText={errors.quantity} />)
+        /*{ <Input
 
-                    id="standard-adornment-weight"
-                    value={quantityByManualEntry}
-                    onChange={handleManualQuantityChange}
-                    endAdornment={<InputAdornment position="end">Kg</InputAdornment>}
-                    aria-describedby="standard-weight-helper-text"
-                    inputProps={{
-                    'aria-label': 'weight',
-                }}
-                    error={errors.quantity ? true : false}
-                />
-                <FormHelperText id="standard-weight-helper-text">Weight</FormHelperText>
-                <FormHelperText id="standard-weight-helper-text">{errors.quantity}</FormHelperText>} */
-            
+            id="standard-adornment-weight"
+            value={quantityByManualEntry}
+            onChange={handleManualQuantityChange}
+            endAdornment={<InputAdornment position="end">Kg</InputAdornment>}
+            aria-describedby="standard-weight-helper-text"
+            inputProps={{
+            'aria-label': 'weight',
+        }}
+            error={errors.quantity ? true : false}
+        />
+        <FormHelperText id="standard-weight-helper-text">Weight</FormHelperText>
+        <FormHelperText id="standard-weight-helper-text">{errors.quantity}</FormHelperText>} */
+
 
         // }
         // else if (unitType === 'Numbers') {
@@ -281,9 +282,14 @@ export const AddProduct = (props) => {
     const ValidateManualWeightInput = () => {
         console.log('here in validate')
         var temp = []
-        if (isEnterWeightSetToManual) {
+        if (isEnterWeightSetToManual || isDesktop) {
             console.log(props)
-            temp.quantity = (/^\d*(\.\d+)?$/).test(quantityByManualEntry)? "" : "Invalid input. Only integers allowed"
+            if (unitTypeId === 1) {
+                temp.quantity = (/^\d*(\.\d)?$/).test(quantityByManualEntry) ? "" : "Invalid input. Only integers allowed"
+            }
+            else{
+                temp.quantity = (/^\d*?$/).test(quantityByManualEntry) ? "" : "Invalid input. Only integers allowed"
+            }
             //temp.quantity = quantityByManualEntry ? "" : "Quantity is required "
             setErrors({ ...temp })
         }
@@ -298,6 +304,9 @@ export const AddProduct = (props) => {
             if (isEnterWeightSetToManual && ValidateManualWeightInput()) {
                 quantity = quantityByManualEntry
             }
+            else if (isDesktop && ValidateManualWeightInput()) {
+                quantity = quantityByManualEntry
+            }
             else {
                 quantity = valueGroupsKG.Weight + valueGroupsGrams.Weight
             }
@@ -305,6 +314,9 @@ export const AddProduct = (props) => {
         }
         else if (unitTypeId === 2) {
             if (isEnterWeightSetToManual && ValidateManualWeightInput()) {
+                quantity = quantityByManualEntry
+            }
+            else if (isDesktop && ValidateManualWeightInput()) {
                 quantity = quantityByManualEntry
             }
             else {
@@ -320,25 +332,25 @@ export const AddProduct = (props) => {
             }
         });
 
-console.log(quantity,'quantity in add to cart')
-        
-            if (quantity == 0) {
-                console.log('inside if quantity check')
-                console.log(zeroQuantityWarning)
-               
-                setZeroQuantityWarning(true)
-            }
+        console.log(quantity, 'quantity in add to cart')
+
+        if (quantity == 0) {
+            console.log('inside if quantity check')
+            console.log(zeroQuantityWarning)
+
+            setZeroQuantityWarning(true)
+        }
         else {
 
             setZeroQuantityWarning(false)
             if (isUpdate) {
                 console.log('am here in update cart')
-                setCartStore({ productId, productName, quantity, unit, price: price * (quantity), itemPrice:price, unitTypeId:unitTypeId, type: 'Update' })
+                setCartStore({ productId, productName, quantity, unit, price: price * (quantity), itemPrice: price, unitTypeId: unitTypeId, type: 'Update' })
                 props.modelOpen("false")
             }
             else {
                 console.log('am here in add cart')
-                setCartStore({ productId, productName, quantity, unit, price: price * (quantity), itemPrice:price, unitTypeId:unitTypeId, type: 'Add' })
+                setCartStore({ productId, productName, quantity, unit, price: price * (quantity), itemPrice: price, unitTypeId: unitTypeId, type: 'Add' })
                 props.modelOpen("false")
             }
             setIsEnterWeightSetToManual(false)
@@ -347,6 +359,33 @@ console.log(quantity,'quantity in add to cart')
     }
 
     const classes = useStyles()
+
+    const getDeviceSpecificView = () => {
+        if (isDesktop) {
+            return ManualQuantityInput()
+        }
+        else {
+            return (
+                <>
+                    {isEnterWeightSetToManual ? ManualQuantityInput() : QuantitySelector()}
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={isEnterWeightSetToManual}
+                                onChange={handleWeightTextInput}
+                                name="checkedB"
+                                color="primary"
+                            />
+                        }
+                        label="Enter Manually"
+                    />
+
+                </>
+            )
+
+        }
+    }
+    console.log(isDesktop, 'is it desktop')
     return (
         <div>
 
@@ -355,20 +394,11 @@ console.log(quantity,'quantity in add to cart')
                     <span> Price: {calculatedPrice}</span>
                     <span className="positionRight">Quantity: {!isEnterWeightSetToManual ? quantityToDisplay : quantityByManualEntry} {unitType}</span>
                 </div> : ""}
-                {zeroQuantityWarning? <Typography style={{color:'red', align:'center'}}>Quantity should be greater than zero</Typography>:""}
+            {zeroQuantityWarning ? <Typography style={{ color: 'red', align: 'center' }}>Quantity should be greater than zero</Typography> : ""}
 
-            {isEnterWeightSetToManual ? ManualQuantityInput() : QuantitySelector()}
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        checked={isEnterWeightSetToManual}
-                        onChange={handleWeightTextInput}
-                        name="checkedB"
-                        color="primary"
-                    />
-                }
-                label="Enter Manually"
-            />
+            {getDeviceSpecificView()}
+
+
 
             <div className="text-center">
                 <Button color="primary" variant="contained" onClick={addToCart}>Add to Cart</Button>

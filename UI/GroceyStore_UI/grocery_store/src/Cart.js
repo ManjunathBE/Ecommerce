@@ -210,6 +210,7 @@ export const Cart = (props) => {
   const [showAddAddressDialog, setShowAddAddressDialog] = useState(false)
   const [orderBy, setOrderBy] = React.useState('productName');
   const [order, setOrder] = React.useState('asc');
+  const [showAddressUpdatedFlash,setShowAddressUpdatedFlash] = useState(false)
 
   const EnhancedTableToolbar = (props) => {
     const classes = useToolbarStyles();
@@ -434,7 +435,7 @@ export const Cart = (props) => {
               setUserStore({ user, type: 'User' })
               setSelectedAddressForDelivery(address[0])
               setTokenStore({ token: user.token })
-              setShowSelectedAddress(true)
+              //setShowSelectedAddress(true)
             }
           });
         }
@@ -446,10 +447,13 @@ export const Cart = (props) => {
 
 
   const handleAddressUpdated = () => {
+    console.log('in handle 1........')
+    setShowSelectedAddress(false)
+    setShowAddressUpdatedFlash(true)
     fetchUserDetails()
     setShowAddAddressDialog(false)
-    setShowAddressSelection(true)
-    
+    setShowAddressSelection(false)
+    setSelectedAddressForDelivery("")
 
   }
 
@@ -480,6 +484,15 @@ export const Cart = (props) => {
         <main className={classes.content}>
           <Container maxWidth="lg">
             {/* <Header title={(props.location.pathname).substring(1)} history={props.history} />\ */}
+
+            {showAddressUpdatedFlash?
+             <div >
+             <FlashMessage duration={5000} >
+               <div className='flashStyling text-center' style={{color:'success.main'}}>
+                 Address added
+                     </div>
+             </FlashMessage>
+           </div> : "" }
 
             {itemUpdated ?
               <div >
