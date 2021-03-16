@@ -175,7 +175,7 @@
       "ImagePath": "amla",
       "price": 90,
       "Category": "Vegetables",
-      "UnitType": "Kilograms"
+      "UnitType": "Kg"
     },
     {
       "id": 2,
@@ -184,7 +184,7 @@
       "ImagePath": "arbi",
       "price": 40,
       "Category": "Vegetables",
-      "UnitType": "Kilograms"
+      "UnitType": "Kg"
     },
     {
       "id": 3,
@@ -193,7 +193,7 @@
       "ImagePath": "baby_corn",
       "price": 100,
       "Category": "Vegetables",
-      "UnitType": "Kilograms"
+      "UnitType": "Kg"
     },
     {
       "id": 4,
