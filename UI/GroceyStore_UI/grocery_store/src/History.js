@@ -19,7 +19,7 @@ import { MenuPane } from './MenuPane'
 import FlashMessage from 'react-flash-message'
 
 const columns = [
-  { id: 'orderId', label: 'Order NO', minWidth: 130 },
+  { id: 'orderId', label: 'Order No', minWidth: 130 },
   { id: 'date', label: 'Date', minWidth: 130 },
   { id: 'time', label: 'Time', minWidth: 130 },
   {
