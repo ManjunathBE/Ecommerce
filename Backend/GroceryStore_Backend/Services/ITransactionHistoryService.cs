@@ -5,9 +5,9 @@ using System;
 
 namespace GroceryStore_Backend.Services
 {
-    public interface ITransactionHistoryService
+    public interface IOrderHistoryService
     {
-        public Task<List<TransactionHistory>> GetTransactionsasync(Guid UserId);
-        Task<TransactionHistory> AddTransactionsasync(TransactionHistory transaction);
+        public Task<List<OrderHistory>> GetTransactionsasync(Guid UserId);
+        Task<OrderHistory> AddTransactionsasync(OrderHistory transaction);
     }
 }

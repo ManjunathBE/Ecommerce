@@ -12,6 +12,6 @@ namespace GroceryStore_Backend.Services
 
 		Task<User> EditUserAsync(Guid userId, User UpdatedUserData);
 		Task<User> AddUserAsync(User UserData);
-
-	}
+        Task<Address> AddAddressAsync( Address address);
+    }
 }

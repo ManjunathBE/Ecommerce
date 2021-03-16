@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import { Header } from './Header'
 import ListIcon from '@material-ui/icons/List';
 import AppsIcon from '@material-ui/icons/Apps';
-import { Grid } from "@material-ui/core";
+import { Grid, Hidden } from "@material-ui/core";
 import { useStore } from "./Store";
 import { makeStyles } from "@material-ui/core/styles";
+import Footer from './Footer'
 
 const useStyles = makeStyles((theme) => ({
     gridPosition: {
@@ -15,21 +16,20 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 export const SelectView = (props) => {
-    
 
-      const classes = useStyles();
-
+    const {history} = props
+    const classes = useStyles();
     const {viewStore, setviewStore} = useStore();
 
     const handleListView = () =>{
 
         setviewStore({view:'List'})
-        props.history.push('/')
+        history.push('/')
     }
 
     const handleGridView = () =>{
         setviewStore({view:'Grid'})
-        props.history.push('/')
+        history.push('/')
     }
 
 
@@ -46,6 +46,9 @@ export const SelectView = (props) => {
                     <AppsIcon /> Grid View
                </Grid>
             </Grid>
+            <Hidden mdUp >
+              <Footer history={history}/>
+            </Hidden>
         </div>
         </React.Fragment>
     )

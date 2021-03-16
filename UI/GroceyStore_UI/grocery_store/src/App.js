@@ -1,23 +1,40 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import { Routes } from './Routes'
 import { AuthContext } from "./Auth";
-import Footer from './Footer'
+import { Header } from "./Header";
+import { Hidden } from '@material-ui/core';
+import { MenuPane } from './MenuPane'
+import firebaseConfig from './firebaseConfig';
+import firebase from "@firebase/app";
+import 'firebase/storage'
+import { withRouter } from 'react-router-dom'
 
 
-function App() {
+
+
+function App(props) {
+
   const [loginState, setLoginState] = useState(false)
   console.log(loginState, 'login state')
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+    const storage = firebase.storage()
+  } else {
+    firebase.app(); // if already initialized, use that one
+  }
   return (
-    <AuthContext.Provider value={{loginState, setLoginState}}>
-     {/* <AuthContext.Provider value={true}> */}
-    <div >
+    <AuthContext.Provider value={{ loginState, setLoginState }}>
+      {/* <AuthContext.Provider value={true}> */}
+      <div >
+        
+        {loginState?
+        <Header history={props.history} />:""}
+        <Routes />
 
-      <Routes />
-      <Footer />
-    </div>
+      </div>
     </AuthContext.Provider>
   );
 }
 
-export default App;
+export default withRouter(App);

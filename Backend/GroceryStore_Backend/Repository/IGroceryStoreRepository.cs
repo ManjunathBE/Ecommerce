@@ -20,7 +20,8 @@ namespace GroceryStore_Backend.Repository
 
         Task<User> AddUser(User userData);
         
-        Task<List<TransactionHistory>> GetTransactionHistory(Guid UserId);
-        Task<TransactionHistory> AddTrnsaction(TransactionHistory transaction);
+        Task<List<OrderHistory>> GetOrderHistory(Guid UserId);
+        Task<OrderHistory> AddTrnsaction(OrderHistory transaction);
+        Task<Address> AddAddress(Address address);
     }
 }

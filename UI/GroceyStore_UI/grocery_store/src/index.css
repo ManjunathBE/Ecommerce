@@ -13,17 +13,21 @@ code {
 }
 
 #header{
-  background-color: lightgray;
+  background-color:darkslategray;
+  position: sticky;
+  top: 0;
+  height: 75px;
+  color: white
 }
+
 
 #footer {
   position: fixed;
-  bottom: 0;
-  height: 2.5rem; 
-  width: 100%; 
+  bottom: 1.5%;
+  height: 3.5rem; 
   overflow: hidden;
-  background-color: black;
-  
+  background-color: lightgray;
+
 }
 
 .footerLink:hover{
@@ -47,7 +51,22 @@ code {
 }
 
 .flashStyling{
-  background-color: aqua;
+  color: whitesmoke;
+  background-color: green;
+  width: 40vw;
+  height: 50px;
+  color:white;
+  position:absolute;
+  font-size: larger;
+  text-align: center;
+  padding: 10px;
+  text-align: center;
+  margin: 0 auto;
+	top:1%;
+	bottom: 0;
+	left: 0;
+  right: 0;
+  border-radius: 25px;
 }
 
 

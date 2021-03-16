@@ -5,12 +5,16 @@ import {History} from "./History";
 import {Notification} from "./Notification";
 import {SelectView} from "./SelectView";
 import {UserProfile} from "./UserProfile/UserProfile";
-import {EditUserProfile} from "./UserProfile/EditUserProfile";
 import {AddUserProfile} from "./UserProfile/AddUserProfile";
 import { Dashboard } from "./Dashboard/Dashboard";
 import { ProductsDashboard } from "./Dashboard/ProductsDashboard";
 import {Login} from './Login';
 import PrivateRoute from './PrivateRoute';
+import {VerifyOtp} from './VerifyOtp'
+import {HistoricOrderDetails} from './HistoricOrderDetails'
+import {Unauthorised} from './Unauthorised'
+import {Suggestion} from './Suggestion'
+import {Payment} from './Payment'
 
 
 export const Routes = () => (
@@ -24,11 +28,17 @@ export const Routes = () => (
       <PrivateRoute path="/Notification" component={Notification} />
       <PrivateRoute path="/Select View" component={SelectView} />
       <PrivateRoute path="/UserProfile" component={UserProfile} />
-      <PrivateRoute path="/Edit User Profile" component={EditUserProfile} />
       <PrivateRoute path="/AddUserProfile" component={AddUserProfile} />
+      <PrivateRoute path ="/OrderDetails" component={HistoricOrderDetails} />
+      <PrivateRoute path ="/Payment" component={Payment} />
+      
+      <PrivateRoute path ="/noauth" component={Unauthorised} />
+      <PrivateRoute path ="/Feedback" component={Suggestion} />
+      <Route path="/verifyotp" component={VerifyOtp} />
+      
       <Route path="/login" component={Login} />
       <PrivateRoute        
-        path="/:productName"
+        path="/:productId"
         component={(props) => <ProductsDashboard {...props} />}
       />
     </Switch>

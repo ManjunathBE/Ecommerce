@@ -14,20 +14,20 @@ namespace GroceryStore_Backend.Controllers
     [Route("[controller]")]
     public class TransactionController : Controller
     {
-        private readonly ITransactionHistoryService _transactionHistoryService; 
-        public TransactionController(ITransactionHistoryService transactionHistoryService)
+        private readonly IOrderHistoryService _OrderHistoryService; 
+        public TransactionController(IOrderHistoryService OrderHistoryService)
         {
-            _transactionHistoryService = transactionHistoryService;
+            _OrderHistoryService = OrderHistoryService;
         }
         [HttpGet]
         public async Task<IActionResult> GetTransactionsasync(Guid UserId)
         {       
-            return Ok(await _transactionHistoryService.GetTransactionsasync(UserId));
+            return Ok(await _OrderHistoryService.GetTransactionsasync(UserId));
         }
         [HttpPost]
-        public async Task<IActionResult> AddTransaction(TransactionHistory transaction)
+        public async Task<IActionResult> AddTransaction(OrderHistory transaction)
         {
-            await _transactionHistoryService.AddTransactionsasync(transaction);
+            await _OrderHistoryService.AddTransactionsasync(transaction);
             return Created("$transaction", transaction);
         }
     }

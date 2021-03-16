@@ -29,5 +29,10 @@ namespace GroceryStore_Backend.Services
         {
             return await _groceryStoreRepository.AddUser(UserData);
         }
+
+        public async Task<Address> AddAddressAsync( Address address)
+        {
+            return await _groceryStoreRepository.AddAddress( address);
+        }
     }
 }

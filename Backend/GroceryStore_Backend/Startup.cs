@@ -37,8 +37,9 @@ namespace Ecommerce_Backend
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<IUsersService, UserService>();
-            services.AddTransient<ITransactionHistoryService, TransactionHistoryService>();
+            services.AddTransient<IOrderHistoryService, OrderHistoryService>();
             services.AddTransient<IGroceryStoreRepository, GroceryStoreRepository>();
+            
 
             services.AddCors(options =>
             {
@@ -83,6 +84,7 @@ namespace Ecommerce_Backend
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Grocery Shop API");
                 c.RoutePrefix = "";
             });
+            
         }
     }
 }
