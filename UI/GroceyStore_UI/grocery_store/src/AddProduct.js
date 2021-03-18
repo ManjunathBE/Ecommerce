@@ -197,6 +197,7 @@ export const AddProduct = (props) => {
 
             <TextField
                 variant="outlined"
+                autoFocus
                 fullWidth
                 margin="normal"
                 required

@@ -117,11 +117,11 @@ export const HistoricOrderDetails = (props) => {
     const showActionButtons = () => {
         console.log(props.location.state.orderStatus, 'order status')
         if (props.location.state.orderStatus === 'Order Booked') {
-            return (<React.Fragment><Button className={classes.btnMargin} variant="contained" color="primary" onClick={handleEditOrReorder}>Edit</Button>
+            return (<React.Fragment><Button className={classes.btnMargin} variant="contained" color="primary" onClick={() => handleEditOrReorder('edit')}>Edit</Button>
                 <Button variant="contained" color="secondary" onClick={handleCancelOrder} >Cancel order</Button> </React.Fragment>)
         }
         else if (props.location.state.orderStatus === 'Completed' || props.location.state.orderStatus === 'Order Cancelled') {
-            return (<Button className={classes.btnMargin} variant="contained" color="primary" onClick={handleEditOrReorder}>Re-order</Button>)
+            return (<Button className={classes.btnMargin} variant="contained" color="primary" onClick={() => handleEditOrReorder('reorder')}>Re-order</Button>)
         }
         else if (props.location.state.orderStatus === 'Out for Delivery') {
             return (<React.Fragment>
@@ -140,15 +140,15 @@ export const HistoricOrderDetails = (props) => {
                 </Grid>
             )
         }
-
         else {
             return ""
         }
     }
 
-    const handleEditOrReorder = (e) => {
-        e.preventDefault()
+    const handleEditOrReorder = (type) => {
+        // e.preventDefault()
 
+        console.log(type, '...flag..')
         console.log(cartStore.cart.length, 'cart in edit')
         if (cartStore.cart.length !== 0) {
             setWarningDialog(true)
@@ -156,9 +156,11 @@ export const HistoricOrderDetails = (props) => {
         else {
             console.log(orderDetails, 'orderdetails in history')
             orderDetails.map((item) => setCartStore({ item, type: 'AddFromHistory' }))
-            history.push(`/cart`)
+            history.push({
+                pathname: `/cart`,
+                state: { 'flag': type }
+            })
         }
-
     }
 
     const handleItemClick = (item) => {
@@ -167,7 +169,6 @@ export const HistoricOrderDetails = (props) => {
         if (props.location.state.orderStatus === 'Out for Delivery') {
             setShowMissingReturnOption(true)
             setSelectedItemForMissingReturn(item)
-
         }
     }
 
@@ -251,6 +252,7 @@ export const HistoricOrderDetails = (props) => {
         orderDetails.map((item) => setCartStore({ item, type: 'AddFromHistory' }))
         history.push(`/cart`)
     }
+
     const handleCancelOrder = () => {
 
         fetch('https://testapi.slrorganicfarms.com/cart/CancelOrder', {
@@ -283,11 +285,19 @@ export const HistoricOrderDetails = (props) => {
     console.log(orderDetails, 'order details in hitem history')
     let totalEstimatedPrice = 0
     let totalSuppliedPrice = 0
-    const calculateTotalEstimatedPrice = ()=>{
-        orderDetails.map(x=>
-            totalEstimatedPrice = totalEstimatedPrice + x.ItemCost
+    const calculateTotalPrice = (variant) => {
+        if (variant === 'estimated') {
+            orderDetails.map(x =>
+                totalEstimatedPrice = totalEstimatedPrice + x.ItemCost
             )
-            return totalEstimatedPrice
+            return totalEstimatedPrice.toFixed(2)
+        }
+        else {
+            orderDetails.map(p =>
+                totalSuppliedPrice = totalSuppliedPrice + (p.SellIngPrice * p.SuppliedQty)  
+            )
+            return totalSuppliedPrice.toFixed(2)
+        }
     }
     return (
         <div>
@@ -323,7 +333,7 @@ export const HistoricOrderDetails = (props) => {
 
                             </div>
                             {showToggleSwitch()}
-{!isToggleOn?<div className="positionRight">Estimated price:{calculateTotalEstimatedPrice()}</div>:<div className="positionRight">Total price:{totalSuppliedPrice}</div>}
+                            {!isToggleOn ? <div className="positionRight">Estimated price:{calculateTotalPrice('estimated')}</div> : <div className="positionRight">Total price:{calculateTotalPrice('total')}</div>}
                             <TableContainer>
                                 <Table className={classes.table}>
                                     <TableHead>
@@ -343,7 +353,7 @@ export const HistoricOrderDetails = (props) => {
                                     <TableBody>
                                         {!isToggleOn ?
                                             orderDetails.map((p, index) => {
-                                                totalEstimatedPrice = totalEstimatedPrice+p.ItemCost
+                                               
                                                 return (
                                                     <TableRow onClick={() => handleItemClick(p)}>
                                                         <TableCell align='center'>{index + 1}</TableCell>
@@ -356,14 +366,16 @@ export const HistoricOrderDetails = (props) => {
                                             })
                                             :
                                             orderDetails.map((p, index) => {
-                                                totalEstimatedPrice = totalSuppliedPrice+(p.SellIngPrice * p.SuppliedQty)
+                                                var isDifferent = false
+                                                
+                                                if (p.ItemCost !== (p.SellIngPrice * p.SuppliedQty)) isDifferent = true
                                                 return (
-                                                    <TableRow>
+                                                    <TableRow style={{ backgroundColor: isDifferent ? 'lightpink' : 'white' }}>
                                                         <TableCell align='center'>{index + 1}</TableCell>
                                                         <TableCell align='center'>{p.ItemName}</TableCell>
                                                         <TableCell align='center'>{p.SuppliedQty}</TableCell>
                                                         <TableCell align='center'>{p.UnitName}</TableCell>
-                                                        <TableCell align='center'>{p.SellIngPrice * p.SuppliedQty}</TableCell>
+                                                        <TableCell align='center'>{(p.SellIngPrice * p.SuppliedQty).toFixed(2)}</TableCell>
                                                     </TableRow>
                                                 )
                                             })}

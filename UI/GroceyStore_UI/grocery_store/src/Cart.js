@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Header } from './Header'
 import { useStore } from "./Store";
 import {
@@ -212,6 +212,17 @@ export const Cart = (props) => {
   const [order, setOrder] = React.useState('asc');
   const [showAddressUpdatedFlash,setShowAddressUpdatedFlash] = useState(false)
 
+  useEffect(() => {
+    console.log(cartStore.deliveryAddress.length,'effect....')
+    console.log(cartStore.deliveryAddress,'address effect....')
+
+    if( (Object.keys(cartStore.deliveryAddress).length !== 0) ){
+console.log('inside effect if')
+      setShowSelectedAddress(true)
+      setSelectedAddressForDelivery(cartStore.deliveryAddress)
+    }
+  }, [])
+
   const EnhancedTableToolbar = (props) => {
     const classes = useToolbarStyles();
     const { numSelected } = props;
@@ -301,6 +312,7 @@ export const Cart = (props) => {
 
     else {
       var cartItemList = []
+      var orderId = cartStore.cart[0].orderId;
       console.log(cartStore.cart, 'cart')
       console.log(cartStore, 'cartStore')
       cartStore.cart.forEach((item) =>
@@ -308,11 +320,14 @@ export const Cart = (props) => {
       )
 
       console.log(userStore, 'userStore')
+      if(props.location.state.flag==='reorder'){
+        orderId = -1
+      }
 
       const payload = {
         OrderCost: totalPrice,
         OrderAddressId: selectedAddressForDelivery.AddressId,
-        OrderId:cartStore.cart[0].orderId,
+        OrderId:orderId,
         OrderItemList: cartItemList
       }
       console.log(payload, 'ordered products')
@@ -354,6 +369,7 @@ export const Cart = (props) => {
     setShowAddressSelection(false)
     setShowSelectedAddress(true)
     setSelectedAddressForDelivery(address)
+    setCartStore({ address, type: 'Address' })
 
   }
 
@@ -367,7 +383,11 @@ export const Cart = (props) => {
 
   const splitAddress = () => {
     console.log(selectedAddressForDelivery, 'selected address for delivery')
-    return (<Card>
+    console.log(cartStore.deliveryAddress,'store address', cartStore.deliveryAddress.length,'length of address',cartStore,'cart store')
+    // if(cartStore.deliveryAddress)  setSelectedAddressForDelivery(cartStore.deliveryAddress)
+    console.log(showSelectedAddress,'eferferferferferf')
+    return (
+    <Card>
       <CardContent>
         <Typography>Selected delivery address</Typography><br />
         <Typography><span style={{fontWeight:'bold'}}> {selectedAddressForDelivery.AddressNickName}</span><br />
@@ -662,7 +682,7 @@ export const Cart = (props) => {
             ) :
             <div>
               <Typography>We could not find any address in your profile. please add one</Typography>
-              <EditAddress modelOpen={handleAddressAdded} AddressUpdated={handleAddressUpdated} />
+              <EditAddress modelOpen={handleAddressAdded} AddressUpdated={handleAddressUpdated} gst={""}/>
 
             </div>}
         </DialogContent>
