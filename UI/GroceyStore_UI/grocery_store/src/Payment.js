@@ -75,6 +75,7 @@ export const Payment = () => {
   const paymentProofRef = React.useRef()
   const [imageSrc,setImageSrc] = useState();
   const [imagePreviewVisibility, setImagePreviewVisibility ] = useState(false)
+  const [showPaymentDetailsDialog,setShowPaymentDetailsDialog] = useState(false)
 
   useEffect(() => {
     fetchPaymentDetails()
@@ -137,6 +138,9 @@ export const Payment = () => {
     if (item.IsUserConfirmed !== true) {
       setShowPaymentUploadDialog(true)
     }
+    else{
+      setShowPaymentDetailsDialog(true)
+    }
 
   }
 
@@ -170,9 +174,11 @@ export const Payment = () => {
         if (result.status === 200)
           result.json().then(body => {
             if (body.success === true) {
+              handleClear()
               console.log(body, 'result from backend')
               setPaymentData(body.data)
               setShowPaymentUploadDialog(false)
+             
             }
             else {
               //TODO: handle some error occured
@@ -213,12 +219,15 @@ export const Payment = () => {
     // })
   }
 
-  const handlePaymentDialogClose = () => {
+  const handlePaymentUploadDialogClose = () => {
     setShowPaymentUploadDialog(false)
     setDisableSaveBtn(true)
     setDisableUploadBtn(true)
     setImageSrc("")
     setImagePreviewVisibility(false)
+  }
+  const handlePaymentDetailsDialogClose =()=>{
+    setShowPaymentDetailsDialog(false)
   }
 
   const handleClear = () => {
@@ -290,7 +299,7 @@ export const Payment = () => {
       <Dialog open={showPaymentUploadDialog}>
         <DialogTitle className={classes.root}>
           Bill Number : {selectedPaymentRecord.BillNum}
-          <IconButton className={classes.closeButton} aria-label="close" onClick={handlePaymentDialogClose}>
+          <IconButton className={classes.closeButton} aria-label="close" onClick={handlePaymentUploadDialogClose}>
             <CloseIcon />
           </IconButton>
         </DialogTitle>
@@ -308,8 +317,8 @@ export const Payment = () => {
                   onChange={handlePaymentTypeChange}
                 >
                   <MenuItem value={1}>Cash</MenuItem>
-                  <MenuItem value={2}>Account transfer</MenuItem>
-                  <MenuItem value={3}>Wallet</MenuItem>
+                  <MenuItem value={2}>Wallet</MenuItem>
+                  <MenuItem value={3}>Online</MenuItem>
                 </Select>
 
 
@@ -372,11 +381,24 @@ export const Payment = () => {
 
       </Dialog>
 
-<Dialog>
+<Dialog open={showPaymentDetailsDialog}>
   <DialogTitle>
-
+  <IconButton className={classes.closeButton} aria-label="close" onClick={handlePaymentDetailsDialogClose}>
+            <CloseIcon />
+          </IconButton>
   </DialogTitle>
   <DialogContent>
+    <Grid container>
+      <Grid item md={6} xs={12}>
+      <Typography>Bill No : {selectedPaymentRecord.BillNum} <br/>
+                  Payment Type : {selectedPaymentRecord.PaymentType} <br/>
+                  Amount : {selectedPaymentRecord.OrderCost}</Typography>
+
+      </Grid>
+      <Grid item md={6} xs={12}>
+<img style={{width:'150px', height:'150px'}} src={selectedPaymentRecord.PaymentProofUrl} alt="payment_proof"/>
+      </Grid>
+    </Grid>
     
   </DialogContent>
 
