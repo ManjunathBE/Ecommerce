@@ -3,7 +3,7 @@ import { InsertInvitation, Store } from '@material-ui/icons';
 import React, { createContext, useContext, useReducer } from 'react';
 
 const StoreContext = createContext();
-const initialState = { view: "", cart: [], user: {}, token:"", address:{}};
+const initialState = { view: "", cart: [], user: {}, token:"", address:{}, deliveryAddress:""};
 
 const cartReducer = (state = initialState, action) => {
 
@@ -55,6 +55,10 @@ const cartReducer = (state = initialState, action) => {
                     unitTypeId: action.item.UnitTypeId,
                     orderId: action.item.OrderId
                 }]
+            }
+        case 'Address':
+            return{
+                ...state, deliveryAddress:  action.address 
             }
         default:
             return initialState
