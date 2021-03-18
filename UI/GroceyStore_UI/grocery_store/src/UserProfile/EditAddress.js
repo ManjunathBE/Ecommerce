@@ -103,7 +103,7 @@ console.log('validate passed')
                 margin="normal"
                 required
                 id="addressName"
-                label="Shop & Area"
+                label="Shop & (Area)"
                 name="NickName"
                 onChange={handleAddressChange}
                 defaultValue={props.addressName}             
