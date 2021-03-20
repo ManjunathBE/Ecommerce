@@ -286,7 +286,7 @@ export const AddProduct = (props) => {
         if (isEnterWeightSetToManual || isDesktop) {
             console.log(props)
             if (unitTypeId === 1) {
-                temp.quantity = (/^\d*(\.\d)?$/).test(quantityByManualEntry) ? "" : "Invalid input. Only integers allowed"
+                temp.quantity = (/^\d*(\.\d*)?$/).test(quantityByManualEntry) ? "" : "Invalid input. Only integers allowed"
             }
             else{
                 temp.quantity = (/^\d*?$/).test(quantityByManualEntry) ? "" : "Invalid input. Only integers allowed"
@@ -303,10 +303,10 @@ export const AddProduct = (props) => {
 
         if (unitTypeId === 1) {
             if (isEnterWeightSetToManual && ValidateManualWeightInput()) {
-                quantity = quantityByManualEntry
+                quantity = Number(quantityByManualEntry).toFixed(1)
             }
             else if (isDesktop && ValidateManualWeightInput()) {
-                quantity = quantityByManualEntry
+                quantity = Number(quantityByManualEntry).toFixed(1)
             }
             else {
                 quantity = valueGroupsKG.Weight + valueGroupsGrams.Weight
