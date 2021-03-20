@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { Header } from './Header'
 import { useStore } from "./Store";
 import {
-  Table, TableContainer, TableBody, TableCell, TableHead, TableRow,TableSortLabel, Checkbox, Paper, Toolbar, Typography,
+  Table, TableContainer, TableBody, TableCell, TableHead, TableRow, TableSortLabel, Checkbox, Paper, Toolbar, Typography,
   Tooltip, DialogTitle, DialogContent, Dialog, Card, CardMedia,
   CardContent, Hidden, Container, Grid
 } from '@material-ui/core'
@@ -92,9 +92,9 @@ function getComparator(order, orderBy) {
 }
 
 function stableSort(array, comparator) {
-  console.log(array,'in stablesort')
+  console.log(array, 'in stablesort')
   const stabilizedThis = array.map((el, index) => [el, index]);
-  console.log(stabilizedThis,'in stablesort mapped')
+  console.log(stabilizedThis, 'in stablesort mapped')
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
@@ -111,7 +111,7 @@ const TableHeaders = [
 ];
 
 function EnhancedTableHead(props) {
-  const { classes, onSelectAllClick, numSelected, cartCount, onRequestSort,orderBy, order } = props;
+  const { classes, onSelectAllClick, numSelected, cartCount, onRequestSort, orderBy, order } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -134,13 +134,13 @@ function EnhancedTableHead(props) {
             padding={headCell.disablePadding ? 'none' : 'default'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
-             <TableSortLabel
+            <TableSortLabel
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
               onClick={createSortHandler(headCell.id)}
             >
-            {headCell.label}
-            {orderBy === headCell.id ? (
+              {headCell.label}
+              {orderBy === headCell.id ? (
                 <span className={classes.visuallyHidden}>
                   {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                 </span>
@@ -210,14 +210,12 @@ export const Cart = (props) => {
   const [showAddAddressDialog, setShowAddAddressDialog] = useState(false)
   const [orderBy, setOrderBy] = React.useState('productName');
   const [order, setOrder] = React.useState('asc');
-  const [showAddressUpdatedFlash,setShowAddressUpdatedFlash] = useState(false)
+  const [showAddressUpdatedFlash, setShowAddressUpdatedFlash] = useState(false)
 
   useEffect(() => {
-    console.log(cartStore.deliveryAddress.length,'effect....')
-    console.log(cartStore.deliveryAddress,'address effect....')
 
-    if( (Object.keys(cartStore.deliveryAddress).length !== 0) ){
-console.log('inside effect if')
+    if ((Object.keys(cartStore.deliveryAddress).length !== 0)) {
+      console.log('inside effect if')
       setShowSelectedAddress(true)
       setSelectedAddressForDelivery(cartStore.deliveryAddress)
     }
@@ -260,7 +258,7 @@ console.log('inside effect if')
   };
 
   const handleRequestSort = (event, property) => {
-    console.log('in handle sort request',property)
+    console.log('in handle sort request', property)
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -320,14 +318,17 @@ console.log('inside effect if')
       )
 
       console.log(userStore, 'userStore')
-      if(props.location.state.flag==='reorder'){
-        orderId = -1
+      console.log(props.location.state)
+      if (props.location.state) {
+        if (props.location.state.flag === 'reorder') {
+          orderId = -1
+        }
       }
 
       const payload = {
         OrderCost: totalPrice,
         OrderAddressId: selectedAddressForDelivery.AddressId,
-        OrderId:orderId,
+        OrderId: orderId,
         OrderItemList: cartItemList
       }
       console.log(payload, 'ordered products')
@@ -383,24 +384,24 @@ console.log('inside effect if')
 
   const splitAddress = () => {
     console.log(selectedAddressForDelivery, 'selected address for delivery')
-    console.log(cartStore.deliveryAddress,'store address', cartStore.deliveryAddress.length,'length of address',cartStore,'cart store')
+    console.log(cartStore.deliveryAddress, 'store address', cartStore.deliveryAddress.length, 'length of address', cartStore, 'cart store')
     // if(cartStore.deliveryAddress)  setSelectedAddressForDelivery(cartStore.deliveryAddress)
-    console.log(showSelectedAddress,'eferferferferferf')
+    console.log(showSelectedAddress, 'eferferferferferf')
     return (
-    <Card>
-      <CardContent>
-        <Typography>Selected delivery address</Typography><br />
-        <Typography><span style={{fontWeight:'bold'}}> {selectedAddressForDelivery.AddressNickName}</span><br />
-          {selectedAddressForDelivery.FirstAddress}, <br/> 
-          {selectedAddressForDelivery.StreetDetails} <br />
-          {selectedAddressForDelivery.City} - {selectedAddressForDelivery.pincode}<br />
-          GSTIN NO: {selectedAddressForDelivery.GST} <br/>
-                    <br/>{selectedAddressForDelivery.ContactPerson} <br/>
+      <Card>
+        <CardContent>
+          <Typography>Selected delivery address</Typography><br />
+          <Typography><span style={{ fontWeight: 'bold' }}> {selectedAddressForDelivery.AddressNickName}</span><br />
+            {selectedAddressForDelivery.FirstAddress}, <br />
+            {selectedAddressForDelivery.StreetDetails} <br />
+            {selectedAddressForDelivery.City} - {selectedAddressForDelivery.pincode}<br />
+          GSTIN NO: {selectedAddressForDelivery.GST} <br />
+            <br />{selectedAddressForDelivery.ContactPerson} <br />
                   Phone: {selectedAddressForDelivery.Phone[0]}
-                  
-        </Typography>
-      </CardContent>
-    </Card>)
+
+          </Typography>
+        </CardContent>
+      </Card>)
   }
 
   const FlashItemUpdated = () => {
@@ -481,16 +482,16 @@ console.log('inside effect if')
     setShowAddressSelection(false)
   }
 
-  const handleCancelEditing = ()=>{
+  const handleCancelEditing = () => {
     setCartStore({ type: 'DeleteAll' })
   }
 
-  const handleAddress = ()=>{
+  const handleAddress = () => {
     setShowAddressSelection(false)
     setShowAddAddressDialog(true)
   }
 
-  const handleAddAddressDialogClose=()=>{
+  const handleAddAddressDialogClose = () => {
     setShowAddAddressDialog(false)
   }
 
@@ -505,19 +506,19 @@ console.log('inside effect if')
           <Container maxWidth="lg">
             {/* <Header title={(props.location.pathname).substring(1)} history={props.history} />\ */}
 
-            {showAddressUpdatedFlash?
-             <div >
-             <FlashMessage duration={5000} >
-               <div className='flashStyling text-center' style={{color:'success.main'}}>
-                 Address added
+            {showAddressUpdatedFlash ?
+              <div >
+                <FlashMessage duration={5000} >
+                  <div className='flashStyling text-center' style={{ color: 'success.main' }}>
+                    Address added
                      </div>
-             </FlashMessage>
-           </div> : "" }
+                </FlashMessage>
+              </div> : ""}
 
             {itemUpdated ?
               <div >
                 <FlashMessage duration={5000} >
-                  <div className='flashStyling text-center' style={{color:'success.main'}}>
+                  <div className='flashStyling text-center' style={{ color: 'success.main' }}>
                     Item Updated
                         </div>
                 </FlashMessage>
@@ -559,47 +560,47 @@ console.log('inside effect if')
                               cartCount={cartStore.cart.length}
                             />
                             <TableBody>
-                              
+
                               {stableSort(cartStore.cart, getComparator(order, orderBy))
-                              .map((cart, index) => {
-                                
-                                
-
-                                console.log(cart, 'item in cart')
+                                .map((cart, index) => {
 
 
-                                const isItemSelected = isSelected(cart.productName);
-                                const labelId = `enhanced-table-checkbox-${index}`;
 
-                                totalPrice = totalPrice + cart.price
-                                return (
-                                  <TableRow
-                                    hover
+                                  console.log(cart, 'item in cart')
 
-                                    role="checkbox"
-                                    aria-checked={isItemSelected}
-                                    tabIndex={-1}
-                                    key={cart.productName}
-                                    selected={isItemSelected}
-                                  >
-                                    <TableCell padding="checkbox">
-                                      <Checkbox
-                                        checked={isItemSelected}
-                                        inputProps={{ 'aria-labelledby': labelId }}
-                                        onClick={(event) => handleClick(event, cart.productName)}
-                                      />
-                                    </TableCell>
-                                    <TableCell component="th" id={labelId} scope="row" padding="none">
-                                      {cart.productName}
-                                    </TableCell>
-                                    <TableCell align="right">{cart.quantity}
-                                      <EditTwoToneIcon onClick={(event) => handleEditClick(event, cart)} />
-                                    </TableCell>
-                                    <TableCell align="right">{cart.unit}</TableCell>
-                                    <TableCell align="right">{(cart.price).toFixed(2)}</TableCell>
-                                  </TableRow>
-                                );
-                              })}
+
+                                  const isItemSelected = isSelected(cart.productName);
+                                  const labelId = `enhanced-table-checkbox-${index}`;
+
+                                  totalPrice = totalPrice + cart.price
+                                  return (
+                                    <TableRow
+                                      hover
+
+                                      role="checkbox"
+                                      aria-checked={isItemSelected}
+                                      tabIndex={-1}
+                                      key={cart.productName}
+                                      selected={isItemSelected}
+                                    >
+                                      <TableCell padding="checkbox">
+                                        <Checkbox
+                                          checked={isItemSelected}
+                                          inputProps={{ 'aria-labelledby': labelId }}
+                                          onClick={(event) => handleClick(event, cart.productName)}
+                                        />
+                                      </TableCell>
+                                      <TableCell component="th" id={labelId} scope="row" padding="none">
+                                        {cart.productName}
+                                      </TableCell>
+                                      <TableCell align="right">{cart.quantity}
+                                        <EditTwoToneIcon onClick={(event) => handleEditClick(event, cart)} />
+                                      </TableCell>
+                                      <TableCell align="right">{cart.unit}</TableCell>
+                                      <TableCell align="right">{(cart.price).toFixed(2)}</TableCell>
+                                    </TableRow>
+                                  );
+                                })}
                               <Hidden mdUp>
                                 <TableRow>
                                   <TableCell colspan={5} align="right">total price: ₹ {(totalPrice.toFixed(2))} <br />
@@ -612,13 +613,13 @@ console.log('inside effect if')
 
                           {showSelectedAddress ? splitAddress() : ""}
 
-                          
 
-                         {cartStore.cart[0].orderId? <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={handleCancelEditing}>Cancel Editing</Button> : ""}
+
+                          {cartStore.cart[0].orderId ? <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={handleCancelEditing}>Cancel Editing</Button> : ""}
 
                           <Hidden mdUp>
-                          <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={() => history.push("/")}>Continue Shopping</Button>
-                          <br/>
+                            <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={() => history.push("/")}>Continue Shopping</Button>
+                            <br />
                             <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handleSelectAddress}>Add/Select Address</Button>
                             <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
                           </Hidden>
@@ -661,28 +662,28 @@ console.log('inside effect if')
 
         </DialogTitle>
         <DialogContent>
-          <Button onClick={handleAddress} variant ="contained" color="primary">Add Address</Button>
+          <Button onClick={handleAddress} variant="contained" color="primary">Add Address</Button>
 
-        <Typography> or <br/> Select saved address</Typography>
+          <Typography> or <br /> Select saved address</Typography>
 
           {addressStore.address.length ?
 
             (addressStore.address.map((address) =>
               <Card style={{ marginTop: '16px' }} onClick={() => handleAddressCardClick(address)} spacing={2}>
                 <CardContent>
-                  <Typography><span style={{fontWeight:'bold'}}> {address.AddressNickName}</span><br />
-                    {address.FirstAddress}, <br/>
+                  <Typography><span style={{ fontWeight: 'bold' }}> {address.AddressNickName}</span><br />
+                    {address.FirstAddress}, <br />
                     {address.StreetDetails}, <br />
                     {address.City} - {address.pincode}<br />
-                    GSTIN NO: {address.GST} <br/>
-                    <br/>{address.ContactPerson} <br/>
+                    GSTIN NO: {address.GST} <br />
+                    <br />{address.ContactPerson} <br />
                   Phone: {address.Phone[0]}</Typography>
                 </CardContent>
               </Card>)
             ) :
             <div>
               <Typography>We could not find any address in your profile. please add one</Typography>
-              <EditAddress modelOpen={handleAddressAdded} AddressUpdated={handleAddressUpdated} gst={""}/>
+              <EditAddress modelOpen={handleAddressAdded} AddressUpdated={handleAddressUpdated} gst={""} />
 
             </div>}
         </DialogContent>
@@ -691,15 +692,15 @@ console.log('inside effect if')
 
       <Dialog open={showAddAddressDialog}>
         <DialogTitle>
-        <IconButton className={classes.closeButton} aria-label="close" onClick={handleAddAddressDialogClose}>
-                    <CloseIcon />
-                  </IconButton>
+          <IconButton className={classes.closeButton} aria-label="close" onClick={handleAddAddressDialogClose}>
+            <CloseIcon />
+          </IconButton>
                 Add Address
 
         </DialogTitle>
         <DialogContent>
-        <EditAddress modelOpen={closeModal} AddressUpdated={handleAddressUpdated} gst={""}
-                  />
+          <EditAddress modelOpen={closeModal} AddressUpdated={handleAddressUpdated} gst={""}
+          />
         </DialogContent>
 
       </Dialog>
@@ -719,8 +720,8 @@ console.log('inside effect if')
             productName={productToEdit.productName}
             unitType={productToEdit.unit}
             quantityToEdit={productToEdit.quantity}
-            addToCart={FlashItemUpdated} unitTypeId={productToEdit.unitTypeId} 
-            productId={productToEdit.productId}/>
+            addToCart={FlashItemUpdated} unitTypeId={productToEdit.unitTypeId}
+            productId={productToEdit.productId} />
         </DialogContent>
       </Dialog>
 
