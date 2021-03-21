@@ -60,6 +60,17 @@ const cartReducer = (state = initialState, action) => {
             return{
                 ...state, deliveryAddress:  action.address 
             }
+        case 'Instruction':
+            var instruction = action.instruction
+            return{
+                ...state, cart: state.cart.map((item) => (item.productName === instruction.productName ?
+                    {
+                        
+                        ...item, instruction: instruction.instruction
+                    } : item))
+            }
+
+            
         default:
             return initialState
     }

@@ -4,7 +4,7 @@ import { useStore } from "./Store";
 import {
   Table, TableContainer, TableBody, TableCell, TableHead, TableRow, TableSortLabel, Checkbox, Paper, Toolbar, Typography,
   Tooltip, DialogTitle, DialogContent, Dialog, Card, CardMedia,
-  CardContent, Hidden, Container, Grid
+  CardContent, Hidden, Container, Grid, TextField
 } from '@material-ui/core'
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
@@ -211,6 +211,8 @@ export const Cart = (props) => {
   const [orderBy, setOrderBy] = React.useState('productName');
   const [order, setOrder] = React.useState('asc');
   const [showAddressUpdatedFlash, setShowAddressUpdatedFlash] = useState(false)
+  const [showInstructionsDialog, setShowInstructionsDialog] = useState(false)
+  const [instructionArray, setInstructionArray]=useState({instructions:[]})
 
   useEffect(() => {
 
@@ -314,7 +316,7 @@ export const Cart = (props) => {
       console.log(cartStore.cart, 'cart')
       console.log(cartStore, 'cartStore')
       cartStore.cart.forEach((item) =>
-        cartItemList.push({ Itemid: item.productId, Qty: item.quantity, ItemCost: item.price })
+        cartItemList.push({ Itemid: item.productId, Qty: item.quantity, ItemCost: item.price,instruction:item.instruction })
       )
 
       console.log(userStore, 'userStore')
@@ -329,7 +331,8 @@ export const Cart = (props) => {
         OrderCost: totalPrice,
         OrderAddressId: selectedAddressForDelivery.AddressId,
         OrderId: orderId,
-        OrderItemList: cartItemList
+        OrderItemList: cartItemList,
+        instructions: instructionArray
       }
       console.log(payload, 'ordered products')
       fetch('https://testapi.slrorganicfarms.com/cart/CheckoutOrderByCart', {
@@ -499,6 +502,19 @@ export const Cart = (props) => {
     setShowAddAddressDialog(false)
   }
 
+  const handleInstructionsChange=(event, productName)=>{  
+    var instruction = {
+      productName:productName,
+      instruction: event.target.value
+    }
+    
+setCartStore({instruction, type:"Instruction"})
+    // setInstructionArray(...instructionArray.instructions, {productName:event.target.value}) 
+    // console.log(instructionArray)
+  }
+  const handleInstructionsDialogClose=()=>{
+    setShowInstructionsDialog(false)
+  }
   return (
     <div>
       <div className={classes.root}>
@@ -529,12 +545,6 @@ export const Cart = (props) => {
                 Order placed
         </div>
             </FlashMessage> : ""}
-
-
-            {/* <Hidden smDown>
-          <MenuPane history={history} />
-        </Hidden> */}
-
 
 
             <EnhancedTableToolbar numSelected={selected.length} selectedItems={selected} />
@@ -619,6 +629,7 @@ export const Cart = (props) => {
 
                           <Hidden mdUp>
                             <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={() => history.push("/")}>Continue Shopping</Button>
+                            <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={() => setShowInstructionsDialog(true)}>Add Instructions</Button>
                             <br />
                             <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handleSelectAddress}>Add/Select Address</Button>
                             <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
@@ -640,6 +651,7 @@ export const Cart = (props) => {
                       <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handleSelectAddress}>Add/Select Address</Button> <br />
                       <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
                       <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={() => history.push("/")}>Continue Shopping</Button>
+                      <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={() => setShowInstructionsDialog(true)}>Add Instructions</Button>
                     </CardContent>
                   </Card>
                 </Hidden>
@@ -736,8 +748,53 @@ export const Cart = (props) => {
         </DialogContent>
       </Dialog>
 
+<Dialog open={showInstructionsDialog}>
+  <DialogTitle>
+  <IconButton className={classes.closeButton} aria-label="close" onClick={handleInstructionsDialogClose}>
+            <CloseIcon />
+          </IconButton>
+
+  </DialogTitle>
+  <DialogContent>
+    <TableContainer>
+
+    </TableContainer>
+    <TableHead>
+      <TableRow>
+        <TableCell>
+          Product
+        </TableCell>
+        <TableCell>
+          Instructions
+        </TableCell>
+      </TableRow>
+    </TableHead>
+<TableBody>
+ 
+{cartStore.cart.map((item)=>{
+   console.log(instructionArray, 'instructionArray')
+  return(
+    <TableRow>
+      <TableCell>
+        {item.productName}
+      </TableCell>
+      <TableCell>
+        <TextField onChange={(event)=>handleInstructionsChange(event,item.productName)}
+        defaultValue={item.instruction}>
+
+        </TextField>
+      </TableCell>
+    </TableRow>
+  )
+}
+)}
+<Button variant="contained" color="primary" onClick={handleInstructionsDialogClose}>Save</Button>
+</TableBody>
+  </DialogContent>
+</Dialog>
 
 
     </div>
   )
+
 }
