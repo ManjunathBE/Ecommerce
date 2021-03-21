@@ -148,6 +148,8 @@ export const Header = (props) => {
                                 <option value="Cart">My Cart</option>
                                 <option value="Payment">Payment</option>
                                 <option value="Feedback">Feedback</option>
+                                <option value="Feedback">About us</option>
+                                <option value="Feedback">Terms of use</option>
                                 <option value="SignOut">Sign Out</option>
                             </NativeSelect>
 

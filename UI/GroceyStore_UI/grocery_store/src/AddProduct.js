@@ -287,9 +287,10 @@ export const AddProduct = (props) => {
             console.log(props)
             if (unitTypeId === 1) {
                 temp.quantity = (/^\d*(\.\d*)?$/).test(quantityByManualEntry) ? "" : "Invalid input. Only integers allowed"
+                if(quantityByManualEntry==0) temp.quantity = "Invalid input. Quantity should not be zero"
             }
             else{
-                temp.quantity = (/^\d*?$/).test(quantityByManualEntry) ? "" : "Invalid input. Only integers allowed"
+                temp.quantity = (/^([1-9][0-9]*)$/).test(quantityByManualEntry) ? "" : "Not a valid quantity. Special characters not allowed and should be greater than zero"
             }
             //temp.quantity = quantityByManualEntry ? "" : "Quantity is required "
             setErrors({ ...temp })
@@ -395,7 +396,7 @@ export const AddProduct = (props) => {
                     <span> Price: {calculatedPrice}</span>
                     <span className="positionRight">Quantity: {!isEnterWeightSetToManual ? quantityToDisplay : quantityByManualEntry} {unitType}</span>
                 </div> : ""}
-            {zeroQuantityWarning ? <Typography style={{ color: 'red', align: 'center' }}>Quantity should be greater than zero</Typography> : ""}
+            {/* {zeroQuantityWarning ? <Typography style={{ color: 'red', align: 'center' }}>Quantity should be greater than zero</Typography> : ""} */}
 
             {getDeviceSpecificView()}
 
