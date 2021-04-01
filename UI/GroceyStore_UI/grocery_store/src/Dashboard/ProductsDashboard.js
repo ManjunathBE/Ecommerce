@@ -179,7 +179,7 @@ export const ProductsDashboard = (props) => {
     return (
 
       <Grid item xs={6} sm={3} key={id}>
-        <Card className={classes.cardShadow} onClick={() => handleProductClick(price, ItemName, UnitName, Id, UnitTypeId)}>
+        <Card className={classes.cardShadow} onClick={() => handleProductClick(SellIngPrice, ItemName, UnitName, Id, UnitTypeId)}>
           {isDiscount ?
             <div>
               {discountPercentage}
@@ -187,13 +187,13 @@ export const ProductsDashboard = (props) => {
           <CardMedia
             className={classes.cardMedia}
             image={ItemImage}
-            // style={{ width: "100%", height: "200px" }}
-            style={{ width: "130px", height: "130px" }}
+             style={{ width: "100%", height: "200px" }}
+            //style={{ width: "130px", height: "130px" }}
           />
           <CardContent >
             <Typography className={classes.cardContent}>{`${toFirstCharUppercase(ItemName)}`}</Typography>
             <div className="text-center">
-              ₹{MRP_Price} / {UnitName}
+              ₹{SellIngPrice} / {UnitName}
             </div>
           </CardContent>
         </Card>
