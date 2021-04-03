@@ -3,16 +3,17 @@ import { useStore } from "./Store";
 import {
     Table, TableBody, TableCell, TableContainer,
     TableHead, TableRow, Typography, Grid, Switch, Button,
-    Paper, Hidden, Container, Dialog, DialogContent, DialogTitle, TextField
+    Paper, Hidden, Container, Dialog, DialogContent, DialogTitle, TextField, AccordionSummary, AccordionDetails, Accordion
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Footer from './Footer'
 import { MenuPane } from './MenuPane'
 import { Header } from './Header'
 import IconButton from '@material-ui/core/IconButton';
+import ReportProblemOutlinedIcon from '@material-ui/icons/ReportProblemOutlined';
 import CloseIcon from '@material-ui/icons/Close';
 import { unitMapper } from "./Helper";
-
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { MissingReturnItems } from './MissingReturnItems'
 
 const useStyles = makeStyles((theme) => ({
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
         position: 'absolute',
         right: theme.spacing(1),
         top: theme.spacing(1),
-        color: theme.palette.grey[500],
+        color: 'red',
     },
     addressDiv: {
         marginTop: theme.spacing(2),
@@ -45,7 +46,11 @@ const useStyles = makeStyles((theme) => ({
         marginRight: theme.spacing(2)
     },
     table: {
-        marginBottom: theme.spacing(10)
+        marginBottom: theme.spacing(10),
+        marginTop: theme.spacing(3)
+    },
+    topMargin: {
+        marginTop: theme.spacing(2),
     }
 }));
 
@@ -61,6 +66,7 @@ export const HistoricOrderDetails = (props) => {
     const [selectedItemForMissingReturn, setSelectedItemForMissingReturn] = useState()
     const [missingReturnValue, setMissingReturnValue] = useState()
     const [warningDialog, setWarningDialog] = useState(false)
+    const [showCancellationConfirmationDialog, setShowCancellationConfirmationDialog] = useState(false)
 
     var MissingReturnItemsList = []
 
@@ -71,6 +77,7 @@ export const HistoricOrderDetails = (props) => {
         { id: 'Quantity', numeric: true, disablePadding: true, label: 'Quantity' },
         { id: 'Unit', numeric: true, disablePadding: true, label: 'Unit' },
         { id: 'Price', numeric: true, disablePadding: true, label: 'Price (₹)' },
+        { id: 'Instructions', numeric: true, disablePadding: true, label: 'Instructions' },
     ]
 
 
@@ -118,7 +125,7 @@ export const HistoricOrderDetails = (props) => {
         console.log(props.location.state.orderStatus, 'order status')
         if (props.location.state.orderStatus === 'Order Booked') {
             return (<React.Fragment><Button className={classes.btnMargin} variant="contained" color="primary" onClick={() => handleEditOrReorder('edit')}>Edit</Button>
-                <Button variant="contained" color="secondary" onClick={handleCancelOrder} >Cancel order</Button> </React.Fragment>)
+                <Button variant="contained" color="secondary" onClick={handleCancelOrderClick} >Cancel order</Button> </React.Fragment>)
         }
         else if (props.location.state.orderStatus === 'Completed' || props.location.state.orderStatus === 'Order Cancelled') {
             return (<Button className={classes.btnMargin} variant="contained" color="primary" onClick={() => handleEditOrReorder('reorder')}>Re-order</Button>)
@@ -253,6 +260,11 @@ export const HistoricOrderDetails = (props) => {
         history.push(`/cart`)
     }
 
+    const handleCancelOrderClick = () => {
+        setShowCancellationConfirmationDialog(true)
+
+    }
+
     const handleCancelOrder = () => {
 
         fetch('https://testapi.slrorganicfarms.com/cart/CancelOrder', {
@@ -294,7 +306,7 @@ export const HistoricOrderDetails = (props) => {
         }
         else {
             orderDetails.map(p =>
-                totalSuppliedPrice = totalSuppliedPrice + (p.SellIngPrice * p.SuppliedQty)  
+                totalSuppliedPrice = totalSuppliedPrice + (p.SellIngPrice * p.SuppliedQty)
             )
             return totalSuppliedPrice.toFixed(2)
         }
@@ -314,32 +326,79 @@ export const HistoricOrderDetails = (props) => {
                             <Button className={classes.btnMargin} variant="contained" color="primary" onClick={() => history.goBack()}>Back</Button>
                             {showActionButtons()}
 
-                            <div className={classes.addressDiv}>
-                                {orderDetails.length ?
-                                    <React.Fragment>
-                                        <Typography> <span style={{ fontWeight: 'bold' }}> Order Number : </span>{props.location.state.orderId}</Typography>
-                                        <Typography> <span style={{ fontWeight: 'bold' }}> Order Status : </span>{orderDetails[0].OrderStatus}</Typography>
-                                        <br />
-                                        <Typography style={{ fontWeight: 'bold' }}>Delivery Address</Typography>
+                            <Grid className={classes.topMargin} container spacing={2}>
+                                <Grid item xs={12} md={6}>
+                                    <Accordion>
+                                        <AccordionSummary
+                                            expandIcon={<ExpandMoreIcon />}
+                                            aria-controls="panel1a-content"
+                                            id="panel1a-header"
+                                        >
+                                            <Typography className={classes.heading}>Delivery Address</Typography>
+                                        </AccordionSummary>
+                                        <AccordionDetails>
+                                            <div className={classes.addressDiv}>
+                                                {orderDetails.length ?
+                                                    <React.Fragment>
+                                                        <Typography> <span style={{ fontWeight: 'bold' }}> Order Number : </span>{props.location.state.orderId}</Typography>
+                                                        <Typography> <span style={{ fontWeight: 'bold' }}> Order Status : </span>{orderDetails[0].OrderStatus}</Typography>
+                                                        <br />
+                                                        <Typography style={{ fontWeight: 'bold' }}>Delivery Address</Typography>
 
-                                        <Typography>{orderDetails[0].AddressNickName}<br />
-                                            {orderDetails[0].FirstAddress}<br />
-                                            {orderDetails[0].StreetDetails}<br />
-                                            {orderDetails[0].City} - {orderDetails[0].pincode} <br />
+                                                        <Typography>{orderDetails[0].AddressNickName}<br />
+                                                            {orderDetails[0].FirstAddress}<br />
+                                                            {orderDetails[0].StreetDetails}<br />
+                                                            {orderDetails[0].City} - {orderDetails[0].pincode} <br />
                                 GSTIN: {orderDetails[0].GST}<br />
-                                            <br />{orderDetails[0].ContactPerson}<br />
+                                                            <br />{orderDetails[0].ContactPerson}<br />
                                 Phone: {orderDetails[0].Phone}
-                                        </Typography></React.Fragment> : ""}
+                                                        </Typography></React.Fragment> : ""}
+                                            </div>
 
-                            </div>
+                                        </AccordionDetails>
+                                    </Accordion>
+
+                                </Grid>
+                                <Grid item xs={12} md={6}>
+                                <Accordion>
+                                        <AccordionSummary
+                                            expandIcon={<ExpandMoreIcon />}
+                                            aria-controls="panel1a-content"
+                                            id="panel1a-header"
+                                        >
+                                            <Typography className={classes.heading}>Order Details</Typography>
+                                        </AccordionSummary>
+                                        <AccordionDetails>
+                                            <div className={classes.addressDiv}>
+                                                {orderDetails.length ?
+                                                    <React.Fragment>
+                                                        <Typography> <span style={{ fontWeight: 'bold' }}> Order Number : </span>{props.location.state.orderId}</Typography>
+                                                        <Typography> <span style={{ fontWeight: 'bold' }}> Order Status : </span>{orderDetails[0].OrderStatus}</Typography>
+                                                        <br />
+                                                        {!isToggleOn ? <div>Estimated price:{calculateTotalPrice('estimated')}</div> : <div>Total price:{calculateTotalPrice('total')}</div>}
+                                                        </React.Fragment>: ""}
+                                            </div>
+
+                                        </AccordionDetails>
+                                    </Accordion>
+
+                                    
+
+                                </Grid>
+
+                            </Grid>
+
+
+
+
                             {showToggleSwitch()}
-                            {!isToggleOn ? <div className="positionRight">Estimated price:{calculateTotalPrice('estimated')}</div> : <div className="positionRight">Total price:{calculateTotalPrice('total')}</div>}
+                           
                             <TableContainer>
                                 <Table className={classes.table}>
                                     <TableHead>
                                         <TableRow>
                                             {Headers.map((headCell) => (
-                                                <TableCell
+                                                <TableCell style={{fontWeight:'bold'}}
                                                     key={headCell.id}
                                                     align='center'
                                                     padding={headCell.disablePadding ? 'none' : 'default'}
@@ -353,7 +412,7 @@ export const HistoricOrderDetails = (props) => {
                                     <TableBody>
                                         {!isToggleOn ?
                                             orderDetails.map((p, index) => {
-                                               
+
                                                 return (
                                                     <TableRow onClick={() => handleItemClick(p)}>
                                                         <TableCell align='center'>{index + 1}</TableCell>
@@ -361,13 +420,14 @@ export const HistoricOrderDetails = (props) => {
                                                         <TableCell align='center'>{p.qty}</TableCell>
                                                         <TableCell align='center'>{p.UnitName}</TableCell>
                                                         <TableCell align='center'>{p.ItemCost.toFixed(2)}</TableCell>
+                                                        <TableCell>{p.Instructions}</TableCell>
                                                     </TableRow>
                                                 )
                                             })
                                             :
                                             orderDetails.map((p, index) => {
                                                 var isDifferent = false
-                                                
+
                                                 if (p.ItemCost !== (p.SellIngPrice * p.SuppliedQty)) isDifferent = true
                                                 return (
                                                     <TableRow style={{ backgroundColor: isDifferent ? 'lightpink' : 'white' }}>
@@ -410,11 +470,40 @@ export const HistoricOrderDetails = (props) => {
 
             <Dialog onClose={handleWarningDialogClose} open={warningDialog}>
                 <DialogTitle>
+                    <IconButton className={classes.closeButton} aria-label="close" onClick={handleDialogClose}>
+                        <CloseIcon />
+                    </IconButton>
                 </DialogTitle>
                 <DialogContent>
-                    The items in your cart will be deleted
-          <Button varaint="contained" color="primary" onClick={handleProceedToCart}>Proceed</Button>
+                    <div className="text-center">
+                        <ReportProblemOutlinedIcon style={{ fontSize: '80px', color: 'orangered' }} />
+                        <br />
+                        <Typography className={classes.topMargin}>The items in your cart will be deleted</Typography>
+                        <br />
+                        <Button className={classes.topMargin} variant="contained" color="primary" onClick={handleProceedToCart}>Proceed</Button>
+                    </div>
                 </DialogContent>
+            </Dialog>
+
+            <Dialog open={showCancellationConfirmationDialog}>
+                <DialogTitle>
+                    <IconButton className={classes.closeButton} aria-label="close" onClick={() => setShowCancellationConfirmationDialog(false)}>
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent>
+                    <div className="text-center">
+                        <Typography>Do you want to cancel this order?</Typography>
+                    </div>
+                    <br />
+                    <div className={classes.topMargin}>
+                        <Button className={classes.btnMargin} variant="contained" color="secondary" onClick={handleCancelOrder}> Yes </Button>
+                        <Button className={classes.btnMargin} variant="contained" color="primary" onClick={() => setShowCancellationConfirmationDialog(false)}> No </Button>
+                    </div>
+
+                </DialogContent>
+
+
             </Dialog>
 
         </div>
