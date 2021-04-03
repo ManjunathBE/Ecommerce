@@ -279,7 +279,7 @@ export const Payment = () => {
                         <TableCell align="center">{x.Id}</TableCell>
                         <TableCell align="center">{paymentDate}</TableCell>
                         <TableCell align="center">{x.BillNum}</TableCell>
-                        <TableCell align="center">{x.OrderCost}</TableCell>
+                        <TableCell align="center">{x.SuppliedAmt}</TableCell>
                         <TableCell align="center" ><div style={{ backgroundColor: crateBgColor, width: '25px', color: textColor }}> {x.MissingCrates}  </div></TableCell>
                         {/* <TableCell style={{ backgroundColor: x.IsUserConfirmed ? 'green' : '' }}>{x.IsUserConfirmed ? 'Confirmed' : 'Yet to Confirm'}</TableCell>
                     <TableCell style={{ backgroundColor: x.IsConfirmed ? 'green' : '' }}>{x.IsConfirmed ? 'Confirmed' : 'Yet to Confirm'}</TableCell> */}
