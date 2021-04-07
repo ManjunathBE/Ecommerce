@@ -80,7 +80,14 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
     marginRight: theme.spacing(2)
+  },
+  MuiTableCell:{
+  root:{
+    [theme.breakpoints.down('md')]: { 
+      padding: '0px'
+    },
   }
+}
 }));
 
 
@@ -139,7 +146,7 @@ function EnhancedTableHead(props) {
         {TableHeaders.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
+            align='center'
             padding={headCell.disablePadding ? 'none' : 'default'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -633,11 +640,11 @@ export const Cart = (props) => {
                                       <TableCell component="th" id={labelId} scope="row" padding="none">
                                         {cart.productName}
                                       </TableCell>
-                                      <TableCell align="right">{cart.quantity}
+                                      <TableCell align='center'>{cart.quantity}
                                         <EditTwoToneIcon onClick={(event) => handleEditClick(event, cart)} />
                                       </TableCell>
-                                      <TableCell align="right">{cart.unit}</TableCell>
-                                      <TableCell align="right">{(cart.price).toFixed(2)}</TableCell>
+                                      <TableCell align='center'>{cart.unit}</TableCell>
+                                      <TableCell align='center'>{(cart.price).toFixed(2)}</TableCell>
                                     </TableRow>
                                   );
                                 })}
@@ -665,7 +672,7 @@ export const Cart = (props) => {
                             <br />
                             <Button disabled={cartStore.cart.length === 0} className={classes.btnMarginsWithDivider} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
                             <Button className={classes.btnMarginsWithDivider} variant='contained' color='primary' onClick={() => history.push("/")}>Continue Shopping</Button>
-
+                            <div style={{marginBottom:'75px'}}></div>
                           </Hidden>
 
                         </React.Fragment> : "Cart is empty"}
