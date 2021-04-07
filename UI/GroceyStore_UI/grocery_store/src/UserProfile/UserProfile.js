@@ -57,13 +57,13 @@ const useStyles = makeStyles((theme) => ({
     },
     padding: theme.spacing(3),
   },
-  AddressCardDiv:{
-    
+  AddressCardDiv: {
+
     [theme.breakpoints.down('xs')]: {
       padding: theme.spacing(2),
     },
     padding: theme.spacing(3),
-    '&:hover':{
+    '&:hover': {
       boxShadow: '0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)'
     }
 
@@ -112,19 +112,22 @@ const useStyles = makeStyles((theme) => ({
   },
   EditIconMargin: {
     marginLeft: theme.spacing(3),
-    cursor:'pointer'
+    cursor: 'pointer'
   },
   AddressButton: {
     marginLeft: theme.spacing(3),
   },
 
-  container:{
-    [theme.breakpoints.down('md')]: { 
+  container: {
+    [theme.breakpoints.down('md')]: {
       padding: '0px'
     },
   },
-  EditIcon:{
-    cursor:'pointer'
+  EditIcon: {
+    cursor: 'pointer'
+  },
+  DeleteButton: {
+    marginTop: theme.spacing(2)
   }
 
 
@@ -255,12 +258,12 @@ export const UserProfile = (props) => {
     setShowAddAddressDialog(false)
     setShowAddressFlash(true)
   }
-  const deleteAddress=(addressId)=>{
-    const  payload={
+  const deleteAddress = (addressId) => {
+    const payload = {
       AddressId: addressId
     }
-    console.log(payload,'payload in delete address')
-    fetch('https://testapi.slrorganicfarms.com/profile/AddressDelete',{
+    console.log(payload, 'payload in delete address')
+    fetch('https://testapi.slrorganicfarms.com/profile/AddressDelete', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -268,21 +271,21 @@ export const UserProfile = (props) => {
       },
       body: JSON.stringify(payload)
     })
-    .then(result => {
-      if(result.status===200)
-      result.json().then(body => {
-        if (body.success === true) {
-        fetchUserDetails()
-        setShowAddressDeletedFlash(true)
-        }
-        else{
-         //TODO: handle some error occured
-        }
+      .then(result => {
+        if (result.status === 200)
+          result.json().then(body => {
+            if (body.success === true) {
+              fetchUserDetails()
+              setShowAddressDeletedFlash(true)
+            }
+            else {
+              //TODO: handle some error occured
+            }
+          })
       })
-    })
 
   }
-  const setDefaultAddress=()=>{
+  const setDefaultAddress = () => {
 
   }
 
@@ -309,15 +312,15 @@ export const UserProfile = (props) => {
             </FlashMessage>
           </div> : ""}
 
-          {showAddressDeletedFlash?
+        {showAddressDeletedFlash ?
           <div >
-          <FlashMessage duration={5000} >
-            <div className='flashStyling text-center'>
-              Address deleted
+            <FlashMessage duration={5000} >
+              <div className='flashStyling text-center'>
+                Address deleted
                       </div>
-          </FlashMessage>
-        </div> : ""
-          }
+            </FlashMessage>
+          </div> : ""
+        }
 
 
         {/* <Hidden smDown>
@@ -357,21 +360,21 @@ export const UserProfile = (props) => {
                   {(addressStore.address).map((add, index) =>
 
                     <Grid className={classes.AddressDiv} item xs={12} md={4} >
-                      <Card className={classes.AddressCardDiv} >
+                      <div className={classes.AddressCardDiv} >
                         {/* <Typography> Address : {index+1} <br/> {id.addressLine1}, {id.addressLine2}<br />{`${toFirstCharUppercase(id.city)}`}<br /> Pin: {id.pinCode}</Typography> */}
-                        <Typography><span style={{fontWeight:'bold'}}> {add.AddressNickName} </span>
+                        <Typography><span style={{ fontWeight: 'bold' }}> {add.AddressNickName} </span>
                           <span className="positionRight"><EditTwoToneIcon className={classes.EditIcon} onClick={() => handleAddressEdit(add)} /></span>
-                          
+
                           <br />{add.FirstAddress}
                           <br />{add.StreetDetails}
                           <br />{add.City} - {add.pincode}
-                          <br />GSTIN NO: {add.GST}<br/>
+                          <br />GSTIN NO: {add.GST}<br />
                           <br />{add.ContactPerson}
                           <br />Phone: {add.Phone[0]}
-                          </Typography>
-                          <Button variant="contained" color="secondary" onClick={()=>deleteAddress(add.AddressId)}>Delete</Button>
-                          {/* <Button variant="contained" onClick={setDefaultAddress}>Set as default</Button> */}
-                      </Card>
+                        </Typography>
+                        <Button className={classes.DeleteButton} variant="contained" color="secondary" onClick={() => deleteAddress(add.AddressId)}>Delete</Button>
+                        {/* <Button variant="contained" onClick={setDefaultAddress}>Set as default</Button> */}
+                      </div>
                     </Grid>
                   )}
                 </Grid>
@@ -385,7 +388,7 @@ export const UserProfile = (props) => {
                 Add Address
               </DialogTitle>
                 <DialogContent>
-                  <EditAddress modelOpen={closeModal} AddressUpdated={handleAddressUpdated} gst={""}/>
+                  <EditAddress modelOpen={closeModal} AddressUpdated={handleAddressUpdated} gst={""} />
                 </DialogContent>
 
 
@@ -421,7 +424,7 @@ export const UserProfile = (props) => {
               </DialogTitle>
         <EditAddress addressName={AddressToEdit.AddressNickName} addressLine1={AddressToEdit.FirstAddress} addressLine2={AddressToEdit.StreetDetails} phone={AddressToEdit.Phone[0]}
           city={AddressToEdit.City} pinCode={AddressToEdit.pincode} AddressUpdated={handleAddressUpdated} addressId={AddressToEdit.AddressId}
-          contactPerson={AddressToEdit.ContactPerson} gst={AddressToEdit.GST}/>
+          contactPerson={AddressToEdit.ContactPerson} gst={AddressToEdit.GST} />
       </Dialog>
 
 

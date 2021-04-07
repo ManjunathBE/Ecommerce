@@ -50,6 +50,10 @@ code {
   float: left;
 }
 
+.positionCenter{
+  text-align: center;
+}
+
 .flashStyling{
   color: whitesmoke;
   background-color: green;

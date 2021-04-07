@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     height: '100vh',
-    overflow: 'auto',
+    // overflow: 'auto',
   },
   container: {
 
@@ -301,9 +301,9 @@ export function History(props) {
                 </FlashMessage>
               </div> : ""}
     <Container maxWidth="lg" className={classes.container}>
-      <TableContainer className={classes.tableContainer}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead >
+      {/* <TableContainer > */}
+        <Table stickyHeader className={classes.tableContainer} >
+          <TableHead style={{paddingTop:'68px'}} >
             <TableRow>
               {columns.map((column) => (
                 <TableCell className={classes.tableHeaderData}
@@ -355,7 +355,7 @@ export function History(props) {
             {/* })} */}
           </TableBody>
         </Table>
-      </TableContainer>
+      {/* </TableContainer> */}
       {/* <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"

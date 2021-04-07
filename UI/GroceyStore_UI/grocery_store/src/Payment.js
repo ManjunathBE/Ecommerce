@@ -15,6 +15,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { Spinner } from './Spinner'
+import NoImage from './Images/no_image.png'
 
 import firebase from "firebase";
 
@@ -73,9 +74,9 @@ export const Payment = () => {
   const [disableSaveBtn, setDisableSaveBtn] = useState(true)
   const [disableUploadBtn, setDisableUploadBtn] = useState(true)
   const paymentProofRef = React.useRef()
-  const [imageSrc,setImageSrc] = useState();
-  const [imagePreviewVisibility, setImagePreviewVisibility ] = useState(false)
-  const [showPaymentDetailsDialog,setShowPaymentDetailsDialog] = useState(false)
+  const [imageSrc, setImageSrc] = useState();
+  const [imagePreviewVisibility, setImagePreviewVisibility] = useState(false)
+  const [showPaymentDetailsDialog, setShowPaymentDetailsDialog] = useState(false)
 
   useEffect(() => {
     fetchPaymentDetails()
@@ -138,7 +139,7 @@ export const Payment = () => {
     if (item.IsUserConfirmed !== true) {
       setShowPaymentUploadDialog(true)
     }
-    else{
+    else {
       setShowPaymentDetailsDialog(true)
     }
 
@@ -178,7 +179,7 @@ export const Payment = () => {
               console.log(body, 'result from backend')
               setPaymentData(body.data)
               setShowPaymentUploadDialog(false)
-             
+
             }
             else {
               //TODO: handle some error occured
@@ -226,7 +227,7 @@ export const Payment = () => {
     setImageSrc("")
     setImagePreviewVisibility(false)
   }
-  const handlePaymentDetailsDialogClose =()=>{
+  const handlePaymentDetailsDialogClose = () => {
     setShowPaymentDetailsDialog(false)
   }
 
@@ -246,7 +247,7 @@ export const Payment = () => {
       <Container>
         {paymentData ?
 
-          <TableContainer  className={classes.tableContainer}>
+          <TableContainer className={classes.tableContainer}>
             <Table >
               <TableHead>
                 <TableRow >
@@ -267,18 +268,19 @@ export const Payment = () => {
                 {paymentData.map((x) => {
                   var paymentDateTime = new Date(x.OrderDateAndTime)
                   var paymentDate = paymentDateTime.toLocaleDateString()
-                  var crateBgColor = ""
+                  var crateBgColor, textColor = ""
                   if (x.MissingCrates > 0) {
                     crateBgColor = 'Red'
+                    textColor = 'white'
                   }
                   return (
                     <React.Fragment>
-                      <TableRow style={{cursor:'pointer', backgroundColor: x.IsConfirmed ? 'lightgreen' : x.IsUserConfirmed ? 'skyblue' : "" }}hover onClick={() => handlePaymentClick(x)}>
+                      <TableRow style={{ cursor: 'pointer', backgroundColor: x.IsConfirmed ? 'lightgreen' : x.IsUserConfirmed ? 'skyblue' : "" }} hover onClick={() => handlePaymentClick(x)}>
                         <TableCell align="center">{x.Id}</TableCell>
                         <TableCell align="center">{paymentDate}</TableCell>
                         <TableCell align="center">{x.BillNum}</TableCell>
-                        <TableCell align="center">{x.OrderCost}</TableCell>
-                        <TableCell align="center" style={{ backgroundColor: crateBgColor }}>{x.MissingCrates}</TableCell>
+                        <TableCell align="center">{x.SuppliedAmt}</TableCell>
+                        <TableCell align="center" ><div style={{ backgroundColor: crateBgColor, width: '25px', color: textColor }}> {x.MissingCrates}  </div></TableCell>
                         {/* <TableCell style={{ backgroundColor: x.IsUserConfirmed ? 'green' : '' }}>{x.IsUserConfirmed ? 'Confirmed' : 'Yet to Confirm'}</TableCell>
                     <TableCell style={{ backgroundColor: x.IsConfirmed ? 'green' : '' }}>{x.IsConfirmed ? 'Confirmed' : 'Yet to Confirm'}</TableCell> */}
                       </TableRow>
@@ -356,20 +358,26 @@ export const Payment = () => {
                 ref={paymentProofRef}
               />
             </Grid>
-           {imagePreviewVisibility?  <img style={{width:'150px', height:'150px'}}src={imageSrc} alt="payment_proof"/>:""}
             <Grid item>
-              <label htmlFor="paymentProof">
+              {imagePreviewVisibility ? <img style={{ width: '150px', height: '150px' }} src={imageSrc} alt="payment_proof" /> :
+                <img style={{ width: '150px', height: '150px' }} src={NoImage} alt="no-img" />}
+            </Grid>
+
+            {/* <label htmlFor="paymentProof"> */}
+            <div className="positionCenter">
               <Button className={classes.btnMargin} variant="contained" color="primary" onClick={handleClear}>
-                  Clear
+                Clear
           </Button>
-                <Button className={classes.btnMargin} component="span" disabled={disableUploadBtn} onClick={handleUpload} variant="contained" color="primary">
-                  Upload
+              <Button className={classes.btnMargin} component="span" disabled={disableUploadBtn} onClick={handleUpload} variant="contained" color="primary">
+                Upload
               </Button>
-              </label>
+              {/* </label> */}
               <Button className={classes.btnMargin} disabled={disableSaveBtn} variant="contained" color="primary" onClick={handleSubmit}>
                 Submit
           </Button>
-            </Grid>
+            </div>
+
+
             {/* <Grid>
              
             </Grid> */}
@@ -381,28 +389,28 @@ export const Payment = () => {
 
       </Dialog>
 
-<Dialog open={showPaymentDetailsDialog}>
-  <DialogTitle>
-  <IconButton className={classes.closeButton} aria-label="close" onClick={handlePaymentDetailsDialogClose}>
+      <Dialog open={showPaymentDetailsDialog}>
+        <DialogTitle>
+          <IconButton className={classes.closeButton} aria-label="close" onClick={handlePaymentDetailsDialogClose}>
             <CloseIcon />
           </IconButton>
-  </DialogTitle>
-  <DialogContent>
-    <Grid container>
-      <Grid item md={6} xs={12}>
-      <Typography>Bill No : {selectedPaymentRecord.BillNum} <br/>
-                  Payment Type : {selectedPaymentRecord.PaymentType} <br/>
+        </DialogTitle>
+        <DialogContent>
+          <Grid container>
+            <Grid item md={6} xs={12}>
+              <Typography>Bill No : {selectedPaymentRecord.BillNum} <br />
+                  Payment Type : {selectedPaymentRecord.PaymentType} <br />
                   Amount : {selectedPaymentRecord.OrderCost}</Typography>
 
-      </Grid>
-      <Grid item md={6} xs={12}>
-<img style={{width:'150px', height:'150px'}} src={selectedPaymentRecord.PaymentProofUrl} alt="payment_proof"/>
-      </Grid>
-    </Grid>
-    
-  </DialogContent>
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <img style={{ width: '150px', height: '150px' }} src={selectedPaymentRecord.PaymentProofUrl} alt="payment_proof" />
+            </Grid>
+          </Grid>
 
-</Dialog>
+        </DialogContent>
+
+      </Dialog>
     </div>
   )
 }

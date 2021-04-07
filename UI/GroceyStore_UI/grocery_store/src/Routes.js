@@ -15,6 +15,8 @@ import {HistoricOrderDetails} from './HistoricOrderDetails'
 import {Unauthorised} from './Unauthorised'
 import {Suggestion} from './Suggestion'
 import {Payment} from './Payment'
+import {AboutUs} from './AboutUs'
+import {Terms} from './TermsAndConditions'
 
 
 export const Routes = () => (
@@ -33,7 +35,9 @@ export const Routes = () => (
       <PrivateRoute path ="/Payment" component={Payment} />
       
       <PrivateRoute path ="/noauth" component={Unauthorised} />
-      <PrivateRoute path ="/Feedback" component={Suggestion} />
+      <PrivateRoute path ="/Feedback" component={Suggestion} /> 
+      <PrivateRoute path ="/About" component={AboutUs} />
+      <PrivateRoute path ="/Terms" component={Terms} />
       <Route path="/verifyotp" component={VerifyOtp} />
       
       <Route path="/login" component={Login} />

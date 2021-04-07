@@ -113,6 +113,15 @@ export const Header = (props) => {
                 setLoginState(false)
                 history.push("/login")
                 break;
+            
+            case "About":
+                history.push("/About")
+                break;
+            
+            case "Terms":
+                history.push("/Terms")
+                break;
+
 
 
             default:
@@ -148,8 +157,8 @@ export const Header = (props) => {
                                 <option value="Cart">My Cart</option>
                                 <option value="Payment">Payment</option>
                                 <option value="Feedback">Feedback</option>
-                                <option value="Feedback">About us</option>
-                                <option value="Feedback">Terms of use</option>
+                                <option value="About">About us</option>
+                                <option value="Terms">Terms of use</option>
                                 <option value="SignOut">Sign Out</option>
                             </NativeSelect>
 

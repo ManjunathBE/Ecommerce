@@ -18,6 +18,7 @@ import { AddProduct } from './AddProduct'
 import CloseIcon from '@material-ui/icons/Close';
 import Footer from './Footer'
 import { EditAddress } from "./UserProfile/EditAddress";
+import { red } from "@material-ui/core/colors";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -33,6 +34,9 @@ const useStyles = makeStyles((theme) => ({
   container: {
 
     paddingBottom: theme.spacing(4),
+    [theme.breakpoints.down('md')]: { 
+      padding: '0px'
+    },
   },
   paper: {
     width: '100%',
@@ -56,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     right: theme.spacing(1),
     top: theme.spacing(1),
-    color: theme.palette.grey[500],
+    color: 'red',
   },
   border: {
     border: '0.5px solid grey'
@@ -68,10 +72,22 @@ const useStyles = makeStyles((theme) => ({
     // },
 
   },
-  btnnMargins: {
+  btnMargins: {
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1)
+  },
+  btnMarginsWithDivider: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    marginRight: theme.spacing(2)
+  },
+  MuiTableCell:{
+  root:{
+    [theme.breakpoints.down('md')]: { 
+      padding: '0px'
+    },
   }
+}
 }));
 
 
@@ -130,7 +146,7 @@ function EnhancedTableHead(props) {
         {TableHeaders.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
+            align='center'
             padding={headCell.disablePadding ? 'none' : 'default'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -189,6 +205,7 @@ const useToolbarStyles = makeStyles((theme) => ({
     color: theme.palette.grey[500],
   },
 
+
 }));
 
 
@@ -212,7 +229,8 @@ export const Cart = (props) => {
   const [order, setOrder] = React.useState('asc');
   const [showAddressUpdatedFlash, setShowAddressUpdatedFlash] = useState(false)
   const [showInstructionsDialog, setShowInstructionsDialog] = useState(false)
-  const [instructionArray, setInstructionArray]=useState({instructions:[]})
+  const [instructionArray, setInstructionArray] = useState({ instructions: [] })
+  const [errors, setErrors] = useState({})
 
   useEffect(() => {
 
@@ -316,7 +334,7 @@ export const Cart = (props) => {
       console.log(cartStore.cart, 'cart')
       console.log(cartStore, 'cartStore')
       cartStore.cart.forEach((item) =>
-        cartItemList.push({ Itemid: item.productId, Qty: item.quantity, ItemCost: item.price,instruction:item.instruction })
+        cartItemList.push({ Itemid: item.productId, Qty: item.quantity, ItemCost: item.price, instruction: item.instruction })
       )
 
       console.log(userStore, 'userStore')
@@ -391,9 +409,9 @@ export const Cart = (props) => {
     // if(cartStore.deliveryAddress)  setSelectedAddressForDelivery(cartStore.deliveryAddress)
     console.log(showSelectedAddress, 'eferferferferferf')
     return (
-      <Card>
+      <Card style={{ marginTop: '8px' }}>
         <CardContent>
-          <Typography>Selected delivery address</Typography><br />
+          <Typography style={{ fontWeight: 'bold' }}>Selected delivery address</Typography><br />
           <Typography><span style={{ fontWeight: 'bold' }}> {selectedAddressForDelivery.AddressNickName}</span><br />
             {selectedAddressForDelivery.FirstAddress}, <br />
             {selectedAddressForDelivery.StreetDetails} <br />
@@ -502,24 +520,43 @@ export const Cart = (props) => {
     setShowAddAddressDialog(false)
   }
 
-  const handleInstructionsChange=(event, productName)=>{  
+  const validateInstruction = (instruction) => {
+    const temp = []
+    console.log(instruction, instruction.length, 'inst length')
+    console.log((/[.]{0,40/).test(instruction), 'regex')
+    temp.instruction = instruction.length <= 40 ? "" : "invalid input, maximum 40 characters"
+    //temp.instruction = (/[\d]{1,40/).test(instruction)?"":"invalid input, maximum 40 characters"
+    setErrors({ ...temp })
+    return Object.values(temp).every(param => param === "")
+  }
+  const handleInstructionsChange = (event, productName) => {
     var instruction = {
-      productName:productName,
+      productName: productName,
       instruction: event.target.value
     }
-    
-setCartStore({instruction, type:"Instruction"})
-    // setInstructionArray(...instructionArray.instructions, {productName:event.target.value}) 
-    // console.log(instructionArray)
+    if (validateInstruction(event.target.value)) {
+
+      setCartStore({ instruction, type: "Instruction" })
+      // setInstructionArray(...instructionArray.instructions, {productName:event.target.value}) 
+      // console.log(instructionArray)
+    }
   }
-  const handleInstructionsDialogClose=()=>{
+  const handleInstructionsDialogClose = () => {
     setShowInstructionsDialog(false)
+  }
+
+  const handleInstructionsSave = () => {
+    setShowInstructionsDialog(false)
+    // console.log(errors.length,'length of errors')
+    // if (errors.length == 0) {
+    //   setShowInstructionsDialog(false)
+    // }
   }
   return (
     <div>
       <div className={classes.root}>
         <main className={classes.content}>
-          <Container maxWidth="lg">
+          <Container maxWidth="lg"  className={classes.container}>
             {/* <Header title={(props.location.pathname).substring(1)} history={props.history} />\ */}
 
             {showAddressUpdatedFlash ?
@@ -603,11 +640,11 @@ setCartStore({instruction, type:"Instruction"})
                                       <TableCell component="th" id={labelId} scope="row" padding="none">
                                         {cart.productName}
                                       </TableCell>
-                                      <TableCell align="right">{cart.quantity}
+                                      <TableCell align='center'>{cart.quantity}
                                         <EditTwoToneIcon onClick={(event) => handleEditClick(event, cart)} />
                                       </TableCell>
-                                      <TableCell align="right">{cart.unit}</TableCell>
-                                      <TableCell align="right">{(cart.price).toFixed(2)}</TableCell>
+                                      <TableCell align='center'>{cart.unit}</TableCell>
+                                      <TableCell align='center'>{(cart.price).toFixed(2)}</TableCell>
                                     </TableRow>
                                   );
                                 })}
@@ -621,18 +658,21 @@ setCartStore({instruction, type:"Instruction"})
                             </TableBody>
                           </Table>
 
-                          {showSelectedAddress ? splitAddress() : ""}
+                          <Hidden mdUp>
+                            {showSelectedAddress ? splitAddress() : ""}
+                          </Hidden>
 
 
 
-                          {cartStore.cart[0].orderId ? <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={handleCancelEditing}>Cancel Editing</Button> : ""}
+                          {cartStore.cart[0].orderId ? <Button className={classes.btnMargins} variant='contained' color='primary' onClick={handleCancelEditing}>Cancel Editing</Button> : ""}
 
                           <Hidden mdUp>
-                            <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={() => history.push("/")}>Continue Shopping</Button>
-                            <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={() => setShowInstructionsDialog(true)}>Add Instructions</Button>
+                            <Button disabled={cartStore.cart.length === 0} className={classes.btnMarginsWithDivider} variant='contained' color='primary' onClick={handleSelectAddress}>Select Address</Button>
+                            <Button disabled={cartStore.cart.length === 0} className={classes.btnMarginsWithDivider} variant='contained' color='primary' onClick={() => setShowInstructionsDialog(true)}>Add Instructions</Button>
                             <br />
-                            <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handleSelectAddress}>Add/Select Address</Button>
-                            <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
+                            <Button disabled={cartStore.cart.length === 0} className={classes.btnMarginsWithDivider} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
+                            <Button className={classes.btnMarginsWithDivider} variant='contained' color='primary' onClick={() => history.push("/")}>Continue Shopping</Button>
+                            <div style={{marginBottom:'75px'}}></div>
                           </Hidden>
 
                         </React.Fragment> : "Cart is empty"}
@@ -643,17 +683,22 @@ setCartStore({instruction, type:"Instruction"})
 
 
               </Grid>
-              <Grid item xs={false} md={4} className={classes.margins}>
+              <Grid item xs={false} md={5} className={classes.margins}>
                 <Hidden smDown>
                   <Card>
                     <CardContent>
                       <Typography style={{ fontSize: '32px' }}>Total : ₹ {(totalPrice).toFixed(2)}</Typography> <br />
-                      <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handleSelectAddress}>Add/Select Address</Button> <br />
-                      <Button disabled={cartStore.cart.length === 0} className={classes.btnnMargins} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
-                      <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={() => history.push("/")}>Continue Shopping</Button>
-                      <Button className={classes.btnnMargins} variant='contained' color='primary' onClick={() => setShowInstructionsDialog(true)}>Add Instructions</Button>
+                      <Button disabled={cartStore.cart.length === 0} className={classes.btnMarginsWithDivider} variant='contained' color='primary' onClick={handleSelectAddress}>Select Address</Button>
+                      <Button disabled={cartStore.cart.length === 0} className={classes.btnMarginsWithDivider} variant='contained' color='primary' onClick={() => setShowInstructionsDialog(true)}>Add Instructions</Button>
+                      <br />
+                      <Button disabled={cartStore.cart.length === 0} className={classes.btnMarginsWithDivider} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
+                      <Button className={classes.btnMarginsWithDivider} variant='contained' color='primary' onClick={() => history.push("/")}>Continue Shopping</Button>
                     </CardContent>
                   </Card>
+
+                  {showSelectedAddress ?
+                    splitAddress()
+                    : ""}
                 </Hidden>
               </Grid>
             </Grid>
@@ -674,14 +719,16 @@ setCartStore({instruction, type:"Instruction"})
 
         </DialogTitle>
         <DialogContent>
+          <div className="positionCenter">
           <Button onClick={handleAddress} variant="contained" color="primary">Add Address</Button>
 
           <Typography> or <br /> Select saved address</Typography>
+          </div>
 
           {addressStore.address.length ?
 
             (addressStore.address.map((address) =>
-              <Card style={{ marginTop: '16px' }} onClick={() => handleAddressCardClick(address)} spacing={2}>
+              <Card style={{ marginTop: '16px', cursor:'pointer' }} onClick={() => handleAddressCardClick(address)} spacing={2}>
                 <CardContent>
                   <Typography><span style={{ fontWeight: 'bold' }}> {address.AddressNickName}</span><br />
                     {address.FirstAddress}, <br />
@@ -742,56 +789,61 @@ setCartStore({instruction, type:"Instruction"})
         <DialogTitle className={classes.root}>
           <Typography>Order has been placed successfuly</Typography>
         </DialogTitle>
-        <DialogContent dividers>
-          <Typography>Order would be delivered tomorrow. </Typography>
-          <Button color='primary' variant='contained' onClick={() => history.push('/')}>Ok</Button>
+        <DialogContent>      
+          <div className="positionCenter">
+            <Button color='primary' variant='contained' onClick={() => history.push('/')}>Ok</Button>
+          </div>
         </DialogContent>
       </Dialog>
 
-<Dialog open={showInstructionsDialog}>
-  <DialogTitle>
-  <IconButton className={classes.closeButton} aria-label="close" onClick={handleInstructionsDialogClose}>
+      <Dialog open={showInstructionsDialog}>
+        <DialogTitle>
+          <IconButton className={classes.closeButton} aria-label="close" onClick={handleInstructionsDialogClose}>
             <CloseIcon />
           </IconButton>
 
-  </DialogTitle>
-  <DialogContent>
-    <TableContainer>
+        </DialogTitle>
+        <DialogContent>
+          <TableContainer>
 
-    </TableContainer>
-    <TableHead>
-      <TableRow>
-        <TableCell>
-          Product
+          </TableContainer>
+          <TableHead>
+            <TableRow>
+              <TableCell style={{ fontWeight: 'bold' }}>
+                Product
         </TableCell>
-        <TableCell>
-          Instructions
+              <TableCell style={{ fontWeight: 'bold' }}>
+                Instructions
         </TableCell>
-      </TableRow>
-    </TableHead>
-<TableBody>
- 
-{cartStore.cart.map((item)=>{
-   console.log(instructionArray, 'instructionArray')
-  return(
-    <TableRow>
-      <TableCell>
-        {item.productName}
-      </TableCell>
-      <TableCell>
-        <TextField onChange={(event)=>handleInstructionsChange(event,item.productName)}
-        defaultValue={item.instruction}>
+            </TableRow>
+          </TableHead>
+          <TableBody>
 
-        </TextField>
-      </TableCell>
-    </TableRow>
-  )
-}
-)}
-<Button variant="contained" color="primary" onClick={handleInstructionsDialogClose}>Save</Button>
-</TableBody>
-  </DialogContent>
-</Dialog>
+            {cartStore.cart.map((item) => {
+              console.log(instructionArray, 'instructionArray')
+              return (
+                <TableRow>
+                  <TableCell>
+                    {item.productName}
+                  </TableCell>
+                  <TableCell>
+                    <TextField onChange={(event) => handleInstructionsChange(event, item.productName)}
+                      defaultValue={item.instruction} error={errors.instruction}
+                      helperText={errors.instruction}>
+
+                    </TextField>
+                  </TableCell>
+                </TableRow>
+              )
+            }
+            )}
+
+          </TableBody>
+          <div className="positionCenter">
+            <Button className={classes.btnMargins} variant="contained" color="primary" onClick={handleInstructionsSave}>Save</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
 
     </div>
