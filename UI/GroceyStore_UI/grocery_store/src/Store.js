@@ -53,7 +53,8 @@ const cartReducer = (state = initialState, action) => {
                     productId: action.item.Itemid,
                     itemPrice: action.item.SellIngPrice,
                     unitTypeId: action.item.UnitTypeId,
-                    orderId: action.item.OrderId
+                    orderId: action.item.OrderId,
+                    instruction: action.item.Instructions
                 }]
             }
         case 'Address':
