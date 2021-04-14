@@ -6,8 +6,11 @@ npm start
 ## Project build for deploy
 npm run build
 
-## Deploy to Firebase hosting
+## Deploy to Firebase hosting testing
 firebase deploy --only hosting:b2bstore-test
+
+## Deploy to Firebase hosting production
+firebase deploy --only hosting:b2bstore-prod-slr
 
 ## Docker File Creation
 
