@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     right: theme.spacing(1),
     top: theme.spacing(1),
-    color: theme.palette.grey[500],
+    color: 'red',
   },
   formControl: {
     margin: theme.spacing(1),
@@ -110,10 +110,7 @@ export const Payment = () => {
               console.log('request failed', body)
 
             } else {
-              console.log(body, 'response')
               setPaymentData(body.data)
-
-
             }
 
           });
@@ -176,7 +173,6 @@ export const Payment = () => {
           result.json().then(body => {
             if (body.success === true) {
               handleClear()
-              console.log(body, 'result from backend')
               setPaymentData(body.data)
               setShowPaymentUploadDialog(false)
 
@@ -205,19 +201,6 @@ export const Payment = () => {
           setDisableSaveBtn(false)
         });
     });
-
-    // const formData = new FormData()
-    // formData.append('image', selectedPaymentProof)
-
-    // fetch('https://testapi.slrorganicfarms.com/upload', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'multipart/form-data',
-    //     'x-access-token': window.localStorage.token
-    //   },
-    //   body: FormData
-
-    // })
   }
 
   const handlePaymentUploadDialogClose = () => {
@@ -256,9 +239,6 @@ export const Payment = () => {
                       {x.label}
                     </TableCell>)
                   }
-                  {/* <Hidden mdDown>
-                  <TableCell colSpan={2} > Status</TableCell>
-                </Hidden> */}
 
                 </TableRow>
 
@@ -280,7 +260,7 @@ export const Payment = () => {
                         <TableCell align="center">{paymentDate}</TableCell>
                         <TableCell align="center">{x.BillNum}</TableCell>
                         <TableCell align="center">{x.SuppliedAmt}</TableCell>
-                        <TableCell align="center" ><div style={{ backgroundColor: crateBgColor, width: '25px', color: textColor }}> {x.MissingCrates}  </div></TableCell>
+                        <TableCell align="center" ><div style={{ backgroundColor: crateBgColor, width: '25px', color: textColor, margin: 'auto' }}> {x.MissingCrates}  </div></TableCell>
                         {/* <TableCell style={{ backgroundColor: x.IsUserConfirmed ? 'green' : '' }}>{x.IsUserConfirmed ? 'Confirmed' : 'Yet to Confirm'}</TableCell>
                     <TableCell style={{ backgroundColor: x.IsConfirmed ? 'green' : '' }}>{x.IsConfirmed ? 'Confirmed' : 'Yet to Confirm'}</TableCell> */}
                       </TableRow>
@@ -288,12 +268,8 @@ export const Payment = () => {
                   )
 
                 })}
-
-
-
               </TableBody>
             </Table>
-
           </TableContainer> : ""}
 
         <Spinner showSpinner={showSpinner} />
@@ -308,44 +284,28 @@ export const Payment = () => {
         <DialogContent>
           <Grid container>
             <Grid item>
-              <Typography> Payment Type</Typography>
-            </Grid>
+              <Grid container>
+                <Grid item>
+                  <Typography style={{marginTop:'10px'}}> Payment Type : </Typography>
+                </Grid>
+                <Grid item>
+                  <FormControl className={classes.formControl}>
+                    <Select
+                      id="demo-simple-select"
+                      value={paymentType}
+                      onChange={handlePaymentTypeChange}
+                    >
+                      <MenuItem value={1}>Cash</MenuItem>
+                      <MenuItem value={2}>Wallet</MenuItem>
+                      <MenuItem value={3}>Online</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+              <br />
+              <Grid container>
             <Grid item>
-              <FormControl className={classes.formControl}>
-
-                <Select
-                  id="demo-simple-select"
-                  value={paymentType}
-                  onChange={handlePaymentTypeChange}
-                >
-                  <MenuItem value={1}>Cash</MenuItem>
-                  <MenuItem value={2}>Wallet</MenuItem>
-                  <MenuItem value={3}>Online</MenuItem>
-                </Select>
-
-
-              </FormControl>
-            </Grid>
-          </Grid>
-          <br />
-
-          {/* <input
-              accept="image/*"
-              className={classes.input}
-              hidden
-              id="raised-button-file"
-              multiple
-              type="file"
-              onChange={handleImageUpload}
-            />
-            <label htmlFor="raised-button-file">
-              <Button variant="raised" component="span" className={classes.button}>
-                Upload
-  </Button>
-            </label> */}
-          <Grid container>
-            <Grid item>
-              <Typography>payment proof :</Typography>
+              <Typography>payment proof : </Typography>
             </Grid>
             <Grid item>
               <input
@@ -358,35 +318,28 @@ export const Payment = () => {
                 ref={paymentProofRef}
               />
             </Grid>
+            </Grid>
+          
+            </Grid>
             <Grid item>
-              {imagePreviewVisibility ? <img style={{ width: '150px', height: '150px' }} src={imageSrc} alt="payment_proof" /> :
+            {imagePreviewVisibility ? <img style={{ width: '150px', height: '150px' }} src={imageSrc} alt="payment_proof" /> :
                 <img style={{ width: '150px', height: '150px' }} src={NoImage} alt="no-img" />}
             </Grid>
-
-            {/* <label htmlFor="paymentProof"> */}
+            </Grid>
             <div className="positionCenter">
               <Button className={classes.btnMargin} variant="contained" color="primary" onClick={handleClear}>
-                Clear
+              Clear
           </Button>
               <Button className={classes.btnMargin} component="span" disabled={disableUploadBtn} onClick={handleUpload} variant="contained" color="primary">
-                Upload
+              Upload
               </Button>
               {/* </label> */}
               <Button className={classes.btnMargin} disabled={disableSaveBtn} variant="contained" color="primary" onClick={handleSubmit}>
-                Submit
+              Submit
           </Button>
             </div>
-
-
-            {/* <Grid>
-             
-            </Grid> */}
-          </Grid>
-
-
-
+         
         </DialogContent>
-
       </Dialog>
 
       <Dialog open={showPaymentDetailsDialog}>

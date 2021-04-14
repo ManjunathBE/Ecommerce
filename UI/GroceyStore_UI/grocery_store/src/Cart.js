@@ -65,12 +65,11 @@ const useStyles = makeStyles((theme) => ({
   border: {
     border: '0.5px solid grey'
   },
-  margins: {
-    // [theme.breakpoints.up('md')]: {
-    //   marginLeft: theme.spacing(2),
-    //   marginRight: theme.spacing(2)
-    // },
-
+  cardShadow:{
+    '&:hover':{
+      boxShadow: '0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)'
+    },
+    cursor:'pointer'
   },
   btnMargins: {
     marginTop: theme.spacing(1),
@@ -151,7 +150,7 @@ function EnhancedTableHead(props) {
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
-              active={orderBy === headCell.id}
+              active='true'
               direction={orderBy === headCell.id ? order : 'asc'}
               onClick={createSortHandler(headCell.id)}
             >
@@ -315,9 +314,7 @@ export const Cart = (props) => {
   };
 
   const handleEditClick = (event, cart) => {
-    console.log(cart, 'cart in edit')
     setEditCart(true)
-    console.log(event, 'event in edit')
     setProductToEdit(cart);
   }
 
@@ -520,27 +517,14 @@ export const Cart = (props) => {
     setShowAddAddressDialog(false)
   }
 
-  const validateInstruction = (instruction) => {
-    const temp = []
-    console.log(instruction, instruction.length, 'inst length')
-    console.log((/[.]{0,40/).test(instruction), 'regex')
-    temp.instruction = instruction.length <= 40 ? "" : "invalid input, maximum 40 characters"
-    //temp.instruction = (/[\d]{1,40/).test(instruction)?"":"invalid input, maximum 40 characters"
-    setErrors({ ...temp })
-    return Object.values(temp).every(param => param === "")
-  }
   const handleInstructionsChange = (event, productName) => {
     var instruction = {
       productName: productName,
       instruction: event.target.value
     }
-    if (validateInstruction(event.target.value)) {
-
       setCartStore({ instruction, type: "Instruction" })
-      // setInstructionArray(...instructionArray.instructions, {productName:event.target.value}) 
-      // console.log(instructionArray)
-    }
   }
+  
   const handleInstructionsDialogClose = () => {
     setShowInstructionsDialog(false)
   }
@@ -664,14 +648,16 @@ export const Cart = (props) => {
 
 
 
-                          {cartStore.cart[0].orderId ? <Button className={classes.btnMargins} variant='contained' color='primary' onClick={handleCancelEditing}>Cancel Editing</Button> : ""}
+                          
 
                           <Hidden mdUp>
+                          
                             <Button disabled={cartStore.cart.length === 0} className={classes.btnMarginsWithDivider} variant='contained' color='primary' onClick={handleSelectAddress}>Select Address</Button>
                             <Button disabled={cartStore.cart.length === 0} className={classes.btnMarginsWithDivider} variant='contained' color='primary' onClick={() => setShowInstructionsDialog(true)}>Add Instructions</Button>
                             <br />
                             <Button disabled={cartStore.cart.length === 0} className={classes.btnMarginsWithDivider} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
                             <Button className={classes.btnMarginsWithDivider} variant='contained' color='primary' onClick={() => history.push("/")}>Continue Shopping</Button>
+                            {cartStore.cart[0].orderId ? <Button className={classes.btnMarginsWithDivider} variant='contained' color='primary' onClick={handleCancelEditing}>Cancel Editing</Button> : ""}
                             <div style={{marginBottom:'75px'}}></div>
                           </Hidden>
 
@@ -693,6 +679,7 @@ export const Cart = (props) => {
                       <br />
                       <Button disabled={cartStore.cart.length === 0} className={classes.btnMarginsWithDivider} variant='contained' color='primary' onClick={handlePlaceOrder}>Place Order</Button>
                       <Button className={classes.btnMarginsWithDivider} variant='contained' color='primary' onClick={() => history.push("/")}>Continue Shopping</Button>
+                      {cartStore.cart[0].orderId ? <Button className={classes.btnMarginsWithDivider} variant='contained' color='primary' onClick={handleCancelEditing}>Cancel Editing</Button> : ""}
                     </CardContent>
                   </Card>
 
@@ -722,13 +709,12 @@ export const Cart = (props) => {
           <div className="positionCenter">
           <Button onClick={handleAddress} variant="contained" color="primary">Add Address</Button>
 
-          <Typography> or <br /> Select saved address</Typography>
+          <Typography style={{marginBottom:'16px'}}> or <br /> Select saved address</Typography>
           </div>
 
           {addressStore.address.length ?
-
             (addressStore.address.map((address) =>
-              <Card style={{ marginTop: '16px', cursor:'pointer' }} onClick={() => handleAddressCardClick(address)} spacing={2}>
+              <Card className={classes.cardShadow}  style={{ marginBottom: '16px', cursor:'pointer' }} onClick={() => handleAddressCardClick(address)} spacing={2}>
                 <CardContent>
                   <Typography><span style={{ fontWeight: 'bold' }}> {address.AddressNickName}</span><br />
                     {address.FirstAddress}, <br />
@@ -739,7 +725,7 @@ export const Cart = (props) => {
                   Phone: {address.Phone[0]}</Typography>
                 </CardContent>
               </Card>)
-            ) :
+            ):
             <div>
               <Typography>We could not find any address in your profile. please add one</Typography>
               <EditAddress modelOpen={handleAddressAdded} AddressUpdated={handleAddressUpdated} gst={""} />
@@ -828,8 +814,8 @@ export const Cart = (props) => {
                   </TableCell>
                   <TableCell>
                     <TextField onChange={(event) => handleInstructionsChange(event, item.productName)}
-                      defaultValue={item.instruction} error={errors.instruction}
-                      helperText={errors.instruction}>
+                      defaultValue={item.instruction}
+                      helperText="Max. 40 characters"  inputProps={{ maxLength: 40 }}>
 
                     </TextField>
                   </TableCell>

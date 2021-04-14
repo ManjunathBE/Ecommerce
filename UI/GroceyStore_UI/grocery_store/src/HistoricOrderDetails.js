@@ -7,12 +7,9 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Footer from './Footer'
-import { MenuPane } from './MenuPane'
-import { Header } from './Header'
 import IconButton from '@material-ui/core/IconButton';
 import ReportProblemOutlinedIcon from '@material-ui/icons/ReportProblemOutlined';
 import CloseIcon from '@material-ui/icons/Close';
-import { unitMapper } from "./Helper";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { MissingReturnItems } from './MissingReturnItems'
 
@@ -51,7 +48,11 @@ const useStyles = makeStyles((theme) => ({
     },
     topMargin: {
         marginTop: theme.spacing(2),
-    }
+    },
+    heading: {
+        fontSize: theme.typography.pxToRem(15),
+        fontWeight: theme.typography.fontWeightBold,
+      },
 }));
 
 
@@ -67,6 +68,7 @@ export const HistoricOrderDetails = (props) => {
     const [missingReturnValue, setMissingReturnValue] = useState()
     const [warningDialog, setWarningDialog] = useState(false)
     const [showCancellationConfirmationDialog, setShowCancellationConfirmationDialog] = useState(false)
+    const [billUrl,setBillurl] = useState()
 
     var MissingReturnItemsList = []
 
@@ -109,8 +111,8 @@ export const HistoricOrderDetails = (props) => {
                         if (body.success !== true) {
                             console.log('request failed', body)
                         } else {
-                            console.log(body.data, 'data of order')
                             setOrderDetails(body.data)
+                            setBillurl(body.data2[0].BillUrl)
                         }
                     });
                 }
@@ -125,9 +127,16 @@ export const HistoricOrderDetails = (props) => {
         console.log(props.location.state.orderStatus, 'order status')
         if (props.location.state.orderStatus === 'Order Booked') {
             return (<React.Fragment><Button className={classes.btnMargin} variant="contained" color="primary" onClick={() => handleEditOrReorder('edit')}>Edit</Button>
-                <Button variant="contained" color="secondary" onClick={handleCancelOrderClick} >Cancel order</Button> </React.Fragment>)
+                <Button variant="contained" color="secondary" onClick={handleCancelOrderClick} >Cancel order</Button> 
+                </React.Fragment>)
         }
-        else if (props.location.state.orderStatus === 'Completed' || props.location.state.orderStatus === 'Order Cancelled') {
+        else if (props.location.state.orderStatus === 'Completed' ) {
+            return (<><Button className={classes.btnMargin} variant="contained" color="primary" onClick={() => handleEditOrReorder('reorder')}>Re-order</Button>
+            <a rel={'noopener noreferrer'}  href={billUrl} target="_blank">
+            <Button variant="contained" color="primary" >Download Invoice</Button>
+            </a></>)
+        }
+        else if ( props.location.state.orderStatus === 'Order Cancelled'){
             return (<Button className={classes.btnMargin} variant="contained" color="primary" onClick={() => handleEditOrReorder('reorder')}>Re-order</Button>)
         }
         else if (props.location.state.orderStatus === 'Out for Delivery') {
@@ -340,9 +349,6 @@ export const HistoricOrderDetails = (props) => {
                                             <div className={classes.addressDiv}>
                                                 {orderDetails.length ?
                                                     <React.Fragment>
-                                                        <Typography> <span style={{ fontWeight: 'bold' }}> Order Number : </span>{props.location.state.orderId}</Typography>
-                                                        <Typography> <span style={{ fontWeight: 'bold' }}> Order Status : </span>{orderDetails[0].OrderStatus}</Typography>
-                                                        <br />
                                                         <Typography style={{ fontWeight: 'bold' }}>Delivery Address</Typography>
 
                                                         <Typography>{orderDetails[0].AddressNickName}<br />
@@ -487,18 +493,15 @@ export const HistoricOrderDetails = (props) => {
 
             <Dialog open={showCancellationConfirmationDialog}>
                 <DialogTitle>
-                    <IconButton className={classes.closeButton} aria-label="close" onClick={() => setShowCancellationConfirmationDialog(false)}>
-                        <CloseIcon />
-                    </IconButton>
                 </DialogTitle>
                 <DialogContent>
                     <div className="text-center">
                         <Typography>Do you want to cancel this order?</Typography>
                     </div>
                     <br />
-                    <div className={classes.topMargin}>
+                    <div className={classes.topMargin} style={{ textAlign:'center'}}>
                         <Button className={classes.btnMargin} variant="contained" color="secondary" onClick={handleCancelOrder}> Yes </Button>
-                        <Button className={classes.btnMargin} variant="contained" color="primary" onClick={() => setShowCancellationConfirmationDialog(false)}> No </Button>
+                        <Button  variant="contained" color="primary" onClick={() => setShowCancellationConfirmationDialog(false)}> No </Button>
                     </div>
 
                 </DialogContent>
